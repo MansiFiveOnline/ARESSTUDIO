@@ -1,0 +1,15 @@
+<ifmodule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /beta/backend
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ $1.js [NC,L]
+    SetEnv MONGO_DB_URL =
+    "mongodb+srv://mansifiveonline:mansik11@ares-studio.i63zgxx.mongodb.net/"
+    SetEnv PORT = 8000
+    SetEnv ACCESS_TOKEN = "accesstoken"
+    SetEnv REFRESH_TOKEN = "refreshtoken"
+    SetEnv DEV_URL="http://localhost:3000"
+
+    SetEnv PROD_URL="https://aresstudio.in/beta"
+</ifmodule>
