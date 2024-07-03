@@ -293,7 +293,7 @@ export default function About() {
   }, [id]);
 
   if (!aboutData || !teams) {
-    return <div>Loading...</div>;
+    return <div></div>;
   }
 
   // Function to replace backslashes with forward slashes

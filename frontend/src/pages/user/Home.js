@@ -131,7 +131,7 @@ const Home = () => {
                             alt="Games Media"
                           />
                         ) : (
-                          <p>Loading...</p>
+                          <p></p>
                         )}
                       </div>
                     </div>

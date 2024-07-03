@@ -377,7 +377,7 @@ export default function Career() {
   }, []);
 
   if (!opportunities && !careerData) {
-    return <div>Loading...</div>;
+    return <div></div>;
   }
 
   const handleInputChange = (e) => {
