@@ -454,7 +454,7 @@ export default function Career() {
           location: "",
           position: "",
           message: "",
-          document: null,
+          document: "",
         });
         setSelectedTitle("");
         setSuccessMessage("");
