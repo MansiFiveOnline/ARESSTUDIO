@@ -70,46 +70,6 @@ const Gallery = () => {
         <div className="col-md-12">
           <div className="infos-table">
             <div className="table-responsive">
-              {/* <DataTable
-        value={users}
-        paginator
-        sortMode="multiple"
-        rows={1}
-        rowsPerPageOptions={[5, 10, 25, 50]}
-      >
-        <Column
-          field="name"
-          header="Name"
-          sortable
-          style={{ width: "25%" }}
-        ></Column>
-        <Column
-          field="designation"
-          header="Designation"
-          sortable
-          style={{ width: "25%" }}
-        ></Column>
-        <Column
-          field="linkedin_url"
-          header="LinkedIn URL"
-          sortable
-          style={{ width: "25%" }}
-        ></Column>
-        <Column
-          field="users.imageUrl"
-          header="Image"
-          sortable
-          style={{ width: "25%" }}
-        >
-          {" "}
-          <img
-            src=""
-            alt="new"
-            style={{ width: "50px", height: "50px" }}
-            header="Image"
-          />
-        </Column> */}
-
               <table id="example" className="table nowrap">
                 <thead>
                   <tr>

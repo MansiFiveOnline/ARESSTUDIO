@@ -3,8 +3,6 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import Layout from "../../../components/adminLayout";
 import axios from "axios";
 import "../../../style/index.css";
-import "datatables.net";
-import "datatables.net-bs4/css/dataTables.bootstrap4.min.css";
 
 const Team = () => {
   const [teams, setTeams] = useState([]);
