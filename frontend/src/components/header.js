@@ -29,7 +29,7 @@ const SideNavigation = () => {
             {/* Navigation content */}
             <div className="col-lg-6 text-start">
               <div className="main_nav">
-                <NavLink to="/home">Home</NavLink>
+                <NavLink to="/">Home</NavLink>
                 <NavLink to="/about">About</NavLink>
                 <NavLink to="/service/games">Service</NavLink>
                 <NavLink to="/career">Career</NavLink>
