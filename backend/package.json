@@ -4,7 +4,6 @@
   "description": "",
   "node": "npm start",
   "main": "server.js",
-  "homepage": "https://aresstudio.in/beta/backend",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon main",
