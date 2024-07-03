@@ -692,6 +692,20 @@ option {
   width: 8% !important;
 }
 
+.carousel-item iframe {
+  height: 100vh;
+  width: 80%;
+}
+
+.carousel-item img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  width: 80%;
+}
+
 /* FOOTER SECTION START */
 .footer {
   padding: 20px;
