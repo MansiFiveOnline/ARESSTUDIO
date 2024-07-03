@@ -436,11 +436,11 @@ export default function Career() {
     try {
       const apiUrl = process.env.REACT_APP_API_URL;
 
-      const access_token = localStorage.getItem("access_token");
+      // const access_token = localStorage.getItem("access_token");
       const response = await axios.post(`${apiUrl}/api/jobapplication`, data, {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
+        // headers: {
+        //   Authorization: `Bearer ${access_token}`,
+        // },
       });
       console.log(response.data);
       setSuccessMessage("Application submitted successfully!");

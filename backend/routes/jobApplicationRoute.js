@@ -18,7 +18,6 @@ const upload = multer({ storage: storage });
 route.post(
   "/",
   upload.single("document"),
-  adminMiddleware,
   jobApplicationController.createApplication
 );
 
