@@ -163,7 +163,7 @@ const Home = () => {
                             alt="VFX Media"
                           />
                         ) : (
-                          <p>Loading...</p>
+                          <p></p>
                         )}
                       </div>
                     </div>
