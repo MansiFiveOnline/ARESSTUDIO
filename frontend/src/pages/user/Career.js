@@ -294,7 +294,7 @@
 //   );
 // }
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Layout from "../../components/layout";
 import HorizontalTabs from "../../components/HorizontalTabs";
 import "../../style/user.css";
@@ -323,6 +323,7 @@ export default function Career() {
     document: null,
   });
   const [inputErrors, setInputErrors] = useState({});
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const fetchCareer = async () => {
@@ -454,10 +455,14 @@ export default function Career() {
           location: "",
           position: "",
           message: "",
-          document: "",
+          document: null,
         });
         setSelectedTitle("");
         setSuccessMessage("");
+        // Reset file input using ref
+        if (fileInputRef.current) {
+          fileInputRef.current.value = null;
+        }
       }, 2000);
     } catch (error) {
       setErrorMessage("Some error occurred in form submission. Try again!");
@@ -628,6 +633,8 @@ export default function Career() {
                           accept=".pdf, .doc"
                           onChange={handleFileChange}
                           required
+                          id="documentInput"
+                          ref={fileInputRef}
                         />
                         {inputErrors.name && (
                           <div className="text-danger mt-1">
