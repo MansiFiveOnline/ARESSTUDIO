@@ -150,5 +150,5 @@ app.listen(PORT, "0.0.0.0", (error) => {
   if (error) {
     console.log(`Server connection failed due to ${error}`);
   }
-  console.log(`Server is running on port no ${process.env.PORT}`);
+  console.log(`Server is running on port ${process.env.PORT}`);
 });
