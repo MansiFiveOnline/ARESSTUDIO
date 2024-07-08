@@ -120,6 +120,8 @@ const SideNavigation = () => {
                 <img
                   src="/images/logo_small_black_transparent.svg"
                   alt="logo"
+                  width="200"
+                  height="100"
                 />
               </Link>
             </div>
