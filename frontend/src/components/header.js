@@ -120,7 +120,6 @@ const SideNavigation = () => {
                 <img
                   src="/images/logo_small_black_transparent.svg"
                   alt="logo"
-                  loading="lazy"
                 />
               </Link>
             </div>
