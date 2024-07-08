@@ -92,6 +92,7 @@ const Gallery = () => {
                               src={`${process.env.REACT_APP_API_URL}/${gallery.media.filepath}`} // Assuming filepath contains the path to the image
                               alt={`${gallery.media.filename}`}
                               style={{ width: "50px", height: "50px" }}
+                              loading="lazy"
                             />
                           ) : (
                             <span>{gallery.media.iframe}</span>

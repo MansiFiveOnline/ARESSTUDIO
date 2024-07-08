@@ -194,6 +194,7 @@ const EditAbout = () => {
                     className="form-profile"
                     src={`${process.env.REACT_APP_API_URL}/${formData.media.filepath}`}
                     alt="Media"
+                    loading="lazy"
                   />
                 )}
               </div>

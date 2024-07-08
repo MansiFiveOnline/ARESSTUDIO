@@ -72,6 +72,7 @@ const Service = () => {
                   <img
                     src={`${process.env.REACT_APP_API_URL}/${serviceData.media.filepath}`}
                     alt="Media"
+                    loading="lazy"
                   />
                 )}
               </div>

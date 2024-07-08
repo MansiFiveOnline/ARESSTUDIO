@@ -325,6 +325,7 @@ export default function About() {
                   aboutData[0].media.filepath
                 )}`}
                 alt="Media"
+                loading="lazy"
               />
             )}
           </div>

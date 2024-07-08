@@ -85,6 +85,7 @@ const ProjectDetail = () => {
                               src={`${process.env.REACT_APP_API_URL}/${projectDetail.media.filepath}`} // Assuming filepath contains the path to the image
                               alt={`${projectDetail.media.filename}`}
                               style={{ width: "50px", height: "50px" }}
+                              loading="lazy"
                             />
                           ) : (
                             <span>{projectDetail.media.iframe}</span>

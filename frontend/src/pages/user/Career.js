@@ -491,6 +491,7 @@ export default function Career() {
               <img
                 src={`${process.env.REACT_APP_API_URL}/${careerData[0].media.filepath}`}
                 alt="Media"
+                loading="lazy"
               />
             ) : (
               <div>No media available</div>
@@ -674,7 +675,11 @@ export default function Career() {
                     <div className="col-lg-12">
                       <div className="text-end">
                         <button type="submit" className="btn">
-                          <img src="images/arrow-right.svg" alt="Submit" />
+                          <img
+                            src="images/arrow-right.svg"
+                            alt="Submit"
+                            loading="lazy"
+                          />
                         </button>
                       </div>
                     </div>

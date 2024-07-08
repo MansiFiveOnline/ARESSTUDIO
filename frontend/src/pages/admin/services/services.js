@@ -117,6 +117,7 @@ const AdminServices = () => {
                               src={`${process.env.REACT_APP_API_URL}/${service.media.filepath}`} // Assuming filepath contains the path to the image
                               alt={`${service.media.filename}`}
                               style={{ width: "50px", height: "50px" }}
+                              loading="lazy"
                             />
                           ) : (
                             <span>{service.media.iframe}</span>

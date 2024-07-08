@@ -59,7 +59,11 @@ export default function Contact() {
         <div className="app">
           <div className="video-list">
             {/* <VideoPlayer src="images/video2.mp4" /> */}
-            <img src="images/service-detail.jpg" alt="banner img" />
+            <img
+              src="images/service-detail.jpg"
+              alt="banner img"
+              loading="lazy"
+            />
           </div>
         </div>
         <div className="service_title">
@@ -158,7 +162,11 @@ export default function Contact() {
                     <div className="col-lg-12">
                       <div className="text-end">
                         <button type="submit" className="btn">
-                          <img src="images/arrow-right.svg" alt="" />
+                          <img
+                            src="images/arrow-right.svg"
+                            alt=""
+                            loading="lazy"
+                          />
                         </button>
                       </div>
                     </div>
@@ -179,7 +187,7 @@ export default function Contact() {
               <div className="adress_main plr-20">
                 <div className="address_box mb-3">
                   <div className="address_icon">
-                    <img src="images/map-pin.svg" alt="" />
+                    <img src="images/map-pin.svg" alt="" loading="lazy" />
                   </div>
                   <div className="address_info">
                     <p>
@@ -214,7 +222,7 @@ export default function Contact() {
                 </div>
                 <div className="address_box align-items-center mb-3">
                   <div className="address_icon">
-                    <img src="images/call-icon.svg" alt="" />
+                    <img src="images/call-icon.svg" alt="" loading="lazy" />
                   </div>
                   <div className="address_info">
                     <p>
@@ -237,7 +245,7 @@ export default function Contact() {
                 </div>
                 <div className="address_box align-items-center mb-3">
                   <div className="address_icon">
-                    <img src="images/call-icon.svg" alt="" />
+                    <img src="images/call-icon.svg" alt="" loading="lazy" />
                   </div>
                   <div className="address_info">
                     <p>

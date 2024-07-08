@@ -100,6 +100,7 @@ const Project = () => {
                             <img
                               src={`${process.env.REACT_APP_API_URL}/${project.media.filepath}`} // Assuming filepath contains the path to the image
                               alt={`${project.media.filename}`}
+                              loading="lazy"
                               style={{ width: "50px", height: "50px" }}
                             />
                           ) : (

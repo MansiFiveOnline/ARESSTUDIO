@@ -42,6 +42,7 @@ const SideBar = () => {
             className="admin-logo"
             src="/images/ares_favicon.png"
             alt="Logo"
+            loading="lazy"
           />{" "}
           ARES Studio
         </NavLink>

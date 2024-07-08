@@ -22,7 +22,7 @@ const SideNavigation = () => {
             {/* Close button */}
             <div className="col-lg-12 text-end">
               <span className="closebtn" onClick={closeNav}>
-                <img src="/images/close-icon.svg" alt="" />
+                <img src="/images/close-icon.svg" alt="" loading="lazy" />
               </span>
             </div>
 
@@ -120,6 +120,7 @@ const SideNavigation = () => {
                 <img
                   src="/images/logo_small_black_transparent.svg"
                   alt="logo"
+                  loading="lazy"
                 />
               </Link>
             </div>

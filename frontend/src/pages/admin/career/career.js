@@ -91,6 +91,7 @@ const AdminCareer = () => {
                             <img
                               src={`http://localhost:8000/${career.media.filepath}`} // Assuming filepath contains the path to the image
                               alt={`${career.media.filename}`}
+                              loading="lazy"
                               style={{ width: "50px", height: "50px" }}
                             />
                           ) : (

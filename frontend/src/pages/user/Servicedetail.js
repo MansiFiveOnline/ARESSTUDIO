@@ -176,6 +176,7 @@ const Servicedetail = () => {
                   <img
                     src={`${process.env.REACT_APP_API_URL}/${projectData.media.filepath}`}
                     alt="Media"
+                    loading="lazy"
                   />
                 )}
               </div>

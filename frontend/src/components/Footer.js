@@ -17,7 +17,12 @@ export default function Footer() {
             <Link to="mailto:contact@aresstudio.in">contact@aresstudio.in</Link>
           </div>
           <div className="col-lg-4 text-center">
-            <img className="iso-img" src="/images/iso-logo.svg" alt="iso" />
+            <img
+              className="iso-img"
+              src="/images/iso-logo.svg"
+              alt="iso"
+              loading="lazy"
+            />
             <p>ISO 2007 :2013</p>
           </div>
           <div className="col-lg-4 text-end">
@@ -50,6 +55,7 @@ export default function Footer() {
                     src="/images/artstation_logo_logos_icon.png"
                     // src="https://via.placeholder.com/150"
                     alt="artstation"
+                    loading="lazy"
                   />
                 </Link>
               </li>

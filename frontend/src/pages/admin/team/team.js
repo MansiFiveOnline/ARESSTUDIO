@@ -91,6 +91,7 @@ const Team = () => {
                               src={`${process.env.REACT_APP_API_URL}/${team.image[0].filepath}`}
                               alt={team.image[0].filename}
                               style={{ width: "50px", height: "50px" }}
+                              loading="lazy"
                             />
                           ) : (
                             "No image"

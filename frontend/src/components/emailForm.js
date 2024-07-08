@@ -99,6 +99,7 @@ const EmailForm = ({ onSubmit }) => {
             className="lock-pop"
             src="/images/lock-popup-icon.svg"
             alt="Lock Pop-up Icon"
+            loading="lazy"
           />
         </div>
         <div>
@@ -106,7 +107,11 @@ const EmailForm = ({ onSubmit }) => {
         </div>
         <div className="lock-form">
           <div className="lock-ic">
-            <img src="/images/lock-form-icon.svg" alt="Lock Form Icon" />
+            <img
+              src="/images/lock-form-icon.svg"
+              alt="Lock Form Icon"
+              loading="lazy"
+            />
           </div>
           <div className="lock-paswd">
             <Form.Control

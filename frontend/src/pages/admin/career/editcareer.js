@@ -235,6 +235,7 @@ const EditCareer = () => {
                     className="form-profile"
                     src={`${process.env.REACT_APP_API_URL}/${formData.media.filepath}`}
                     alt={`${formData.media.filename}`}
+                    loading="lazy"
                   />
                 )}
               </div>

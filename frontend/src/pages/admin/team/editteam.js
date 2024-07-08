@@ -178,6 +178,7 @@ const EditTeam = () => {
                     className="form-profile"
                     src={`${process.env.REACT_APP_API_URL}/${formData.image.filepath}`}
                     alt="Media"
+                    loading="lazy"
                   />
                 )}
               </div>

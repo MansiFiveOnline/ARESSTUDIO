@@ -493,6 +493,7 @@ const Gallery = ({ service_name }) => {
                         }
                         className="card-img-top"
                         alt={`Media ${index}`}
+                        loading="lazy"
                       />
                     )}
                     {!item.isPublic && (
@@ -501,6 +502,7 @@ const Gallery = ({ service_name }) => {
                           src="/images/lock-icon.svg"
                           className="lock_icon"
                           alt="Lock Icon"
+                          loading="lazy"
                         />
                       </div>
                     )}

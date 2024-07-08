@@ -129,6 +129,7 @@ const Home = () => {
                           <img
                             src={`${process.env.REACT_APP_API_URL}/${gamesData.media.filepath}`}
                             alt="Games Media"
+                            loading="lazy"
                           />
                         ) : (
                           <p></p>
@@ -161,6 +162,7 @@ const Home = () => {
                           <img
                             src={`${process.env.REACT_APP_API_URL}/${vfxData.media.filepath}`}
                             alt="VFX Media"
+                            loading="lazy"
                           />
                         ) : (
                           <p></p>

@@ -63,6 +63,7 @@ const Lightboxcomponent = () => {
                         src={`${apiUrl}/${item.filepath}`}
                         alt={`${item.filename}`}
                         className="card-img-top"
+                        loading="lazy"
                       />
                     )}
                   </div>
@@ -115,6 +116,7 @@ const Lightboxcomponent = () => {
                           src={`${apiUrl}/${item.filepath}`}
                           alt={`Media ${index}`}
                           className="img-fluid mh-100"
+                          loading="lazy"
                         />
                       )}
                     </div>
