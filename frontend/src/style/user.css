@@ -1094,7 +1094,7 @@ option {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background: #000;
+  background: rgb(0 0 0 / 56%);
   color: #fff;
   padding: 20px;
   text-align: center;
@@ -1105,14 +1105,14 @@ option {
   /* margin-top: 10px; */
   margin: 10px 5px;
   padding: 10px 20px;
-  background: #5ab5b6;
+  background: #fff;
   border: none;
   color: #000;
   cursor: pointer;
 }
 
 .cookie-consent button:hover {
-  background: #5ab5b6;
+  background: #fff;
 }
 
 /* ============MEDIA QUERY START=========== */

@@ -15,10 +15,11 @@ const serviceSchema = new mongoose.Schema({
   },
   subtitle: {
     type: String,
-    default: true,
+    default: "",
   },
   description: {
     type: String,
+    default: "",
   },
   type: {
     type: String,

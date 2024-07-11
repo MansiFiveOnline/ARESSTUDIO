@@ -13,6 +13,13 @@ const createService = async (req, res) => {
       metaDescription,
     } = req.body;
 
+    // Check if required fields are present
+    if (!service_name || !title || !media) {
+      return res.status(400).json({
+        message: "Name, title, and media are required fields.",
+      });
+    }
+
     let mediaData = {};
 
     const urlSlug = service_name.toLowerCase().replace(/\s+/g, "-");
@@ -203,6 +210,13 @@ const updateService = async (req, res) => {
     const existingService = await serviceModel.findById(req.params._id);
     if (!existingService) {
       return res.status(404).json({ message: "Service not found." });
+    }
+
+    // Check if required fields are present
+    if (!service_name || !title || !media) {
+      return res.status(400).json({
+        message: "Name, title, and media are required fields.",
+      });
     }
 
     let mediaData = {

@@ -17,6 +17,10 @@ const AddService = () => {
     e.preventDefault();
 
     try {
+      if (!service_name || !title || !media) {
+        throw new Error("Name, title, and media are required fields.");
+      }
+
       const formData = new FormData();
       formData.append("service_name", service_name);
       formData.append("title", title);
@@ -111,7 +115,6 @@ const AddService = () => {
                 <input
                   type="text"
                   name="subtitle"
-                  required
                   value={subtitle}
                   onChange={(e) => setSubtitle(e.target.value)}
                 />
@@ -125,7 +128,6 @@ const AddService = () => {
                 <textarea
                   type="text"
                   name="description"
-                  required
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={4}

@@ -78,7 +78,7 @@ const EditService = () => {
     } else {
       setFormData({
         ...formData,
-        [name]: value,
+        [name]: value || "",
       });
     }
   };
@@ -93,10 +93,15 @@ const EditService = () => {
         formDataToSend.append("service_name", formData.service_name);
       if (formData.url) formDataToSend.append("url", formData.url);
       if (formData.title) formDataToSend.append("title", formData.title);
-      if (formData.subtitle)
+      // if (formData.subtitle)
+      //   formDataToSend.append("subtitle", formData.subtitle);
+      // if (formData.description)
+      //   formDataToSend.append("description", formData.description);
+      if (formData.subtitle !== "")
         formDataToSend.append("subtitle", formData.subtitle);
-      if (formData.description)
+      if (formData.description !== "")
         formDataToSend.append("description", formData.description);
+
       if (formData.metaTitle)
         formDataToSend.append("metaTitle", formData.metaTitle);
       if (formData.metaDescription)
@@ -179,7 +184,7 @@ const EditService = () => {
                 <input
                   type="text"
                   name="subtitle"
-                  value={formData.subtitle}
+                  value={formData.subtitle || ""}
                   onChange={handleChange}
                 />
               </div>
@@ -191,7 +196,7 @@ const EditService = () => {
                 <textarea
                   type="text"
                   name="description"
-                  value={formData.description}
+                  value={formData.description || ""}
                   onChange={handleChange}
                   rows={4}
                 />
