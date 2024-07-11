@@ -242,7 +242,7 @@ import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Modal } from "react-bootstrap";
 import axios from "axios";
-import VideoPlayer from "../components/Videoplayer";
+import VideoPlayer from "./Videoplayer";
 import { useNavigate } from "react-router-dom"; // Import useHistory
 import "../style/user.css";
 import PasswordForm from "./passwordForm";
@@ -301,12 +301,14 @@ const Gallery = ({ service_name }) => {
             ? response.data.media
             : [response.data.media];
           setMedia(mediaArray);
+          console.log(mediaArray);
         } else if (response.data.media.length === 0) {
           setErrorMessage(
             "No media found for the given service and gallery name."
           );
         } else {
           setMedia(response.data.media);
+
           setErrorMessage("");
         }
       } catch (error) {
@@ -319,6 +321,8 @@ const Gallery = ({ service_name }) => {
       fetchProjectMedia();
     }
   }, [selectedTab, service_name]);
+
+  const fetchProjectName = async () => {};
 
   const handleTabSelect = (tab) => {
     setSelectedTab(tab);
@@ -508,7 +512,8 @@ const Gallery = ({ service_name }) => {
                     )}
 
                     <div className="project-name">
-                      {item.projectName} {/* Display project name */}
+                      {item.project_Name || item.projectName}{" "}
+                      {/* Display project name */}
                     </div>
                   </div>
                 </div>

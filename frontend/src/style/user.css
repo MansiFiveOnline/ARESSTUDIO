@@ -669,6 +669,15 @@ option {
   width: 100%;
 }
 
+.project-name {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  bottom: 15%;
+  font-size: 25px;
+}
+
 .about_title h1 {
   font-size: 48px;
   font-weight: 400;
@@ -692,6 +701,13 @@ option {
   width: 8% !important;
 }
 
+.carousel-control-next {
+  right: -4px !important;
+}
+
+.carousel-control-prev {
+  left: -4px !important;
+}
 .carousel-item iframe {
   height: 100vh;
   width: 80%;
@@ -703,7 +719,7 @@ option {
   top: 50%;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
-  width: 80%;
+  width: 90%;
 }
 
 /* FOOTER SECTION START */
@@ -1072,6 +1088,31 @@ option {
 }
 .map_section iframe {
   filter: invert(1);
+}
+
+.cookie-consent {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #000;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+  z-index: 100;
+}
+
+.cookie-consent button {
+  /* margin-top: 10px; */
+  margin: 10px 5px;
+  padding: 10px 20px;
+  background: #5ab5b6;
+  border: none;
+  color: #000;
+  cursor: pointer;
+}
+
+.cookie-consent button:hover {
+  background: #5ab5b6;
 }
 
 /* ============MEDIA QUERY START=========== */

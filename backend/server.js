@@ -197,6 +197,13 @@ app.use((req, res, next) => {
   next();
 });
 
+app.post("/api/cookie-consent", (req, res) => {
+  const { consent } = req.body;
+  // You can log this consent information or perform other actions
+  console.log(`User consent: ${consent}`);
+  res.status(200).send("Consent logged");
+});
+
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, "../frontend/build")));
 
