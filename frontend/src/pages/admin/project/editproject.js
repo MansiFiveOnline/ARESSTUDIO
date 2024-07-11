@@ -43,8 +43,8 @@ const EditProject = () => {
           service_name: projectData.service_name,
           gallery_name: projectData.gallery_name,
           project_name: projectData.project_name,
-          subtitle: projectData.subtitle,
-          description: projectData.description,
+          subtitle: projectData.subtitle || "",
+          description: projectData.description || "",
           isPublic: projectData.isPublic,
           media: {
             file: null,
@@ -88,7 +88,7 @@ const EditProject = () => {
     } else {
       setFormData({
         ...formData,
-        [name]: value,
+        [name]: value.trim() === "" ? "" : value,
       });
     }
   };
@@ -133,24 +133,66 @@ const EditProject = () => {
     }));
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   try {
+  //     const formDataToSend = new FormData();
+
+  //     // Append all form data
+  //     formDataToSend.append("project_name", formData.project_name);
+  //     formDataToSend.append("subtitle", formData.subtitle);
+  //     formDataToSend.append("description", formData.description);
+  //     formDataToSend.append("service_name", selectedService);
+  //     formDataToSend.append("gallery_name", selectedGallery);
+  //     formDataToSend.append("isPublic", isPublic);
+
+  //     if (formData.media.file) {
+  //       formDataToSend.append("media", formData.media.file);
+  //     } else if (formData.media.iframe.trim()) {
+  //       formDataToSend.append("media", formData.media.iframe.trim());
+  //     }
+
+  //     const access_token = localStorage.getItem("access_token");
+  //     const apiUrl = process.env.REACT_APP_API_URL;
+
+  //     const response = await axios.patch(
+  //       `${apiUrl}/api/project/${id}`,
+  //       formDataToSend,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //           Authorization: `Bearer ${access_token}`,
+  //         },
+  //       }
+  //     );
+
+  //     console.log("Updated project", response.data.updatedProject);
+
+  //     navigate("/admin/project");
+  //   } catch (error) {
+  //     console.error("Error updating project:", error);
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const formDataToSend = new FormData();
-
-      // Append all form data
-      formDataToSend.append("project_name", formData.project_name);
-      formDataToSend.append("subtitle", formData.subtitle);
-      formDataToSend.append("description", formData.description);
-      formDataToSend.append("service_name", selectedService);
-      formDataToSend.append("gallery_name", selectedGallery);
-      formDataToSend.append("isPublic", isPublic);
+      const formDataToSend = {
+        project_name: formData.project_name,
+        subtitle: formData.subtitle.trim() === "" ? "" : formData.subtitle,
+        description:
+          formData.description.trim() === "" ? "" : formData.description,
+        service_name: selectedService,
+        gallery_name: selectedGallery,
+        isPublic: isPublic,
+      };
 
       if (formData.media.file) {
-        formDataToSend.append("media", formData.media.file);
+        formDataToSend.media = formData.media.file;
       } else if (formData.media.iframe.trim()) {
-        formDataToSend.append("media", formData.media.iframe.trim());
+        formDataToSend.media = formData.media.iframe.trim();
       }
 
       const access_token = localStorage.getItem("access_token");
@@ -161,7 +203,7 @@ const EditProject = () => {
         formDataToSend,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
             Authorization: `Bearer ${access_token}`,
           },
         }

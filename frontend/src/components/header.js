@@ -87,7 +87,7 @@ const SideNavigation = () => {
                       to="https://aresvfxstudio.artstation.com/"
                       target="_blank"
                     >
-                      Art Studio
+                      Art Station
                     </Link>
                   </li>
                 </ul>

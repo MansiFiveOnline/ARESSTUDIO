@@ -17,15 +17,11 @@ const AddService = () => {
     e.preventDefault();
 
     try {
-      if (!service_name || !title || !media) {
-        throw new Error("Name, title, and media are required fields.");
-      }
-
       const formData = new FormData();
       formData.append("service_name", service_name);
       formData.append("title", title);
-      formData.append("subtitle", subtitle);
-      formData.append("description", description);
+      formData.append("subtitle", subtitle || "");
+      formData.append("description", description || "");
       formData.append("metaTitle", metaTitle);
       formData.append("metaDescription", metaDescription);
 

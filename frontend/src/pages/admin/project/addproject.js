@@ -58,8 +58,8 @@ const AddProject = () => {
 
       const formData = new FormData();
       formData.append("project_name", project_name);
-      formData.append("subtitle", subtitle);
-      formData.append("description", description);
+      formData.append("subtitle", subtitle || "");
+      formData.append("description", description || "");
       // formData.append("metaTitle", metaTitle);
       // formData.append("metaDescription", metaDescription);
       formData.append("gallery_name", selectedGallery);
@@ -146,7 +146,6 @@ const AddProject = () => {
                 <input
                   type="text"
                   name="subtitle"
-                  required
                   value={subtitle}
                   onChange={(e) => setSubtitle(e.target.value)}
                 />
@@ -160,7 +159,6 @@ const AddProject = () => {
                 <textarea
                   type="text"
                   name="description"
-                  required
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={4}

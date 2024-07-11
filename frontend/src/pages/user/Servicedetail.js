@@ -196,8 +196,8 @@ const Servicedetail = () => {
             <div className="container">
               <div className="row justify-content-center">
                 <div className="col-lg-12 text-center">
-                  <h2 className="pb-5">{projectData.subtitle}</h2>
-                  <p>{projectData.description}</p>
+                  <h2 className="pb-5">{projectData.subtitle || ""}</h2>
+                  <p>{projectData.description || ""}</p>
                 </div>
               </div>
             </div>
