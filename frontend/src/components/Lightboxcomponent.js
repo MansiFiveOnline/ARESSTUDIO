@@ -109,6 +109,7 @@ const Lightboxcomponent = () => {
                         <iframe
                           src={item.iframe}
                           title={`Media ${index}`}
+                          allowFullScreen
                           className="img-fluid mh-100"
                         />
                       ) : (
