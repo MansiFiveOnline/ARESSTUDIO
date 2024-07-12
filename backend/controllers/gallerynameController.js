@@ -1,4 +1,5 @@
 const galleryNameModel = require("../models/gallerynameModel");
+const projectModel = require("../models/projectModel");
 
 const createGalleryName = async (req, res) => {
   try {
@@ -41,9 +42,17 @@ const updateGalleryName = async (req, res) => {
       { new: true }
     );
 
+    // Update project name in the Project Details model by project_id
+    const updatedProject = await projectModel.findOneAndUpdate(
+      { gallery_name_id: updatedGalleryName._id },
+      { $set: { gallery_name } },
+      { new: true }
+    );
+
     return res.status(200).json({
       message: "Gallery name content updated successfully.",
       updatedGalleryName,
+      updatedProject,
     });
   } catch (error) {
     return res.status(500).json({

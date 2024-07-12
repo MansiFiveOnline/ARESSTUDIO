@@ -81,12 +81,14 @@ const Project = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {projects &&
+                  {projects.length > 0 ? (
                     projects.map((project) => (
                       <tr key={project._id}>
                         <td>{project.project_name}</td>
                         <td className="text-center">{project.service_name}</td>
-                        <td className="text-center">{project.gallery_name}</td>
+                        <td className="text-center">
+                          {project.gallery_name_id?.gallery_name || "N/A"}
+                        </td>
                         <td className="text-center">
                           {project.isPublic === true ? (
                             <span>Public</span>
@@ -124,7 +126,14 @@ const Project = () => {
                           </button>
                         </td>
                       </tr>
-                    ))}
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="4" className="text-center">
+                        No project details available
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

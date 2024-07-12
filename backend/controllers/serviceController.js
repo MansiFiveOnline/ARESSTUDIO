@@ -194,114 +194,114 @@ const createService = async (req, res) => {
 //   }
 // };
 
-const updateService = async (req, res) => {
-  try {
-    const {
-      service_name,
-      title,
-      subtitle,
-      description,
-      metaTitle,
-      metaDescription,
-      media,
-    } = req.body;
+// const updateService = async (req, res) => {
+//   try {
+//     const {
+//       service_name,
+//       title,
+//       subtitle,
+//       description,
+//       metaTitle,
+//       metaDescription,
+//       media,
+//     } = req.body;
 
-    // Fetch the existing project to retain current media values if not updated
-    const existingService = await serviceModel.findById(req.params._id);
-    if (!existingService) {
-      return res.status(404).json({ message: "Service not found." });
-    }
+//     // Fetch the existing project to retain current media values if not updated
+//     const existingService = await serviceModel.findById(req.params._id);
+//     if (!existingService) {
+//       return res.status(404).json({ message: "Service not found." });
+//     }
 
-    let mediaData = {
-      filename: existingService.media.filename,
-      filepath: existingService.media.filepath,
-      iframe: existingService.media.iframe,
-    };
+//     let mediaData = {
+//       filename: existingService.media.filename,
+//       filepath: existingService.media.filepath,
+//       iframe: existingService.media.iframe,
+//     };
 
-    // Check if media file is provided
-    if (req.file) {
-      const isWebPImage = (file) => {
-        const extname = path.extname(file.originalname).toLowerCase();
-        return extname === ".webp";
-      };
+//     // Check if media file is provided
+//     if (req.file) {
+//       const isWebPImage = (file) => {
+//         const extname = path.extname(file.originalname).toLowerCase();
+//         return extname === ".webp";
+//       };
 
-      // Validate file type
-      if (!isWebPImage(req.file)) {
-        return res.status(400).json({
-          message: "Unsupported file type. Please upload a WebP image.",
-        });
-      }
+//       // Validate file type
+//       if (!isWebPImage(req.file)) {
+//         return res.status(400).json({
+//           message: "Unsupported file type. Please upload a WebP image.",
+//         });
+//       }
 
-      // Set media data for image
-      mediaData = {
-        filename: req.file.originalname,
-        filepath: req.file.path,
-        iframe: null,
-      };
-    } else if (media !== undefined && media !== null) {
-      const trimmedMedia = media.trim();
+//       // Set media data for image
+//       mediaData = {
+//         filename: req.file.originalname,
+//         filepath: req.file.path,
+//         iframe: null,
+//       };
+//     } else if (media !== undefined && media !== null) {
+//       const trimmedMedia = media.trim();
 
-      // Check if media is a URL
-      const isURL = (str) => {
-        try {
-          new URL(str);
-          return true;
-        } catch (error) {
-          return false;
-        }
-      };
+//       // Check if media is a URL
+//       const isURL = (str) => {
+//         try {
+//           new URL(str);
+//           return true;
+//         } catch (error) {
+//           return false;
+//         }
+//       };
 
-      if (trimmedMedia && !isURL(trimmedMedia)) {
-        return res.status(400).json({
-          message: "Invalid media URL.",
-        });
-      }
+//       if (trimmedMedia && !isURL(trimmedMedia)) {
+//         return res.status(400).json({
+//           message: "Invalid media URL.",
+//         });
+//       }
 
-      // Set media data for video
-      mediaData = {
-        filename: null,
-        filepath: null,
-        iframe: trimmedMedia,
-      };
-    }
+//       // Set media data for video
+//       mediaData = {
+//         filename: null,
+//         filepath: null,
+//         iframe: trimmedMedia,
+//       };
+//     }
 
-    // Create object with updated fields
-    const updatedFields = {
-      service_name,
-      title,
-      subtitle,
-      description,
-      metaTitle,
-      metaDescription,
-      media: mediaData,
-      type: mediaData.filename ? "image" : "video",
-    };
+//     // Create object with updated fields
+//     const updatedFields = {
+//       service_name,
+//       title,
+//       subtitle,
+//       description,
+//       metaTitle,
+//       metaDescription,
+//       media: mediaData,
+//       type: mediaData.filename ? "image" : "video",
+//     };
 
-    // Only include fields that are explicitly provided, even if they are empty strings
-    const nonNullUpdatedFields = {};
-    for (const key in updatedFields) {
-      if (updatedFields[key] !== undefined) {
-        nonNullUpdatedFields[key] = updatedFields[key];
-      }
-    }
+//     // Only include fields that are explicitly provided, even if they are empty strings
+//     const nonNullUpdatedFields = {};
+//     for (const key in updatedFields) {
+//       if (updatedFields[key] !== undefined) {
+//         nonNullUpdatedFields[key] = updatedFields[key];
+//       }
+//     }
 
-    // Update project in the database by ID
-    const updatedService = await serviceModel.findByIdAndUpdate(
-      req.params._id,
-      { $set: nonNullUpdatedFields },
-      { new: true }
-    );
+//     // Update project in the database by ID
+//     const updatedService = await serviceModel.findByIdAndUpdate(
+//       req.params._id,
+//       { $set: nonNullUpdatedFields },
+//       { new: true }
+//     );
 
-    return res.status(200).json({
-      message: "Service content updated successfully.",
-      updatedService,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      message: `Error in updating service due to ${error.message}`,
-    });
-  }
-};
+//     return res.status(200).json({
+//       message: "Service content updated successfully.",
+//       updatedService,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: `Error in updating service due to ${error.message}`,
+//     });
+//   }
+// };
 
 // const updateService = async (req, res) => {
 //   try {
@@ -416,6 +416,115 @@ const updateService = async (req, res) => {
 //     });
 //   }
 // };
+
+const updateService = async (req, res) => {
+  try {
+    const {
+      service_name,
+      title,
+      subtitle,
+      description,
+      metaTitle,
+      metaDescription,
+      media,
+    } = req.body;
+
+    // Fetch the existing service to retain current media values if not updated
+    const existingService = await serviceModel.findById(req.params._id);
+    if (!existingService) {
+      return res.status(404).json({ message: "Service not found." });
+    }
+
+    let mediaData = {
+      filename: existingService.media.filename,
+      filepath: existingService.media.filepath,
+      iframe: existingService.media.iframe,
+    };
+
+    // Check if media file is provided
+    if (req.file) {
+      const isWebPImage = (file) => {
+        const extname = path.extname(file.originalname).toLowerCase();
+        return extname === ".webp";
+      };
+
+      // Validate file type
+      if (!isWebPImage(req.file)) {
+        return res.status(400).json({
+          message: "Unsupported file type. Please upload a WebP image.",
+        });
+      }
+
+      // Set media data for image
+      mediaData = {
+        filename: req.file.originalname,
+        filepath: req.file.path,
+        iframe: null,
+      };
+    } else if (media !== undefined && media !== null) {
+      const trimmedMedia = media.trim();
+
+      // Check if media is a URL
+      const isURL = (str) => {
+        try {
+          new URL(str);
+          return true;
+        } catch (error) {
+          return false;
+        }
+      };
+
+      if (trimmedMedia && !isURL(trimmedMedia)) {
+        return res.status(400).json({
+          message: "Invalid media URL.",
+        });
+      }
+
+      // Set media data for video
+      mediaData = {
+        filename: null,
+        filepath: null,
+        iframe: trimmedMedia,
+      };
+    }
+
+    // Create object with updated fields
+    const updatedFields = {
+      service_name,
+      title,
+      subtitle,
+      description,
+      metaTitle,
+      metaDescription,
+      media: mediaData,
+      type: mediaData.filename ? "image" : "video",
+    };
+
+    // Only include fields that are explicitly provided, even if they are empty strings
+    const nonNullUpdatedFields = {};
+    for (const key in updatedFields) {
+      if (updatedFields[key] !== undefined) {
+        nonNullUpdatedFields[key] = updatedFields[key];
+      }
+    }
+
+    // Update service in the database by ID
+    const updatedService = await serviceModel.findByIdAndUpdate(
+      req.params._id,
+      { $set: nonNullUpdatedFields },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      message: "Service content updated successfully.",
+      updatedService,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: `Error in updating service due to ${error.message}`,
+    });
+  }
+};
 
 const getByServiceName = async (req, res) => {
   const { service_name } = req.query;

@@ -9,6 +9,8 @@ const AdminHome = () => {
   const [usersCount, setUsersCount] = useState("0");
   const [serviceCount, setServiceCount] = useState("0");
   const [projectCount, setProjectCount] = useState("0");
+  const [projectDetailCount, setProjectDetailCount] = useState("0");
+  const [passwordCount, setPasswordCount] = useState("0");
   const [opportunityCount, setOpportunityCount] = useState("0");
   const [applicationCount, setApplicationCount] = useState("0");
   const [galleryCount, setGalleryCount] = useState("0");
@@ -45,6 +47,24 @@ const AdminHome = () => {
         const count = response.data.count;
         console.log(response.data.count);
         setProjectCount(count); // Update serviceCount state with count
+      })
+      .catch((error) => console.error("Error fetching service count:", error));
+
+    axios
+      .get(`${apiUrl}/api/project_detail`)
+      .then((response) => {
+        const count = response.data.count;
+        console.log(response.data.count);
+        setProjectDetailCount(count); // Update serviceCount state with count
+      })
+      .catch((error) => console.error("Error fetching service count:", error));
+
+    axios
+      .get(`${apiUrl}/api/email`)
+      .then((response) => {
+        const count = response.data.count;
+        console.log(response.data.count);
+        setPasswordCount(count); // Update serviceCount state with count
       })
       .catch((error) => console.error("Error fetching service count:", error));
 
@@ -108,42 +128,15 @@ const AdminHome = () => {
       <div className="container">
         <div className="row">
           <div className="col-md-3">
-            <NavLink to="/admin/team" title="View Team Members">
+            <NavLink to="/admin/services" title="View Services">
               <div className="dashboardcard">
                 <h2>
-                  {usersCount}
+                  {serviceCount}
                   <span>
                     <i className="fa fa-eye" aria-hidden="true"></i>
                   </span>
                 </h2>
-                <h6>Total Team Members</h6>
-              </div>
-            </NavLink>
-          </div>
-
-          <div className="col-md-3">
-            <NavLink to="/admin/applications" title="View Appllications">
-              <div className="dashboardcard">
-                <h2>
-                  {applicationCount}
-                  <span>
-                    <i className="fa fa-eye" aria-hidden="true"></i>
-                  </span>
-                </h2>
-                <h6>Total Applications</h6>
-              </div>
-            </NavLink>
-          </div>
-          <div className="col-md-3">
-            <NavLink to="/admin/contact" title="View Contacts">
-              <div className="dashboardcard">
-                <h2>
-                  {contactCount}
-                  <span>
-                    <i className="fa fa-eye" aria-hidden="true"></i>
-                  </span>
-                </h2>
-                <h6>Total Contacts</h6>
+                <h6>Total Services</h6>
               </div>
             </NavLink>
           </div>
@@ -180,6 +173,62 @@ const AdminHome = () => {
           </div>
 
           <div className="col-md-3">
+            <NavLink to="/admin/project" title="View Projects">
+              <div className="dashboardcard">
+                <h2>
+                  {projectCount}
+                  <span>
+                    <i className="fa fa-eye" aria-hidden="true"></i>
+                  </span>
+                </h2>
+                <h6>Total Projects</h6>
+              </div>
+            </NavLink>
+          </div>
+
+          <div className="col-md-3">
+            <NavLink to="/admin/project_detail" title="View Projects">
+              <div className="dashboardcard">
+                <h2>
+                  {projectDetailCount}
+                  <span>
+                    <i className="fa fa-eye" aria-hidden="true"></i>
+                  </span>
+                </h2>
+                <h6>Total Projects Details</h6>
+              </div>
+            </NavLink>
+          </div>
+
+          <div className="col-md-3">
+            <NavLink to="/admin/team" title="View Team Members">
+              <div className="dashboardcard">
+                <h2>
+                  {passwordCount}
+                  <span>
+                    <i className="fa fa-eye" aria-hidden="true"></i>
+                  </span>
+                </h2>
+                <h6>Total Passwords</h6>
+              </div>
+            </NavLink>
+          </div>
+
+          <div className="col-md-3">
+            <NavLink to="/admin/team" title="View Team Members">
+              <div className="dashboardcard">
+                <h2>
+                  {usersCount}
+                  <span>
+                    <i className="fa fa-eye" aria-hidden="true"></i>
+                  </span>
+                </h2>
+                <h6>Total Team Members</h6>
+              </div>
+            </NavLink>
+          </div>
+
+          <div className="col-md-3">
             <NavLink to="/admin/opportunities" title="View Opportunities">
               <div className="dashboardcard">
                 <h2>
@@ -189,6 +238,34 @@ const AdminHome = () => {
                   </span>
                 </h2>
                 <h6>Total Opportunities</h6>
+              </div>
+            </NavLink>
+          </div>
+
+          <div className="col-md-3">
+            <NavLink to="/admin/applications" title="View Appllications">
+              <div className="dashboardcard">
+                <h2>
+                  {applicationCount}
+                  <span>
+                    <i className="fa fa-eye" aria-hidden="true"></i>
+                  </span>
+                </h2>
+                <h6>Total Applications</h6>
+              </div>
+            </NavLink>
+          </div>
+
+          <div className="col-md-3">
+            <NavLink to="/admin/contact" title="View Contacts">
+              <div className="dashboardcard">
+                <h2>
+                  {contactCount}
+                  <span>
+                    <i className="fa fa-eye" aria-hidden="true"></i>
+                  </span>
+                </h2>
+                <h6>Total Contacts</h6>
               </div>
             </NavLink>
           </div>
@@ -206,34 +283,6 @@ const AdminHome = () => {
               </div>
             </NavLink>
           </div> */}
-
-          <div className="col-md-3">
-            <NavLink to="/admin/services" title="View Services">
-              <div className="dashboardcard">
-                <h2>
-                  {serviceCount}
-                  <span>
-                    <i className="fa fa-eye" aria-hidden="true"></i>
-                  </span>
-                </h2>
-                <h6>Total Services</h6>
-              </div>
-            </NavLink>
-          </div>
-
-          <div className="col-md-3">
-            <NavLink to="/admin/project" title="View Projects">
-              <div className="dashboardcard">
-                <h2>
-                  {projectCount}
-                  <span>
-                    <i className="fa fa-eye" aria-hidden="true"></i>
-                  </span>
-                </h2>
-                <h6>Total Projects</h6>
-              </div>
-            </NavLink>
-          </div>
         </div>
       </div>
       {/* </div> */}

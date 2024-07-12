@@ -89,7 +89,7 @@ const GalleryName = () => {
                 <tbody>
                   {galleryNames &&
                     galleryNames.map((galleryname) => (
-                      <tr key={galleryname._id}>
+                      <tr key={galleryname.service_name_id}>
                         <td>{galleryname.service_name}</td>
                         <td className="text-center">
                           {galleryname.gallery_name}

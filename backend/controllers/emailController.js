@@ -38,7 +38,7 @@ const getEmail = async (req, res) => {
 const getEmails = async (req, res) => {
   try {
     const emails = await emailModel.find();
-    res.status(200).json({ emails });
+    res.status(200).json({ emails, count: emails.length });
   } catch (error) {
     return res.status(500).json({
       message: `Error in fetching emails: ${error.message}`,

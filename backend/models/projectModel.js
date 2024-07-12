@@ -21,6 +21,11 @@ const projectSchema = new mongoose.Schema({
     trim: true,
     required: true,
   },
+  gallery_name_id: {
+    type: mongoose.Types.ObjectId,
+    ref: "Gallery Names",
+    required: true,
+  },
   type: {
     type: String,
     enum: ["", "image", "video"],

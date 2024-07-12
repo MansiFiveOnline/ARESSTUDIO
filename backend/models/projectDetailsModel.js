@@ -17,6 +17,11 @@ const projectDetailsSchema = new mongoose.Schema({
       return this.type === "image" || this.type === "video";
     },
   },
+  project_id: {
+    type: mongoose.Types.ObjectId,
+    ref: "Projects",
+    required: true,
+  },
 });
 
 const projectDetailsModel = mongoose.model(

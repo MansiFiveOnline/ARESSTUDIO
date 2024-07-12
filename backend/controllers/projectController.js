@@ -1,6 +1,97 @@
 const projectModel = require("../models/projectModel");
 const path = require("path");
 const url = require("url");
+const galleryNameModel = require("../models/gallerynameModel");
+const projectDetailsModel = require("../models/projectDetailsModel");
+// const createProject = async (req, res) => {
+//   try {
+//     const {
+//       project_name,
+//       subtitle,
+//       description,
+//       service_name,
+//       gallery_name,
+//       metaTitle,
+//       metaDescription,
+//       isPublic = true,
+//     } = req.body;
+//     let mediaData = {};
+
+//     const file = req.file;
+//     const media = req.body.media;
+
+//     let fileType = "";
+//     // Function to check if the input is a URL
+//     const isURL = (str) => {
+//       try {
+//         new URL(str);
+//         return true;
+//       } catch (error) {
+//         return false;
+//       }
+//     };
+
+//     // Check if media is a URL (iframe)
+//     if (isURL(media)) {
+//       fileType = "video"; // Set fileType to "video" for iframe URLs
+//       mediaData = {
+//         filename: null,
+//         filepath: null,
+//         iframe: media.trim(),
+//       };
+//     } else if (file) {
+//       // A file is provided
+//       // Check if the file is a WebP image
+//       const isWebPImage = (file) => {
+//         const extname = path.extname(file.originalname).toLowerCase();
+//         return extname === ".webp";
+//       };
+
+//       if (!isWebPImage(file)) {
+//         return res.status(400).json({
+//           message: "Unsupported file type. Please upload a WebP image.",
+//         });
+//       }
+
+//       fileType = "image";
+//       mediaData = {
+//         filename: req.file.originalname,
+//         filepath: req.file.path,
+//         iframe: null,
+//       };
+//       // } else {
+//       //   // Neither iframe nor file is provided
+//       //   return res.status(400).json({
+//       //     message:
+//       //       "Either an iFrame URL or an image file is required for the media field.",
+//       //   });
+//     }
+
+//     const newProject = new projectModel({
+//       project_name,
+//       subtitle,
+//       description,
+//       service_name,
+//       gallery_name,
+//       type: fileType,
+//       media: mediaData,
+//       metaTitle,
+//       metaDescription,
+//       isPublic,
+//     });
+
+//     await newProject.save();
+
+//     return res.status(200).json({
+//       message: "Added Project content successfully.",
+//       newProject,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: `Error in adding project due to ${error.message}`,
+//     });
+//   }
+// };
 
 const createProject = async (req, res) => {
   try {
@@ -66,6 +157,14 @@ const createProject = async (req, res) => {
       //   });
     }
 
+    // Find the project_id based on project_name
+    const galleryName = await galleryNameModel.findOne({ gallery_name });
+    if (!galleryName) {
+      return res.status(404).json({
+        message: `Gallery name with name '${gallery_name}' not found.`,
+      });
+    }
+
     const newProject = new projectModel({
       project_name,
       subtitle,
@@ -77,6 +176,7 @@ const createProject = async (req, res) => {
       metaTitle,
       metaDescription,
       isPublic,
+      gallery_name_id: galleryName._id,
     });
 
     await newProject.save();
@@ -295,6 +395,130 @@ const createProject = async (req, res) => {
 //   }
 // };
 
+// const updateProject = async (req, res) => {
+//   try {
+//     const {
+//       project_name,
+//       subtitle,
+//       description,
+//       service_name,
+//       gallery_name,
+//       isPublic,
+//       media,
+//     } = req.body;
+
+//     // Fetch the existing project to retain current media values if not updated
+//     const existingProject = await projectModel.findById(req.params._id);
+//     if (!existingProject) {
+//       return res.status(404).json({ message: "Project not found." });
+//     }
+
+//     const galleryName = await galleryNameModel.findOne({ gallery_name });
+
+//     if (!galleryName) {
+//       return res.status(404).json({ message: "Gallery Name not found." });
+//     }
+
+//     let mediaData = {
+//       filename: existingProject.media.filename,
+//       filepath: existingProject.media.filepath,
+//       iframe: existingProject.media.iframe,
+//     };
+
+//     // Check if media file is provided
+//     if (req.file) {
+//       const isWebPImage = (file) => {
+//         const extname = path.extname(file.originalname).toLowerCase();
+//         return extname === ".webp";
+//       };
+
+//       // Validate file type
+//       if (!isWebPImage(req.file)) {
+//         return res.status(400).json({
+//           message: "Unsupported file type. Please upload a WebP image.",
+//         });
+//       }
+
+//       // Set media data for image
+//       mediaData = {
+//         filename: req.file.originalname,
+//         filepath: req.file.path,
+//         iframe: null,
+//       };
+//     } else if (media !== undefined && media !== null) {
+//       const trimmedMedia = media.trim();
+
+//       // Check if media is a URL
+//       const isURL = (str) => {
+//         try {
+//           new URL(str);
+//           return true;
+//         } catch (error) {
+//           return false;
+//         }
+//       };
+
+//       if (trimmedMedia && !isURL(trimmedMedia)) {
+//         return res.status(400).json({
+//           message: "Invalid media URL.",
+//         });
+//       }
+
+//       // Set media data for video
+//       mediaData = {
+//         filename: null,
+//         filepath: null,
+//         iframe: trimmedMedia,
+//       };
+//     }
+
+//     // Create object with updated fields
+//     const updatedFields = {
+//       project_name,
+//       subtitle,
+//       description,
+//       service_name,
+//       gallery_name,
+//       isPublic,
+//       media: mediaData,
+//       gallery_name_id: galleryName._id,
+//       type: mediaData.filename ? "image" : "video",
+//     };
+
+//     // Only include fields that are explicitly provided, even if they are empty strings
+//     const nonNullUpdatedFields = {};
+//     for (const key in updatedFields) {
+//       if (updatedFields[key] !== undefined) {
+//         nonNullUpdatedFields[key] = updatedFields[key];
+//       }
+//     }
+
+//     // Update project in the database by ID
+//     const updatedProject = await projectModel.findByIdAndUpdate(
+//       req.params._id,
+//       { $set: nonNullUpdatedFields },
+//       { new: true }
+//     );
+
+//     // Update project name in the Project Details model by project_id
+//     const updatedProjectDetails = await projectDetailsModel.findOneAndUpdate(
+//       { project_id: updatedProject._id },
+//       { $set: { project_name } },
+//       { new: true }
+//     );
+
+//     return res.status(200).json({
+//       message: "Project content updated successfully.",
+//       updatedProject,
+//       updatedProjectDetails,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: `Error in updating project due to ${error.message}`,
+//     });
+//   }
+// };
+
 const updateProject = async (req, res) => {
   try {
     const {
@@ -304,13 +528,17 @@ const updateProject = async (req, res) => {
       service_name,
       gallery_name,
       isPublic,
-      media,
     } = req.body;
 
     // Fetch the existing project to retain current media values if not updated
     const existingProject = await projectModel.findById(req.params._id);
     if (!existingProject) {
       return res.status(404).json({ message: "Project not found." });
+    }
+
+    const galleryName = await galleryNameModel.findOne({ gallery_name });
+    if (!galleryName) {
+      return res.status(404).json({ message: "Gallery Name not found." });
     }
 
     let mediaData = {
@@ -339,8 +567,8 @@ const updateProject = async (req, res) => {
         filepath: req.file.path,
         iframe: null,
       };
-    } else if (media !== undefined && media !== null) {
-      const trimmedMedia = media.trim();
+    } else if (req.body.media) {
+      const trimmedMedia = req.body.media.trim();
 
       // Check if media is a URL
       const isURL = (str) => {
@@ -375,6 +603,7 @@ const updateProject = async (req, res) => {
       gallery_name,
       isPublic,
       media: mediaData,
+      gallery_name_id: galleryName._id,
       type: mediaData.filename ? "image" : "video",
     };
 
@@ -393,9 +622,17 @@ const updateProject = async (req, res) => {
       { new: true }
     );
 
+    // Update project name in the Project Details model by project_id
+    const updatedProjectDetails = await projectDetailsModel.findOneAndUpdate(
+      { project_id: updatedProject._id },
+      { $set: { project_name } },
+      { new: true }
+    );
+
     return res.status(200).json({
       message: "Project content updated successfully.",
       updatedProject,
+      updatedProjectDetails,
     });
   } catch (error) {
     return res.status(500).json({
@@ -524,8 +761,11 @@ const getByProjectName = async (req, res) => {
 
 const getProjects = async (req, res) => {
   try {
-    const projects = await projectModel.find();
+    const projects = await projectModel
+      .find()
+      .populate("gallery_name_id", "gallery_name");
 
+    console.log(projects);
     if (projects.length === 0) {
       return res.status(400).json({
         message: "No projects are created. Kindly create one.",

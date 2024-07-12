@@ -1,5 +1,6 @@
 const path = require("path");
 const projectDetailsModel = require("../models/projectDetailsModel");
+const projectModel = require("../models/projectModel");
 
 const createProjectDetail = async (req, res) => {
   try {
@@ -53,10 +54,19 @@ const createProjectDetail = async (req, res) => {
       });
     }
 
+    // Find the project_id based on project_name
+    const project = await projectModel.findOne({ project_name });
+    if (!project) {
+      return res.status(404).json({
+        message: `Project with name '${project_name}' not found.`,
+      });
+    }
+
     const newProjectDetail = new projectDetailsModel({
       project_name,
       media: mediaData,
       type: fileType, // Add the type property here
+      project_id: project._id,
     });
 
     await newProjectDetail.save();
@@ -72,9 +82,73 @@ const createProjectDetail = async (req, res) => {
   }
 };
 
+// const updateProjectDetail = async (req, res) => {
+//   try {
+//     const { project_name, media } = req.body;
+
+//     // Step 1: Find the _id of the project_name from the project model
+//     const project = await projectModel.findOne({ project_name });
+
+//     if (!project) {
+//       return res.status(404).json({ message: "Project not found." });
+//     }
+
+//     const existingProjectDetail = await projectDetailsModel.findById(
+//       req.params._id
+//     );
+
+//     if (!existingProjectDetail) {
+//       return res.status(404).json({ message: "Project Detail not found." });
+//     }
+
+//     let mediaData = {
+//       filename: existingProjectDetail.media.filename,
+//       filepath: existingProjectDetail.media.filepath,
+//       iframe: existingProjectDetail.media.iframe,
+//     };
+
+//     // Check if media file is provided
+//     if (req.file) {
+//       // ... (existing code for handling file upload)
+//     } else if (media !== undefined && media !== null) {
+//       // ... (existing code for handling media URL)
+//     }
+
+//     // Step 2: Update project_id in updatedFields
+//     const updatedFields = {
+//       ...(project_name && { project_name }),
+//       project_id: project._id, // Update project_id with the fetched _id
+//       media: mediaData,
+//       type: mediaData.filename ? "image" : "video",
+//     };
+
+//     const updatedProjectDetail = await projectDetailsModel.findByIdAndUpdate(
+//       req.params._id,
+//       updatedFields,
+//       { new: true }
+//     );
+
+//     return res.status(200).json({
+//       message: "Project details updated successfully.",
+//       updatedProjectDetail,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: `Error in updating project details: ${error.message}`,
+//     });
+//   }
+// };
+
 const updateProjectDetail = async (req, res) => {
   try {
     const { project_name, media } = req.body;
+
+    // Step 1: Find the _id of the project_name from the project model
+    const project = await projectModel.findOne({ project_name });
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found." });
+    }
 
     const existingProjectDetail = await projectDetailsModel.findById(
       req.params._id
@@ -83,6 +157,7 @@ const updateProjectDetail = async (req, res) => {
     if (!existingProjectDetail) {
       return res.status(404).json({ message: "Project Detail not found." });
     }
+
     let mediaData = {
       filename: existingProjectDetail.media.filename,
       filepath: existingProjectDetail.media.filepath,
@@ -110,7 +185,7 @@ const updateProjectDetail = async (req, res) => {
         iframe: null,
       };
     } else if (media !== undefined && media !== null) {
-      const trimmedMedia = media.trim();
+      const trimmedMedia = typeof media === "string" ? media.trim() : media;
 
       // Check if media is a URL
       const isURL = (str) => {
@@ -135,16 +210,14 @@ const updateProjectDetail = async (req, res) => {
         iframe: trimmedMedia,
       };
     }
+
+    // Step 2: Update project_id in updatedFields
     const updatedFields = {
       ...(project_name && { project_name }),
+      project_id: project._id, // Update project_id with the fetched _id
       media: mediaData,
       type: mediaData.filename ? "image" : "video",
     };
-
-    if (mediaData) {
-      updatedFields.media = mediaData;
-      updatedFields.type = mediaData.filename ? "image" : "video";
-    }
 
     const updatedProjectDetail = await projectDetailsModel.findByIdAndUpdate(
       req.params._id,
@@ -208,9 +281,34 @@ const getProjectMediaByName = async (req, res) => {
   }
 };
 
+// const getProjectDetails = async (req, res) => {
+//   try {
+//     const projectDetails = await projectDetailsModel.find();
+
+//     if (projectDetails.length === 0) {
+//       return res.status(400).json({
+//         message: "No project details are created. Kindly create one.",
+//       });
+//     }
+//     return res.status(200).json({
+//       message: "All project details fetched successfully.",
+//       count: projectDetails.length,
+//       projectDetails,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: `Error in fetching project details due to ${error.message}`,
+//     });
+//   }
+// };
+
 const getProjectDetails = async (req, res) => {
   try {
-    const projectDetails = await projectDetailsModel.find();
+    const projectDetails = await projectDetailsModel
+      .find()
+      .populate("project_id", "project_name");
+
+    console.log(projectDetails); // Log the populated project details
 
     if (projectDetails.length === 0) {
       return res.status(400).json({
