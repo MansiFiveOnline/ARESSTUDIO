@@ -512,8 +512,7 @@ const Gallery = ({ service_name }) => {
                     )}
 
                     <div className="project-name">
-                      {item.project_Name || item.projectName}{" "}
-                      {/* Display project name */}
+                      <h3>{item.project_Name || item.projectName} </h3>
                     </div>
                   </div>
                 </div>
