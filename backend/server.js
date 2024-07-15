@@ -164,6 +164,8 @@ const Route = require("./routes/index");
 const connectDb = require("./config/database");
 const cors = require("cors");
 const path = require("path");
+const axios = require("axios");
+const cron = require("node-cron");
 
 dotenv.config();
 
@@ -236,6 +238,19 @@ connectDb();
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
+});
+
+// Replace with your server URL
+const serverUrl = "https://ares-studio-calb.onrender.com";
+
+// Schedule the keep-alive ping every 5 minutes
+cron.schedule("*/5 * * * *", async () => {
+  try {
+    await axios.get(serverUrl);
+    console.log("Ping sent to keep server alive.");
+  } catch (error) {
+    console.error("Error pinging server:", error.message);
+  }
 });
 
 app.listen(PORT, "0.0.0.0", (error) => {
