@@ -130,7 +130,7 @@ const Project = () => {
                   ) : (
                     <tr>
                       <td colSpan="4" className="text-center">
-                        No project details available
+                        Loading...
                       </td>
                     </tr>
                   )}

@@ -201,7 +201,7 @@ const AdminHome = () => {
           </div>
 
           <div className="col-md-3">
-            <NavLink to="/admin/team" title="View Team Members">
+            <NavLink to="/admin/password" title="View Passwords">
               <div className="dashboardcard">
                 <h2>
                   {passwordCount}
