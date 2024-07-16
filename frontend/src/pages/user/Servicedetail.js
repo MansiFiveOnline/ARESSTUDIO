@@ -180,11 +180,12 @@ const Servicedetail = () => {
 
   return (
     <Layout style={styles.headerSection}>
-      <Helmet>
-        <title>Project | ARES STUDIO</title>
-      </Helmet>
       {projectData ? (
         <>
+          <Helmet>
+            <title>{projectData.project_name} | ARES STUDIO</title>
+          </Helmet>
+
           <div className="project_section position-relative">
             <div className="app">
               <div className="video-list">
