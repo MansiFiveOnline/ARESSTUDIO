@@ -241,7 +241,7 @@ app.get("*", (req, res) => {
 });
 
 // Replace with your server URL
-const serverUrl = "https://ares-studio-calb.onrender.com";
+const serverUrl = "https://ares-studio-calb.onrender.com/ping";
 
 // Schedule the keep-alive ping every 5 minutes
 cron.schedule("*/5 * * * *", async () => {
