@@ -355,8 +355,8 @@ function App() {
       currentPath === "/" ||
       currentPath === "/about" ||
       currentPath.startsWith("/service-detail/") ||
-      currentPath === "/contact" ||
-      currentPath === "/career";
+      currentPath === "/career" ||
+      currentPath === "/contact";
 
     const cookieConsent = localStorage.getItem("cookieConsent");
     setShowCookiePopup(isUserFacingRoute && !cookieConsent);
