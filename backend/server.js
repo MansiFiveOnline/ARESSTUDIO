@@ -236,6 +236,11 @@ app.get("/api/test-cors", (req, res) => {
 
 connectDb();
 
+// Define ping route
+app.get("/ping", (req, res) => {
+  res.send("Server is alive");
+});
+
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
 });
