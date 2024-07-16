@@ -3,10 +3,10 @@ import SideNavigation from "./header.js";
 import Footer from "./Footer";
 import "../style/user.css";
 
-const Layout = ({ children }) => {
+const Layout = ({ children, style }) => {
   return (
     <>
-      <SideNavigation />
+      <SideNavigation style={style} />
       {children}
       <Footer />
     </>

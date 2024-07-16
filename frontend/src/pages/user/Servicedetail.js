@@ -137,6 +137,9 @@ const Servicedetail = () => {
   const { project_name } = useParams();
   const [projectData, setProjectData] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isSmallScreen, setIsSmallScreen] = useState(
+    window.matchMedia("(max-width: 600px)").matches
+  );
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -156,12 +159,27 @@ const Servicedetail = () => {
         );
       }
     };
-
     fetchProject();
+
+    const handleResize = () => {
+      setIsSmallScreen(window.matchMedia("(max-width: 600px)").matches);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [project_name]);
 
+  const styles = {
+    headerSection: {
+      position: isSmallScreen ? "static" : "absolute",
+    },
+    imgSection: {
+      height: isSmallScreen ? "70vh" : "100vh",
+      objectFit: "cover",
+    },
+  };
+
   return (
-    <Layout>
+    <Layout style={styles.headerSection}>
       <Helmet>
         <title>Project | ARES STUDIO</title>
       </Helmet>
@@ -177,6 +195,7 @@ const Servicedetail = () => {
                     src={`${process.env.REACT_APP_API_URL}/${projectData.media.filepath}`}
                     alt="Media"
                     loading="lazy"
+                    style={styles.imgSection}
                   />
                 )}
               </div>

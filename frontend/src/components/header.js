@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import "../style/user.css";
 
-const SideNavigation = () => {
+const SideNavigation = ({ style }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const openNav = () => {
@@ -14,7 +14,7 @@ const SideNavigation = () => {
   };
 
   return (
-    <div className="header_section">
+    <div className="header_section" style={style}>
       {/* Side navigation */}
       <div id="mySidenav" className={`sidenav ${isOpen ? "open" : ""}`}>
         <div className="container">
