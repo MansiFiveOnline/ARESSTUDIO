@@ -175,6 +175,10 @@ const Servicedetail = () => {
     imgSection: {
       height: isSmallScreen ? "70vh" : "100vh",
       objectFit: "cover",
+      filter: "brightness(0.5)",
+    },
+    titleSection: {
+      fontWeight: "bold",
     },
   };
 
@@ -190,7 +194,10 @@ const Servicedetail = () => {
             <div className="app">
               <div className="video-list">
                 {projectData.media && projectData.media.iframe ? (
-                  <VideoPlayer src={projectData.media.iframe} />
+                  <VideoPlayer
+                    src={projectData.media.iframe}
+                    style={styles.imgSection}
+                  />
                 ) : (
                   <img
                     src={`${process.env.REACT_APP_API_URL}/${projectData.media.filepath}`}
@@ -202,7 +209,7 @@ const Servicedetail = () => {
               </div>
             </div>
             <div className="about_title">
-              <h1>{projectData.project_name}</h1>
+              <h1 style={styles.titleSection}>{projectData.project_name}</h1>
             </div>
             <div className="arrow_down">
               <a href="#gaming_sec">

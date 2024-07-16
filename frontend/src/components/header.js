@@ -31,7 +31,7 @@ const SideNavigation = ({ style }) => {
               <div className="main_nav">
                 <NavLink to="/">Home</NavLink>
                 <NavLink to="/about">About</NavLink>
-                <NavLink to="/service/games">Service</NavLink>
+                <NavLink to="/service">Service</NavLink>
                 <NavLink to="/career">Career</NavLink>
                 <NavLink to="/contact">Contact</NavLink>
               </div>

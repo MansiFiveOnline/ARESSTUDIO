@@ -356,6 +356,7 @@ function App() {
       currentPath === "/about" ||
       currentPath.startsWith("/service-detail/") ||
       currentPath === "/career" ||
+      currentPath === "/service" ||
       currentPath === "/contact";
 
     const cookieConsent = localStorage.getItem("cookieConsent");
@@ -378,6 +379,7 @@ function App() {
           <Route path="/service/:service_name" element={<Service />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/career" element={<Career />} />
+          <Route path="/service" element={<Home />} />
           <Route
             path="/service-detail/:project_name"
             element={<Servicedetail />}
