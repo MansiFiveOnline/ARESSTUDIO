@@ -7,6 +7,7 @@ const AddProjectDetail = () => {
   const [projectNames, setProjectNames] = useState([]);
   const [selectedProjectName, setSelectedProjectName] = useState("");
   const [media, setMedia] = useState({ iframe: "", file: null });
+  const [validationError, setValidationError] = useState(""); // State for validation error message
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,6 +27,12 @@ const AddProjectDetail = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Custom validation
+    if (!media.iframe && !media.file) {
+      setValidationError("Please provide either an iFrame URL or an image.");
+      return;
+    }
 
     try {
       const formData = new FormData();
@@ -128,6 +135,13 @@ const AddProjectDetail = () => {
                   }
                 />
               </div>
+              {validationError && (
+                <div className="col-12">
+                  <div className="theme-form">
+                    <span className="text-danger">{validationError}</span>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="col-12">

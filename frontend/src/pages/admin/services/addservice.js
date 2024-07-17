@@ -12,9 +12,16 @@ const AddService = () => {
   const navigate = useNavigate();
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
+  const [validationError, setValidationError] = useState(""); // State for validation error message
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Custom validation
+    if (!media.iframe && !media.file) {
+      setValidationError("Please provide either an iFrame URL or an image.");
+      return;
+    }
 
     try {
       const formData = new FormData();
@@ -166,6 +173,13 @@ const AddService = () => {
                   }
                 />
               </div>
+              {validationError && (
+                <div className="col-12">
+                  <div className="theme-form">
+                    <span className="text-danger">{validationError}</span>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="col-lg-6 col-md-6 col-sm-12 col-12">

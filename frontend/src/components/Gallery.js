@@ -621,7 +621,10 @@ const Gallery = ({ service_name }) => {
         const response = await axios.get(
           `${apiUrl}/api/gallery_name/gallerynames?service_name=${service_name}`
         );
-        setGalleryNames(response.data.galleryNames);
+        const sortedGalleryNames = response.data.galleryNames.sort((a, b) =>
+          a.localeCompare(b)
+        );
+        setGalleryNames(sortedGalleryNames);
       } catch (error) {
         console.error("Error fetching gallery names:", error);
       }
@@ -651,6 +654,14 @@ const Gallery = ({ service_name }) => {
           const mediaArray = Array.isArray(response.data.media)
             ? response.data.media
             : [response.data.media];
+
+          // Sort media array based on project name
+          mediaArray.sort((a, b) => {
+            const nameA = (a.project_Name || a.projectName).toLowerCase();
+            const nameB = (b.project_Name || b.projectName).toLowerCase();
+            return nameA.localeCompare(nameB);
+          });
+
           setMedia(mediaArray);
           console.log(mediaArray);
         } else if (response.data.media.length === 0) {
