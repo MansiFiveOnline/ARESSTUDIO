@@ -22,6 +22,9 @@ const projectDetailsSchema = new mongoose.Schema({
     ref: "Projects",
     required: true,
   },
+  sequence: {
+    type: Number,
+  },
 });
 
 const projectDetailsModel = mongoose.model(

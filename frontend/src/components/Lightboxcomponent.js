@@ -358,7 +358,13 @@ const Lightboxcomponent = () => {
         const response = await axios.get(
           `${apiUrl}/api/project_detail/project_media/?project_name=${encodedProjectName}`
         );
-        setMedia(response.data.media);
+        // setMedia(response.data.media);
+        // Sort the media based on the sequence
+        const sortedMedia = response.data.media.sort(
+          (a, b) => a.sequence - b.sequence
+        );
+        console.log(sortedMedia);
+        setMedia(sortedMedia);
       } catch (error) {
         console.error("Error fetching project media:", error);
         setErrorMessage("Error fetching project media.");

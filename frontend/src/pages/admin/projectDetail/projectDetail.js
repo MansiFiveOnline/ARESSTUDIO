@@ -188,6 +188,7 @@ const ProjectDetail = () => {
                 <thead>
                   <tr>
                     <th>Project Name</th>
+                    <th className="text-center">Sequence</th>
                     <th className="text-center">Media</th>
                     <th className="text-center">Edit</th>
                     <th className="text-center">Delete</th>
@@ -200,6 +201,7 @@ const ProjectDetail = () => {
                         <td>
                           {projectDetail.project_id?.project_name || "N/A"}
                         </td>
+                        <td>{projectDetail.sequence}</td>
                         <td className="text-center">
                           {projectDetail.type === "image" ? (
                             <img

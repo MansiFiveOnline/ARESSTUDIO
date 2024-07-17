@@ -139,9 +139,107 @@ const createProjectDetail = async (req, res) => {
 //   }
 // };
 
+// const updateProjectDetail = async (req, res) => {
+//   try {
+//     const { project_name, media } = req.body;
+
+//     // Step 1: Find the _id of the project_name from the project model
+//     const project = await projectModel.findOne({ project_name });
+
+//     if (!project) {
+//       return res.status(404).json({ message: "Project not found." });
+//     }
+
+//     const existingProjectDetail = await projectDetailsModel.findById(
+//       req.params._id
+//     );
+
+//     if (!existingProjectDetail) {
+//       return res.status(404).json({ message: "Project Detail not found." });
+//     }
+
+//     let mediaData = {
+//       filename: existingProjectDetail.media.filename,
+//       filepath: existingProjectDetail.media.filepath,
+//       iframe: existingProjectDetail.media.iframe,
+//     };
+
+//     // Check if media file is provided
+//     if (req.file) {
+//       const isWebPImage = (file) => {
+//         const extname = path.extname(file.originalname).toLowerCase();
+//         return extname === ".webp";
+//       };
+
+//       // Validate file type
+//       if (!isWebPImage(req.file)) {
+//         return res.status(400).json({
+//           message: "Unsupported file type. Please upload a WebP image.",
+//         });
+//       }
+
+//       // Set media data for image
+//       mediaData = {
+//         filename: req.file.originalname,
+//         filepath: req.file.path,
+//         iframe: null,
+//       };
+//     } else if (media !== undefined && media !== null) {
+//       const trimmedMedia = typeof media === "string" ? media.trim() : media;
+
+//       // Check if media is a URL
+//       const isURL = (str) => {
+//         try {
+//           new URL(str);
+//           return true;
+//         } catch (error) {
+//           return false;
+//         }
+//       };
+
+//       if (trimmedMedia && !isURL(trimmedMedia)) {
+//         return res.status(400).json({
+//           message: "Invalid media URL.",
+//         });
+//       }
+
+//       // Set media data for video
+//       mediaData = {
+//         filename: null,
+//         filepath: null,
+//         iframe: trimmedMedia,
+//       };
+//     }
+
+//     // Step 2: Update project_id in updatedFields
+//     const updatedFields = {
+//       ...(project_name && { project_name }),
+//       project_id: project._id, // Update project_id with the fetched _id
+//       media: mediaData,
+//       type: mediaData.filename ? "image" : "video",
+//     };
+
+//     const updatedProjectDetail = await projectDetailsModel.findByIdAndUpdate(
+//       req.params._id,
+//       updatedFields,
+//       { new: true }
+//     );
+
+//     return res.status(200).json({
+//       message: "Project details updated successfully.",
+//       // updatedFields,
+//       updatedProjectDetail,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: `Error in updating project details: ${error.message}`,
+//     });
+//   }
+// };
+
 const updateProjectDetail = async (req, res) => {
   try {
-    const { project_name, media } = req.body;
+    const { project_name, media, sequence } = req.body;
 
     // Step 1: Find the _id of the project_name from the project model
     const project = await projectModel.findOne({ project_name });
@@ -217,6 +315,7 @@ const updateProjectDetail = async (req, res) => {
       project_id: project._id, // Update project_id with the fetched _id
       media: mediaData,
       type: mediaData.filename ? "image" : "video",
+      ...(sequence && { sequence }), // Add sequence field
     };
 
     const updatedProjectDetail = await projectDetailsModel.findByIdAndUpdate(
