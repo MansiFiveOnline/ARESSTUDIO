@@ -475,135 +475,13 @@ const createProjectDetail = async (req, res) => {
 //   }
 // };
 
-// const updateProjectDetail = async (req, res) => {
-//   try {
-//     const { project_name, media, sequence } = req.body;
-
-//     console.log("Received request with:", { project_name, media, sequence });
-//     // Step 1: Find the _id of the project_name from the project model
-//     const project = await projectModel.findOne({ project_name });
-
-//     if (!project) {
-//       console.log("Project not found for project_name:", project_name);
-//       return res.status(404).json({ message: "Project not found." });
-//     }
-
-//     console.log("Found project:", project);
-
-//     const existingProjectDetail = await projectDetailsModel.findById(
-//       req.params._id
-//     );
-
-//     if (!existingProjectDetail) {
-//       console.log("Project Detail not found for ID:", req.params._id);
-//       return res.status(404).json({ message: "Project Detail not found." });
-//     }
-
-//     // Step 2: Update project_name for all entries with the same project_id
-//     await projectDetailsModel.updateMany(
-//       { project_id: existingProjectDetail.project_id },
-//       { $set: { project_name: project_name } }
-//     );
-
-//     let mediaData = {
-//       filename: existingProjectDetail.media.filename,
-//       filepath: existingProjectDetail.media.filepath,
-//       iframe: existingProjectDetail.media.iframe,
-//     };
-
-//     // Check if media file is provided
-//     if (req.file) {
-//       const isWebPImage = (file) => {
-//         const extname = path.extname(file.originalname).toLowerCase();
-//         return extname === ".webp";
-//       };
-
-//       // Validate file type
-//       if (!isWebPImage(req.file)) {
-//         return res.status(400).json({
-//           message: "Unsupported file type. Please upload a WebP image.",
-//         });
-//       }
-
-//       // Set media data for image
-//       mediaData = {
-//         filename: req.file.originalname,
-//         filepath: req.file.path,
-//         iframe: null,
-//       };
-//     } else if (media !== undefined && media !== null) {
-//       const trimmedMedia = typeof media === "string" ? media.trim() : media;
-
-//       // Check if media is a URL
-//       const isURL = (str) => {
-//         try {
-//           new URL(str);
-//           return true;
-//         } catch (error) {
-//           return false;
-//         }
-//       };
-
-//       if (trimmedMedia && !isURL(trimmedMedia)) {
-//         return res.status(400).json({
-//           message: "Invalid media URL.",
-//         });
-//       }
-
-//       // Set media data for video
-//       mediaData = {
-//         filename: null,
-//         filepath: null,
-//         iframe: trimmedMedia,
-//       };
-//     }
-
-//     // Step 3: Handle sequence update for other project details
-//     if (sequence && sequence !== existingProjectDetail.sequence) {
-//       await projectDetailsModel.updateMany(
-//         {
-//           project_id: existingProjectDetail.project_id,
-//           sequence: { $gte: sequence },
-//           _id: { $ne: existingProjectDetail._id },
-//         },
-//         { $inc: { sequence: 1 } }
-//       );
-//     }
-
-//     // Step 4: Update the specific project detail entry with new values
-//     const updatedFields = {
-//       project_name,
-//       project_id: project._id,
-//       media: mediaData,
-//       type: mediaData.filename ? "image" : "video",
-//       ...(sequence && { sequence }),
-//     };
-
-//     const updatedProjectDetail = await projectDetailsModel.findByIdAndUpdate(
-//       req.params._id,
-//       updatedFields,
-//       { new: true }
-//     );
-
-//     return res.status(200).json({
-//       message: "Project details updated successfully.",
-//       updatedProjectDetail,
-//     });
-//   } catch (error) {
-//     return res.status(500).json({
-//       message: `Error in updating project details: ${error.message}`,
-//     });
-//   }
-// };
-
 const updateProjectDetail = async (req, res) => {
   try {
     const { project_name, media, sequence } = req.body;
 
     console.log("Received request with:", { project_name, media, sequence });
-
     // Step 1: Find the _id of the project_name from the project model
-    const project = await projectModel.findOne({ _id: project_name }); // Adjust to find by _id
+    const project = await projectModel.findOne({ project_name });
 
     if (!project) {
       console.log("Project not found for project_name:", project_name);
@@ -621,15 +499,11 @@ const updateProjectDetail = async (req, res) => {
       return res.status(404).json({ message: "Project Detail not found." });
     }
 
-    console.log("Found existing project detail:", existingProjectDetail);
-
     // Step 2: Update project_name for all entries with the same project_id
-    const updateManyResult = await projectDetailsModel.updateMany(
+    await projectDetailsModel.updateMany(
       { project_id: existingProjectDetail.project_id },
-      { $set: { project_name: project.project_name } }
+      { $set: { project_name: project_name } }
     );
-
-    console.log("updateMany result:", updateManyResult);
 
     let mediaData = {
       filename: existingProjectDetail.media.filename,
@@ -684,11 +558,9 @@ const updateProjectDetail = async (req, res) => {
       };
     }
 
-    console.log("Prepared media data:", mediaData);
-
     // Step 3: Handle sequence update for other project details
     if (sequence && sequence !== existingProjectDetail.sequence) {
-      const updateSequenceResult = await projectDetailsModel.updateMany(
+      await projectDetailsModel.updateMany(
         {
           project_id: existingProjectDetail.project_id,
           sequence: { $gte: sequence },
@@ -696,13 +568,11 @@ const updateProjectDetail = async (req, res) => {
         },
         { $inc: { sequence: 1 } }
       );
-
-      console.log("updateSequence result:", updateSequenceResult);
     }
 
     // Step 4: Update the specific project detail entry with new values
     const updatedFields = {
-      project_name: project.project_name,
+      project_name,
       project_id: project._id,
       media: mediaData,
       type: mediaData.filename ? "image" : "video",
@@ -715,19 +585,149 @@ const updateProjectDetail = async (req, res) => {
       { new: true }
     );
 
-    console.log("Updated project detail:", updatedProjectDetail);
-
     return res.status(200).json({
       message: "Project details updated successfully.",
       updatedProjectDetail,
     });
   } catch (error) {
-    console.error("Error in updating project details:", error.message);
     return res.status(500).json({
       message: `Error in updating project details: ${error.message}`,
     });
   }
 };
+
+// const updateProjectDetail = async (req, res) => {
+//   try {
+//     const { project_name, media, sequence } = req.body;
+
+//     console.log("Received request with:", { project_name, media, sequence });
+
+//     // Step 1: Find the _id of the project_name from the project model
+//     const project = await projectModel.findOne({ _id: project_name }); // Adjust to find by _id
+
+//     if (!project) {
+//       console.log("Project not found for project_name:", project_name);
+//       return res.status(404).json({ message: "Project not found." });
+//     }
+
+//     console.log("Found project:", project);
+
+//     const existingProjectDetail = await projectDetailsModel.findById(
+//       req.params._id
+//     );
+
+//     if (!existingProjectDetail) {
+//       console.log("Project Detail not found for ID:", req.params._id);
+//       return res.status(404).json({ message: "Project Detail not found." });
+//     }
+
+//     console.log("Found existing project detail:", existingProjectDetail);
+
+//     // Step 2: Update project_name for all entries with the same project_id
+//     const updateManyResult = await projectDetailsModel.updateMany(
+//       { project_id: existingProjectDetail.project_id },
+//       { $set: { project_name: project.project_name } }
+//     );
+
+//     console.log("updateMany result:", updateManyResult);
+
+//     let mediaData = {
+//       filename: existingProjectDetail.media.filename,
+//       filepath: existingProjectDetail.media.filepath,
+//       iframe: existingProjectDetail.media.iframe,
+//     };
+
+//     // Check if media file is provided
+//     if (req.file) {
+//       const isWebPImage = (file) => {
+//         const extname = path.extname(file.originalname).toLowerCase();
+//         return extname === ".webp";
+//       };
+
+//       // Validate file type
+//       if (!isWebPImage(req.file)) {
+//         return res.status(400).json({
+//           message: "Unsupported file type. Please upload a WebP image.",
+//         });
+//       }
+
+//       // Set media data for image
+//       mediaData = {
+//         filename: req.file.originalname,
+//         filepath: req.file.path,
+//         iframe: null,
+//       };
+//     } else if (media !== undefined && media !== null) {
+//       const trimmedMedia = typeof media === "string" ? media.trim() : media;
+
+//       // Check if media is a URL
+//       const isURL = (str) => {
+//         try {
+//           new URL(str);
+//           return true;
+//         } catch (error) {
+//           return false;
+//         }
+//       };
+
+//       if (trimmedMedia && !isURL(trimmedMedia)) {
+//         return res.status(400).json({
+//           message: "Invalid media URL.",
+//         });
+//       }
+
+//       // Set media data for video
+//       mediaData = {
+//         filename: null,
+//         filepath: null,
+//         iframe: trimmedMedia,
+//       };
+//     }
+
+//     console.log("Prepared media data:", mediaData);
+
+//     // Step 3: Handle sequence update for other project details
+//     if (sequence && sequence !== existingProjectDetail.sequence) {
+//       const updateSequenceResult = await projectDetailsModel.updateMany(
+//         {
+//           project_id: existingProjectDetail.project_id,
+//           sequence: { $gte: sequence },
+//           _id: { $ne: existingProjectDetail._id },
+//         },
+//         { $inc: { sequence: 1 } }
+//       );
+
+//       console.log("updateSequence result:", updateSequenceResult);
+//     }
+
+//     // Step 4: Update the specific project detail entry with new values
+//     const updatedFields = {
+//       project_name: project.project_name,
+//       project_id: project._id,
+//       media: mediaData,
+//       type: mediaData.filename ? "image" : "video",
+//       ...(sequence && { sequence }),
+//     };
+
+//     const updatedProjectDetail = await projectDetailsModel.findByIdAndUpdate(
+//       req.params._id,
+//       updatedFields,
+//       { new: true }
+//     );
+
+//     console.log("Updated project detail:", updatedProjectDetail);
+
+//     return res.status(200).json({
+//       message: "Project details updated successfully.",
+//       updatedProjectDetail,
+//     });
+//   } catch (error) {
+//     console.error("Error in updating project details:", error.message);
+//     return res.status(500).json({
+//       message: `Error in updating project details: ${error.message}`,
+//     });
+//   }
+// };
 
 // const updateProjectDetail = async (req, res) => {
 //   try {
