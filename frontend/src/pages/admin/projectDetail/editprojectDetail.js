@@ -504,12 +504,50 @@ const EditProjectDetail = () => {
     fetchProjectNames();
   }, []);
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   try {
+  //     const formDataToSend = new FormData();
+  //     formDataToSend.append("project_name", selectedProjectName);
+
+  //     if (formData.media.file) {
+  //       formDataToSend.append("media", formData.media.file);
+  //     } else if (formData.media.iframe.trim()) {
+  //       formDataToSend.append("media", formData.media.iframe.trim());
+  //     }
+
+  //     formDataToSend.append("sequence", formData.sequence); // Add sequence to form data
+
+  //     const access_token = localStorage.getItem("access_token");
+
+  //     const response = await axios.patch(
+  //       `${process.env.REACT_APP_API_URL}/api/project_detail/${id}`,
+  //       formDataToSend,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //           Authorization: `Bearer ${access_token}`,
+  //         },
+  //       }
+  //     );
+
+  //     console.log(
+  //       "Updated Project Detail: ",
+  //       response.data.updatedProjectDetail
+  //     );
+  //     navigate("/admin/project_detail");
+  //   } catch (error) {
+  //     console.error("Error updating project detail:", error);
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append("project_name", selectedProjectName);
+      formDataToSend.append("project_name", selectedProjectName); // Use selectedProjectName which is the _id
 
       if (formData.media.file) {
         formDataToSend.append("media", formData.media.file);

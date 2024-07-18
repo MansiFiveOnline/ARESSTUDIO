@@ -43,16 +43,22 @@ const updateGalleryName = async (req, res) => {
     );
 
     // Update project name in the Project Details model by project_id
-    const updatedProject = await projectModel.findOneAndUpdate(
+    const updatedProjects = await projectModel.updateMany(
       { gallery_name_id: updatedGalleryName._id },
       { $set: { gallery_name } },
       { new: true }
     );
 
+    // Step 2: Update project_name for all entries with the same project_id
+    // const updateManyResult = await projectDetailsModel.updateMany(
+    //   { project_id: existingProjectDetail.project_id },
+    //   { $set: { project_name: project.project_name } }
+    // );
+
     return res.status(200).json({
       message: "Gallery name content updated successfully.",
       updatedGalleryName,
-      updatedProject,
+      updatedProjects,
     });
   } catch (error) {
     return res.status(500).json({

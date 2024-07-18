@@ -622,12 +622,22 @@ const updateProject = async (req, res) => {
       { new: true }
     );
 
+    // // Update project name in the Project Details model by project_id
+    // const updatedProjectDetails = await projectDetailsModel.findOneAndUpdate(
+    //   { project_id: updatedProject._id },
+    //   { $set: { project_name } },
+    //   { new: true }
+    // );
     // Update project name in the Project Details model by project_id
-    const updatedProjectDetails = await projectDetailsModel.findOneAndUpdate(
+    const updateProjectDetails = await projectDetailsModel.updateMany(
       { project_id: updatedProject._id },
-      { $set: { project_name } },
-      { new: true }
+      { $set: { project_name } }
     );
+
+    // Optionally fetch updated project details for response
+    const updatedProjectDetails = await projectDetailsModel.find({
+      project_id: updatedProject._id,
+    });
 
     return res.status(200).json({
       message: "Project content updated successfully.",
