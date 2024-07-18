@@ -1245,25 +1245,54 @@ const getTotalCount = async (req, res) => {
   }
 };
 
+// const deleteProjectDetail = async (req, res) => {
+//   try {
+//     const projectDetailExists = await projectDetailsModel.findById({
+//       _id: req.params._id,
+//     });
+
+//     if (projectDetailExists.length === 0) {
+//       return res.status(400).json({
+//         message: "No project details are created. Kindly create one.",
+//       });
+//     }
+
+//     const deletedProjectDetail = await projectDetailsModel.findOneAndDelete({
+//       _id: req.params._id,
+//     });
+
+//     return res.status(200).json({
+//       message: "project detail deleted successfully.",
+//       deletedProjectDetail,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: `Error in deleting project detail due to ${error.message}`,
+//     });
+//   }
+// };
+
 const deleteProjectDetail = async (req, res) => {
   try {
-    const projectDetailExists = await projectDetailsModel.findById({
-      _id: req.params._id,
-    });
+    const projectDetail = await projectDetailsModel.findById(req.params._id);
 
-    if (projectDetailExists.length === 0) {
-      return res.status(400).json({
-        message: "No project details are created. Kindly create one.",
+    if (!projectDetail) {
+      return res.status(404).json({
+        message: "Project detail not found.",
       });
     }
 
-    const deletedProjectDetail = await projectDetailsModel.findOneAndDelete({
-      _id: req.params._id,
-    });
+    const deletedSequence = projectDetail.sequence;
+    await projectDetailsModel.deleteOne({ _id: req.params._id });
+
+    // Update sequence for subsequent entries
+    await projectDetailsModel.updateMany(
+      { sequence: { $gt: deletedSequence } },
+      { $inc: { sequence: -1 } }
+    );
 
     return res.status(200).json({
-      message: "project detail deleted successfully.",
-      deletedProjectDetail,
+      message: "Project detail deleted successfully.",
     });
   } catch (error) {
     return res.status(500).json({
