@@ -304,6 +304,12 @@ export default function About() {
   // Log the API URL to ensure it's correct
   console.log("API URL:", process.env.REACT_APP_API_URL);
 
+  const styles = {
+    title: {
+      fontSize: "40px",
+    },
+  };
+
   return (
     <Layout>
       <Helmet>
@@ -345,7 +351,9 @@ export default function About() {
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-12 text-center">
-              <h2 className="pb-5">{aboutData[0].subtitle}</h2>
+              <h2 className="pb-5" style={styles.title}>
+                {aboutData[0].subtitle}
+              </h2>
               <p>{aboutData[0].description}</p>
             </div>
           </div>
