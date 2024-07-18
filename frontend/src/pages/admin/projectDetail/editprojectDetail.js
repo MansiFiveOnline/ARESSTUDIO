@@ -421,6 +421,8 @@ const EditProjectDetail = () => {
   const [projectDetail, setProjectDetail] = useState(null);
   const [projectNames, setProjectNames] = useState([]);
   const [selectedProjectName, setSelectedProjectName] = useState("");
+  const [totalProjectDetails, setTotalProjectDetails] = useState(0); // Add state for total project details
+  const [errorMessage, setErrorMessage] = useState(""); // Add state for error message
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -452,6 +454,12 @@ const EditProjectDetail = () => {
           },
           sequence: projectDetailData.sequence || "", // Set initial sequence value
         });
+
+        // Fetch total project details count for selected project name
+        const totalDetailsResponse = await axios.get(
+          `${apiUrl}/api/project_detail/count/${projectDetailData.project_name}`
+        );
+        setTotalProjectDetails(totalDetailsResponse.data.count);
       } catch (error) {
         console.error("Error fetching project detail:", error);
       }
@@ -545,6 +553,13 @@ const EditProjectDetail = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (formData.sequence > totalProjectDetails) {
+      setErrorMessage(
+        `Total entries are ${totalProjectDetails}. Sequence number cannot be greater than ${totalProjectDetails}`
+      );
+      return;
+    }
+
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("project_name", selectedProjectName); // Use selectedProjectName which is the _id
@@ -620,6 +635,13 @@ const EditProjectDetail = () => {
                   onChange={handleChange}
                 />
               </div>
+              {errorMessage && (
+                <div className="col-12">
+                  <div className="theme-form">
+                    <span className="text-danger">{errorMessage}</span>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="col-lg-6 col-md-6 col-sm-12 col-12">

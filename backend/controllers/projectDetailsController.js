@@ -1231,6 +1231,20 @@ const getProjectDetail = async (req, res) => {
   }
 };
 
+const getTotalCount = async (req, res) => {
+  try {
+    const projectName = req.params.project_name;
+    const count = await projectDetailsModel.countDocuments({
+      project_name: projectName,
+    });
+    res.status(200).json({ count });
+  } catch (error) {
+    return res.status(500).json({
+      message: `Error in deleting project detail due to ${error.message}`,
+    });
+  }
+};
+
 const deleteProjectDetail = async (req, res) => {
   try {
     const projectDetailExists = await projectDetailsModel.findById({
@@ -1264,5 +1278,6 @@ module.exports = {
   getProjectMediaByName,
   getProjectDetails,
   getProjectDetail,
+  getTotalCount,
   deleteProjectDetail,
 };

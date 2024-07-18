@@ -35,6 +35,8 @@ route.get("/:_id", projectDetailsController.getProjectDetail);
 
 route.get("/", projectDetailsController.getProjectDetails);
 
+route.get("/count/:project_name", projectDetailsController.getTotalCount);
+
 route.delete(
   "/:_id",
   adminMiddleware,
