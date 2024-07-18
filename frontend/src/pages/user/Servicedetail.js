@@ -173,7 +173,7 @@ const Servicedetail = () => {
       position: isSmallScreen ? "static" : "absolute",
     },
     imgSection: {
-      height: isSmallScreen ? "70vh" : "100vh",
+      height: isSmallScreen ? "70vh" : "auto",
       objectFit: "cover",
       filter: "brightness(0.5)",
     },

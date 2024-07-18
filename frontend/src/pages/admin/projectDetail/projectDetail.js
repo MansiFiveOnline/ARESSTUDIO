@@ -290,9 +290,14 @@ const ProjectDetail = () => {
         },
       });
 
-      setProjectDetails(
-        projectDetails.filter((projectDetail) => projectDetail._id !== id)
-      );
+      if (response.status === 200) {
+        setProjectDetails(
+          projectDetails.filter((projectDetail) => projectDetail._id !== id)
+        );
+        console.log("Project detail deleted successfully");
+      } else {
+        console.error("Error deleting project detail:", response.data.message);
+      }
       console.log(response.data);
     } catch (error) {
       console.error("Error deleting project:", error);

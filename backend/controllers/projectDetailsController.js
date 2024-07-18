@@ -1283,11 +1283,13 @@ const deleteProjectDetail = async (req, res) => {
     }
 
     const deletedSequence = projectDetail.sequence;
+    const projectName = projectDetail.project_name;
+
     await projectDetailsModel.deleteOne({ _id: req.params._id });
 
-    // Update sequence for subsequent entries
+    // Update sequence for subsequent entries of the same project name
     await projectDetailsModel.updateMany(
-      { sequence: { $gt: deletedSequence } },
+      { project_name: projectName, sequence: { $gt: deletedSequence } },
       { $inc: { sequence: -1 } }
     );
 
