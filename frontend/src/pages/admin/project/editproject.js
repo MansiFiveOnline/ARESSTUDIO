@@ -279,11 +279,6 @@ const EditProject = () => {
       formDataToSend.append("media", formData.media.iframe.trim());
     }
 
-    if (!formData.media.iframe && !formData.media.file) {
-      setValidationError("Please provide either an iFrame URL or an image.");
-      return;
-    }
-
     try {
       const access_token = localStorage.getItem("access_token");
       const apiUrl = process.env.REACT_APP_API_URL;
@@ -437,14 +432,6 @@ const EditProject = () => {
                   />
                 )}
               </div>
-
-              {validationError && (
-                <div className="col-12">
-                  <div className="theme-form">
-                    <span className="text-danger">{validationError}</span>
-                  </div>
-                </div>
-              )}
             </div>
 
             {errorMessage && (
