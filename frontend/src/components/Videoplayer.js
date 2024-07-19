@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import "../style/user.css";
 
-const VideoPlayer = ({ src }) => {
+const VideoPlayer = ({ src, style }) => {
   const [isHovered, setIsHovered] = useState(false);
   const videoRef = useRef(null);
   const isPausedOnLeave = useRef(false);
@@ -43,7 +43,13 @@ const VideoPlayer = ({ src }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <video ref={videoRef} src={src} muted onEnded={handleVideoEnd} />
+      <video
+        ref={videoRef}
+        src={src}
+        style={style}
+        muted
+        onEnded={handleVideoEnd}
+      />
     </div>
   );
 };

@@ -546,13 +546,21 @@ option {
   box-shadow: none;
 }
 .btn-primary:active:focus {
-  box-shadow: none;
+  box-shadow: none !important;
+  background-color: white;
+  color: black;
+}
+
+.btn-primary:focus {
+  box-shadow: none !important;
+  background-color: white;
+  color: black;
 }
 .form-control:focus {
   box-shadow: none;
 }
 .btn-close:focus {
-  box-shadow: none;
+  box-shadow: none !important;
 }
 .locked_modal .modal-body .lock-pop {
   margin-bottom: 40px;
@@ -662,9 +670,9 @@ option {
   object-fit: cover;
 }
 
-/* .card video {
+.card video {
   filter: brightness(0.5);
-} */
+}
 
 .modal-body .video-container video {
   width: 100%;

@@ -51,6 +51,9 @@ const Servicedetail = () => {
       objectFit: "cover",
       filter: "brightness(0.5)",
     },
+    videoSection: {
+      filter: "brightness(0.5)",
+    },
     titleSection: {
       fontWeight: "bold",
       display: "none",
@@ -71,7 +74,7 @@ const Servicedetail = () => {
                 {projectData.media && projectData.media.iframe ? (
                   <VideoPlayer
                     src={projectData.media.iframe}
-                    style={styles.imgSection}
+                    style={styles.videoSection}
                   />
                 ) : (
                   <img
