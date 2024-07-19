@@ -13,6 +13,7 @@ const AddService = () => {
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
   const [validationError, setValidationError] = useState(""); // State for validation error message
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -75,6 +76,9 @@ const AddService = () => {
       navigate("/admin/services");
     } catch (error) {
       console.error("Error creating service:", error);
+      setErrorMessage(
+        `${error.response?.data?.message}` || "An error occurred"
+      );
     }
   };
 
@@ -206,6 +210,12 @@ const AddService = () => {
                 />
               </div>
             </div>
+
+            {errorMessage && (
+              <div className="error-message text-danger mt-2">
+                {errorMessage}
+              </div>
+            )}
 
             <div className="col-12">
               <div className="theme-form">

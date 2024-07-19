@@ -11,6 +11,7 @@ const EditGalleryName = () => {
   });
   const [selectedService, setSelectedService] = useState("");
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchGalleryName = async () => {
@@ -70,6 +71,9 @@ const EditGalleryName = () => {
       navigate("/admin/gallery_name");
     } catch (error) {
       console.error("Error updating gallery name:", error);
+      setErrorMessage(
+        `${error.response?.data?.message}` || "An error occurred"
+      );
     }
   };
 
@@ -112,6 +116,11 @@ const EditGalleryName = () => {
               </div>
             </div>
 
+            {errorMessage && (
+              <div className="error-message text-danger mt-2">
+                {errorMessage}
+              </div>
+            )}
             <div className="col-12">
               <div className="theme-form">
                 <button type="submit">Save</button>

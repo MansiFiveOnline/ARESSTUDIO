@@ -304,6 +304,7 @@ const AddProject = () => {
   const [isPublic, setIsPublic] = useState(true);
   const [validationError, setValidationError] = useState(""); // State for validation error message
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const fetchGalleryNames = async () => {
     try {
@@ -366,6 +367,9 @@ const AddProject = () => {
       navigate("/admin/project");
     } catch (error) {
       console.error("Error creating project:", error);
+      setErrorMessage(
+        `${error.response?.data?.message}` || "An error occurred"
+      );
     }
   };
 
@@ -492,13 +496,19 @@ const AddProject = () => {
                   }
                 />
               </div>
+
+              {validationError && (
+                <div className="col-12">
+                  <div className="theme-form">
+                    <span className="text-danger">{validationError}</span>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {validationError && (
-              <div className="col-12">
-                <div className="theme-form">
-                  <span className="text-danger">{validationError}</span>
-                </div>
+            {errorMessage && (
+              <div className="error-message text-danger mt-2">
+                {errorMessage}
               </div>
             )}
 

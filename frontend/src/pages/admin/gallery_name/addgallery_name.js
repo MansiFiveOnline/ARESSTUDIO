@@ -7,6 +7,7 @@ const AddGalleryName = () => {
   const [service_name, setServiceName] = useState("");
   const [gallery_name, setGalleryName] = useState("");
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,6 +39,9 @@ const AddGalleryName = () => {
       navigate("/admin/gallery_name");
     } catch (error) {
       console.error("Error creating gallery name:", error);
+      setErrorMessage(
+        `${error.response?.data?.message}` || "An error occurred"
+      );
     }
   };
 
@@ -76,6 +80,12 @@ const AddGalleryName = () => {
                 />
               </div>
             </div>
+
+            {errorMessage && (
+              <div className="error-message text-danger mt-2">
+                {errorMessage}
+              </div>
+            )}
 
             <div className="col-12">
               <div className="theme-form">

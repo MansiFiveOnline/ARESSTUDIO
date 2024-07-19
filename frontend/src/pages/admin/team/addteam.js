@@ -9,6 +9,7 @@ const AddTeam = () => {
   const [linkedin_url, setLinkedinURL] = useState("");
   const [image, setImage] = useState(null);
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,6 +49,9 @@ const AddTeam = () => {
       // }, 2000);
     } catch (error) {
       console.error("Error creating team:", error);
+      setErrorMessage(
+        `${error.response?.data?.message}` || "An error occurred"
+      );
     }
   };
 
@@ -111,6 +115,12 @@ const AddTeam = () => {
                 {/* <img className="form-profile" src="src/img/team-icon-img.png" /> */}
               </div>
             </div>
+
+            {errorMessage && (
+              <div className="error-message text-danger mt-2">
+                {errorMessage}
+              </div>
+            )}
 
             <div className="col-12">
               <div className="theme-form">

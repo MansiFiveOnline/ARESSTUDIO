@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const EditAbout = () => {
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [formData, setFormData] = useState({
     title: "",
@@ -116,6 +117,9 @@ const EditAbout = () => {
       }, 2000);
     } catch (error) {
       console.error("Error updating about:", error);
+      setErrorMessage(
+        `${error.response?.data?.message}` || "An error occurred"
+      );
     }
   };
 
@@ -221,6 +225,11 @@ const EditAbout = () => {
                 />
               </div>
             </div>
+            {errorMessage && (
+              <div className="error-message text-danger mt-2">
+                {errorMessage}
+              </div>
+            )}
             <div className="col-12">
               <div className="theme-form">
                 <button type="submit">Save</button>

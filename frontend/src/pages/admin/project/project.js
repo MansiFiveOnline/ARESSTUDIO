@@ -18,6 +18,11 @@ const Project = () => {
           baseURL: `${apiUrl}/api/`,
           url: "project",
         });
+        // const sortedProjectNames = response.data.projects.project_name.sort(
+        //   (a, b) => a.localeCompare(b)
+        // );
+        // console.log(sortedProjectNames);
+        // setProjects(sortedProjectNames);
         console.log(response.data.projects);
         setProjects(response.data.projects);
       } catch (error) {
@@ -58,7 +63,7 @@ const Project = () => {
         <h2>
           Project
           <NavLink to="/admin/add/project" className="theme-cta">
-            <i class="las la-plus-circle"></i>
+            <i className="las la-plus-circle"></i>
             Add Project
           </NavLink>
         </h2>
@@ -114,7 +119,7 @@ const Project = () => {
                             to={`/admin/edit/project/${project._id}`}
                             title="Edit"
                           >
-                            <i class="las la-pencil-alt"></i>
+                            <i className="las la-pencil-alt"></i>
                           </Link>
                         </td>
                         <td className="text-center">
@@ -122,7 +127,7 @@ const Project = () => {
                             className="delete-btn"
                             onClick={() => handleDelete(project._id)}
                           >
-                            <i class="las la-trash"></i>{" "}
+                            <i className="las la-trash"></i>{" "}
                           </button>
                         </td>
                       </tr>

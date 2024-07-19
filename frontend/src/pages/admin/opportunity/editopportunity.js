@@ -6,6 +6,7 @@ import axios from "axios";
 const EditOpportunity = () => {
   const { id } = useParams(); // Assuming the parameter is named userId
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [formData, setFormData] = useState({
     title: "",
@@ -75,6 +76,9 @@ const EditOpportunity = () => {
       navigate("/admin/opportunities");
     } catch (error) {
       console.error("Error updating opportunity:", error);
+      setErrorMessage(
+        `${error.response?.data?.message}` || "An error occurred"
+      );
     }
   };
 
@@ -137,6 +141,11 @@ const EditOpportunity = () => {
               </div>
             </div>
 
+            {errorMessage && (
+              <div className="error-message text-danger mt-2">
+                {errorMessage}
+              </div>
+            )}
             <div className="col-12">
               <div className="theme-form">
                 <button type="submit">Save</button>

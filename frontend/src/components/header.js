@@ -118,10 +118,10 @@ const SideNavigation = ({ style }) => {
             <div className="ares_logo">
               <Link to="/">
                 <img
-                  src="/images/logo_small_black_transparent.svg"
+                  src="/images/logo_small_black_transparent.webp"
                   alt="logo"
                   width="200"
-                  height="100"
+                  height="60"
                 />
               </Link>
             </div>

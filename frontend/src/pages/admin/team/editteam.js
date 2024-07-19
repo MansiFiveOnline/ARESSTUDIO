@@ -7,6 +7,7 @@ const EditTeam = () => {
   const { id } = useParams(); // Assuming the parameter is named teamId
   const [team, setTeam] = useState(null);
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -107,6 +108,9 @@ const EditTeam = () => {
       console.log(response.data.team);
     } catch (error) {
       console.error("Error updating team:", error);
+      setErrorMessage(
+        `${error.response?.data?.message}` || "An error occurred"
+      );
     }
   };
 
@@ -183,6 +187,12 @@ const EditTeam = () => {
                 )}
               </div>
             </div>
+
+            {errorMessage && (
+              <div className="error-message text-danger mt-2">
+                {errorMessage}
+              </div>
+            )}
 
             <div className="col-12">
               <div className="theme-form">

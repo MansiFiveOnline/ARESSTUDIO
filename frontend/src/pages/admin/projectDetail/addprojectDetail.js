@@ -9,6 +9,7 @@ const AddProjectDetail = () => {
   const [media, setMedia] = useState({ iframe: "", file: null });
   const [validationError, setValidationError] = useState(""); // State for validation error message
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchProjectNames = async () => {
@@ -16,7 +17,11 @@ const AddProjectDetail = () => {
         const apiUrl = process.env.REACT_APP_API_URL;
 
         const response = await axios.get(`${apiUrl}/api/project/projectname`);
-        setProjectNames(response.data.projectNames);
+        const sortedProjectNames = response.data.projectNames.sort((a, b) =>
+          a.localeCompare(b)
+        );
+        console.log(sortedProjectNames);
+        setProjectNames(sortedProjectNames);
       } catch (error) {
         console.error("Error fetching project names:", error);
       }
@@ -74,6 +79,9 @@ const AddProjectDetail = () => {
       navigate("/admin/project_detail");
     } catch (error) {
       console.error("Error creating project detail:", error);
+      setErrorMessage(
+        `${error.response?.data?.message}` || "An error occurred"
+      );
     }
   };
 
@@ -143,6 +151,12 @@ const AddProjectDetail = () => {
                 </div>
               )}
             </div>
+
+            {errorMessage && (
+              <div className="error-message text-danger mt-2">
+                {errorMessage}
+              </div>
+            )}
 
             <div className="col-12">
               <div className="theme-form">

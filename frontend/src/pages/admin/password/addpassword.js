@@ -7,6 +7,7 @@ const AddPassword = () => {
   const { id } = useParams();
   const [password, setPassword] = useState(null);
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [formData, setFormData] = useState({
     email: "",
@@ -60,6 +61,9 @@ const AddPassword = () => {
       navigate("/admin/password"); // Navigate after successful update
     } catch (error) {
       console.error("Error updating password:", error);
+      setErrorMessage(
+        `${error.response?.data?.message}` || "An error occurred"
+      );
     }
   };
 
@@ -94,6 +98,12 @@ const AddPassword = () => {
                 />
               </div>
             </div>
+
+            {errorMessage && (
+              <div className="error-message text-danger mt-2">
+                {errorMessage}
+              </div>
+            )}
 
             <div className="col-12">
               <div className="theme-form">

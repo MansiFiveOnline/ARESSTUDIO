@@ -7,6 +7,7 @@ const EditCareer = () => {
   // const { id } = useParams();
   // const [career, setCareer] = useState(null);
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [formData, setFormData] = useState({
     title: "",
@@ -41,6 +42,9 @@ const EditCareer = () => {
         });
       } catch (error) {
         console.error("Error fetching career:", error);
+        setErrorMessage(
+          `${error.response?.data?.message}` || "An error occurred"
+        );
       }
     };
 
@@ -152,6 +156,7 @@ const EditCareer = () => {
       navigate("/admin/edit/career");
     } catch (error) {
       console.error("Error updating career:", error);
+      setErrorMessage(`Unable to update ${error}`);
     }
   };
 
@@ -241,6 +246,11 @@ const EditCareer = () => {
               </div>
             </div>
 
+            {errorMessage && (
+              <div className="error-message text-danger mt-2">
+                {errorMessage}
+              </div>
+            )}
             <div className="col-12">
               <div className="theme-form">
                 <button type="submit">Save</button>

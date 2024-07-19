@@ -13,6 +13,7 @@ const EditGallery = () => {
   // const [media, setMedia] = useState({ iframe: "", file: null });
   // const [isPublic, setIsPublic] = useState(true);
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [formData, setFormData] = useState({
     service_name: "",
@@ -170,6 +171,9 @@ const EditGallery = () => {
       navigate("/admin/gallery");
     } catch (error) {
       console.error("Error updating gallery:", error);
+      setErrorMessage(
+        `${error.response?.data?.message}` || "An error occurred"
+      );
     }
   };
 
@@ -229,6 +233,12 @@ const EditGallery = () => {
                 )}
               </div>
             </div>
+
+            {errorMessage && (
+              <div className="error-message text-danger mt-2">
+                {errorMessage}
+              </div>
+            )}
 
             <div className="col-12">
               <div className="theme-form">

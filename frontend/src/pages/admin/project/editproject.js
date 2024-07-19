@@ -12,6 +12,8 @@ const EditProject = () => {
   const [isPublic, setIsPublic] = useState(true);
   const [serviceChanged, setServiceChanged] = useState(false); // Track if service name has been changed
   const navigate = useNavigate();
+  const [validationError, setValidationError] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [formData, setFormData] = useState({
     service_name: "",
@@ -277,6 +279,11 @@ const EditProject = () => {
       formDataToSend.append("media", formData.media.iframe.trim());
     }
 
+    if (!formData.media.iframe && !formData.media.file) {
+      setValidationError("Please provide either an iFrame URL or an image.");
+      return;
+    }
+
     try {
       const access_token = localStorage.getItem("access_token");
       const apiUrl = process.env.REACT_APP_API_URL;
@@ -297,6 +304,9 @@ const EditProject = () => {
       navigate("/admin/project");
     } catch (error) {
       console.error("Error updating project:", error);
+      setErrorMessage(
+        `${error.response?.data?.message}` || "An error occurred"
+      );
     }
   };
 
@@ -427,7 +437,22 @@ const EditProject = () => {
                   />
                 )}
               </div>
+
+              {validationError && (
+                <div className="col-12">
+                  <div className="theme-form">
+                    <span className="text-danger">{validationError}</span>
+                  </div>
+                </div>
+              )}
             </div>
+
+            {errorMessage && (
+              <div className="error-message text-danger mt-2">
+                {errorMessage}
+              </div>
+            )}
+
             <div className="col-12">
               <div className="theme-form">
                 <button type="submit">Save</button>
