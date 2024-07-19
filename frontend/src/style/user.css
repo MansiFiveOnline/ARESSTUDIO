@@ -1171,6 +1171,10 @@ option {
 @media screen and (max-width: 767px) {
   .ares_logo img {
     width: 100%;
+    height: 45px;
+  }
+  .arrow_down {
+    bottom: 0%;
   }
   .sidenav .get_in_touch_header {
     text-align: left;

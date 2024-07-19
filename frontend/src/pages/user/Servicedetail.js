@@ -46,11 +46,11 @@ const Servicedetail = () => {
     headerSection: {
       position: isSmallScreen ? "static" : "absolute",
     },
-    imgSection: {
-      height: isSmallScreen ? "70vh" : "auto",
-      objectFit: "cover",
-      // filter: "brightness(0.5)",
-    },
+    // imgSection: {
+    //   height: isSmallScreen ? "70vh" : "auto",
+    //   objectFit: "cover",
+    //   filter: "brightness(0.5)",
+    // },
     videoSection: {
       // filter: "brightness(0.5)",
     },
