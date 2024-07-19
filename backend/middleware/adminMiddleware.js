@@ -31,7 +31,7 @@ const authenticateAdmin = async (req, res, next) => {
     if (error.name === "TokenExpiredError") {
       return res
         .status(401)
-        .json({ message: "Access token has expired. Kindly reload the page." });
+        .json({ message: "Access token has expired. Kindly login again." });
     }
     return res
       .status(500)
