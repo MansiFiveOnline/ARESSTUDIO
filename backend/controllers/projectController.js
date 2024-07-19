@@ -849,9 +849,11 @@ const deleteProject = async (req, res) => {
       });
     }
 
-    const deletedProject = await projectModel.findOneAndDelete({
+    const deletedProject = await projectModel.findByIdAndDelete({
       _id: req.params._id,
     });
+
+    await projectDetailsModel.deleteMany({ project_id: deletedProject._id });
 
     return res.status(200).json({
       message: "project deleted successfully.",

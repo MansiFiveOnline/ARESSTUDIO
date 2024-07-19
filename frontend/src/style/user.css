@@ -463,7 +463,7 @@ body {
 .service .card-img-top {
   border: 0;
   border-radius: 0;
-  filter: brightness(0.5);
+  /* filter: brightness(0.5); */
 }
 /* .lock_icon {
   position: absolute !important;
@@ -671,7 +671,7 @@ option {
 }
 
 .card video {
-  filter: brightness(0.5);
+  /* filter: brightness(0.5); */
 }
 
 .modal-body .video-container video {
@@ -1138,6 +1138,20 @@ option {
 
 .cookie-consent button:hover {
   background: #fff;
+}
+
+.media_box {
+  overflow: hidden;
+}
+
+.media_box img,
+.media_box video {
+  transition: transform 0.8s ease;
+}
+
+.media_box:hover img,
+.media_box:hover video {
+  transform: scale(1.5);
 }
 
 /* ============MEDIA QUERY START=========== */

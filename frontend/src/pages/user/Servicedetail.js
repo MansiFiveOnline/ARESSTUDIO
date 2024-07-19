@@ -49,10 +49,10 @@ const Servicedetail = () => {
     imgSection: {
       height: isSmallScreen ? "70vh" : "auto",
       objectFit: "cover",
-      filter: "brightness(0.5)",
+      // filter: "brightness(0.5)",
     },
     videoSection: {
-      filter: "brightness(0.5)",
+      // filter: "brightness(0.5)",
     },
     titleSection: {
       fontWeight: "bold",
