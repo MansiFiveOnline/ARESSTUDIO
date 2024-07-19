@@ -214,7 +214,7 @@ const Gallery = ({ service_name }) => {
                       <VideoPlayer
                         src={item.iframe}
                         type="video/mp4"
-                        className="card-img-top"
+                        className="card-img-top cardImg"
                         controls
                         ref={currentVideoRef} // Set the current video ref
                       />
@@ -225,7 +225,7 @@ const Gallery = ({ service_name }) => {
                             ? `${apiUrl}/${item.filepath}`
                             : "path_to_placeholder_image"
                         }
-                        className="card-img-top"
+                        className="card-img-top cardImg"
                         alt={`Media ${index}`}
                         loading="lazy"
                       />

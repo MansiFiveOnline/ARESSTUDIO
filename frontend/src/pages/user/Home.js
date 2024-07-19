@@ -101,6 +101,12 @@ const Home = () => {
     fetchServicesData();
   }, []);
 
+  const styles = {
+    homeBanner: {
+      lineHeight: "0",
+    },
+  };
+
   return (
     <>
       <Helmet>
@@ -109,7 +115,7 @@ const Home = () => {
 
       <>
         <Header />
-        <div className="home_banner">
+        <div className="home_banner" style={styles.homeBanner}>
           <div className="container-fluid">
             <div className="row">
               <div className="col-lg-6">

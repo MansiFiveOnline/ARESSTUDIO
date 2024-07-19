@@ -917,6 +917,11 @@ option {
 .lightbox_gallery .modal-body {
   padding: 0;
 }
+
+#exampleLightbox.modal.fade.show {
+  overflow-y: hidden;
+}
+
 .lightbox_gallery .bg-dark {
   opacity: 1;
   background-color: rgb(0 0 0) !important;
@@ -1144,12 +1149,20 @@ option {
   overflow: hidden;
 }
 
-.media_box img,
-.media_box video {
-  transition: transform 0.8s ease;
+/* .media_box .card-img-top {
+  transition: transform 1.5s ease;
 }
 
-.media_box:hover img,
+.media_box:hover .card-img-top {
+  transform: scale(1.5);
+}  */
+
+.media_box .card-img-top.cardImg,
+.media_box video {
+  transition: transform 1.5s ease;
+}
+
+.media_box:hover .card-img-top.cardImg,
 .media_box:hover video {
   transform: scale(1.5);
 }
