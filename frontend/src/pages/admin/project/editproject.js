@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Layout from "../../../components/adminLayout";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const EditProject = () => {
   const { id } = useParams();
@@ -305,6 +307,32 @@ const EditProject = () => {
     }
   };
 
+  const formats = [
+    "header",
+    "font",
+    "size",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "indent",
+    "link",
+  ];
+
+  const modules = {
+    toolbar: [
+      [{ header: "1" }, { header: "2" }, { font: [] }],
+      [{ size: [] }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      [{ indent: "-1" }, { indent: "+1" }],
+      ["link"],
+    ],
+  };
+
   return (
     <Layout>
       <div className="theme-form-header">
@@ -321,6 +349,10 @@ const EditProject = () => {
                   name="project_name"
                   value={formData.project_name}
                   onChange={handleChange}
+                  // value={formData.project_name}
+                  // onChange={(value) =>
+                  //   setFormData({ ...formData, project_name: value })
+                  // }
                 />
               </div>
             </div>
@@ -338,12 +370,25 @@ const EditProject = () => {
             <div className="col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="theme-form">
                 <label>Description</label>
-                <textarea
+                {/* <textarea
                   type="text"
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
                   rows={4}
+                
+                /> */}
+                <ReactQuill
+                  theme="snow"
+                  modules={modules}
+                  formats={formats}
+                  name="description"
+                  // value={formData.description}
+                  // onChange={handleChange}
+                  value={formData.description}
+                  onChange={(value) =>
+                    setFormData({ ...formData, description: value })
+                  }
                 />
               </div>
             </div>

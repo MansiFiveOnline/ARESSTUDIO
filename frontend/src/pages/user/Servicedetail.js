@@ -6,6 +6,7 @@ import "../../style/user.css";
 import axios from "axios";
 import VideoPlayer from "../../components/Videoplayer";
 import { Helmet } from "react-helmet";
+import Parse from "html-react-parser";
 
 const Servicedetail = () => {
   const { project_name } = useParams();
@@ -106,7 +107,7 @@ const Servicedetail = () => {
                   )}
 
                   {projectData.description !== "" && (
-                    <p>{projectData.description}</p>
+                    <div>{Parse(projectData.description)}</div>
                   )}
                 </div>
               </div>

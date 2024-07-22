@@ -1164,9 +1164,49 @@ option {
 
 .media_box:hover .card-img-top.cardImg,
 .media_box:hover video {
-  transform: scale(1.5);
+  transform: scale(1.23);
 }
 
+/* .epic_adventures_section li {
+  list-style: disc;
+  color: white;
+}
+
+.epic_adventures_section b {
+  font-weight: 900;
+} */
+
+.epic_adventures_section ul,
+.epic_adventures_section ol {
+  display: block;
+}
+
+.epic_adventures_section ul li {
+  padding-left: 40px;
+  list-style-type: disc;
+  color: white;
+  text-align: left;
+}
+
+.epic_adventures_section ol li {
+  margin-bottom: 10px;
+  color: white;
+  list-style-type: auto;
+  text-align: left;
+}
+
+.epic_adventures_sectionul ul {
+  padding-left: 2em; /* Adjust as needed for nested lists */
+}
+
+.epic_adventures_section ol ol {
+  padding-left: 2em; /* Adjust as needed for nested lists */
+}
+
+.epic_adventures_section p {
+  margin: 20px 0;
+  text-align: left;
+}
 /* ============MEDIA QUERY START=========== */
 @media screen and (max-width: 767px) {
   .ares_logo img {
