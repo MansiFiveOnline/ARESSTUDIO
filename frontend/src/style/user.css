@@ -1207,6 +1207,20 @@ option {
   margin: 20px 0;
   text-align: left;
 }
+
+.resp_duty ol li {
+  margin-bottom: 10px;
+  color: white;
+  list-style-type: auto;
+  text-align: left;
+}
+
+.resp_duty ul li {
+  padding-left: 40px;
+  list-style-type: disc;
+  color: white;
+  text-align: left;
+}
 /* ============MEDIA QUERY START=========== */
 @media screen and (max-width: 767px) {
   .ares_logo img {

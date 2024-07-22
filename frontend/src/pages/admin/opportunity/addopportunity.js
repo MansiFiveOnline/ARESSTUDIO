@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import Layout from "../../../components/adminLayout";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const AddOpportunity = () => {
   const [title, setTitle] = useState("");
@@ -49,6 +51,31 @@ const AddOpportunity = () => {
     }
   };
 
+  const formats = [
+    "header",
+    "font",
+    "size",
+    "bold",
+    "italic",
+    "list",
+    "bullet",
+    "indent",
+  ];
+
+  const modules = {
+    toolbar: [
+      [{ header: "1" }, { header: "2" }, { font: [] }],
+      [{ size: [] }],
+      ["bold", "italic"],
+      [
+        { list: "ordered" },
+        { list: "bullet" },
+        { indent: "-1" },
+        { indent: "+1" },
+      ],
+    ],
+  };
+
   return (
     <Layout>
       <div className="theme-form-header">
@@ -73,13 +100,20 @@ const AddOpportunity = () => {
             <div className="col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="theme-form">
                 <label>Description</label>
-                <textarea
+                {/* <textarea
                   type="text"
                   name="description"
                   value={description}
                   required
                   onChange={(e) => setDescription(e.target.value)}
                   rows={4}
+                /> */}
+                <ReactQuill
+                  value={description}
+                  onChange={setDescription}
+                  theme="snow"
+                  modules={modules}
+                  formats={formats}
                 />
               </div>
             </div>
@@ -87,13 +121,21 @@ const AddOpportunity = () => {
             <div className="col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="theme-form">
                 <label>Responsibility</label>
-                <textarea
+                {/* <textarea
                   type="text"
                   name="responsibility"
                   required
                   value={responsibility}
                   onChange={(e) => setResponsibility(e.target.value)}
                   rows={4}
+                /> */}
+                <ReactQuill
+                  name="responsibility"
+                  value={responsibility}
+                  onChange={setResponsibility}
+                  theme="snow"
+                  modules={modules}
+                  formats={formats}
                 />
               </div>
             </div>
@@ -101,13 +143,21 @@ const AddOpportunity = () => {
             <div className="col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="theme-form">
                 <label>Qualification</label>
-                <textarea
+                {/* <textarea
                   type="text"
                   name="qualification"
                   value={qualification}
                   required
                   onChange={(e) => setQualification(e.target.value)}
                   rows={4}
+                /> */}
+                <ReactQuill
+                  name="qualification"
+                  value={qualification}
+                  onChange={setQualification}
+                  theme="snow"
+                  modules={modules}
+                  formats={formats}
                 />
               </div>
             </div>

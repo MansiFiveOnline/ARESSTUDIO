@@ -254,6 +254,7 @@ import "../../style/user.css";
 import axios from "axios";
 import VideoPlayer from "../../components/Videoplayer";
 import { Helmet } from "react-helmet";
+import Parse from "html-react-parser";
 
 export default function About() {
   const [aboutData, setAboutData] = useState(null);
@@ -354,7 +355,7 @@ export default function About() {
               <h2 className="pb-5" style={styles.title}>
                 {aboutData[0].subtitle}
               </h2>
-              <p>{aboutData[0].description}</p>
+              <p>{Parse(aboutData[0].description)}</p>
             </div>
           </div>
         </div>

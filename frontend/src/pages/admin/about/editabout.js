@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Layout from "../../../components/adminLayout";
 import { useNavigate } from "react-router-dom";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const EditAbout = () => {
   const navigate = useNavigate();
@@ -11,7 +13,6 @@ const EditAbout = () => {
     title: "",
     subtitle: "",
     description: "",
-    // about_description: "",
     media: "",
     metaTitle: "",
     metaDescription: "",
@@ -32,7 +33,6 @@ const EditAbout = () => {
           title: aboutData.title,
           subtitle: aboutData.subtitle,
           description: aboutData.description,
-          // about_description: aboutData.about_description,
           media: aboutData.media,
           metaTitle: aboutData.metaTitle,
           metaDescription: aboutData.metaDescription,
@@ -50,30 +50,37 @@ const EditAbout = () => {
 
     if (name === "media") {
       if (files && files.length > 0) {
-        setFormData({
-          ...formData,
+        setFormData((prevFormData) => ({
+          ...prevFormData,
           media: {
             file: files[0],
             filename: files[0].name,
             filepath: URL.createObjectURL(files[0]),
             iframe: "",
           },
-        });
+        }));
       } else {
-        setFormData({
-          ...formData,
+        setFormData((prevFormData) => ({
+          ...prevFormData,
           media: {
-            ...formData.media,
+            ...prevFormData.media,
             iframe: value,
           },
-        });
+        }));
       }
     } else {
-      setFormData({
-        ...formData,
+      setFormData((prevFormData) => ({
+        ...prevFormData,
         [name]: value,
-      });
+      }));
     }
+  };
+
+  const handleDescriptionChange = (value) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      description: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -83,7 +90,6 @@ const EditAbout = () => {
       formDataToSend.append("title", formData.title);
       formDataToSend.append("subtitle", formData.subtitle);
       formDataToSend.append("description", formData.description);
-      // formDataToSend.append("about_description", formData.about_description);
       formDataToSend.append("metaTitle", formData.metaTitle);
       formDataToSend.append("metaDescription", formData.metaDescription);
 
@@ -123,6 +129,31 @@ const EditAbout = () => {
     }
   };
 
+  const formats = [
+    "header",
+    "font",
+    "size",
+    "bold",
+    "italic",
+    "list",
+    "bullet",
+    "indent",
+  ];
+
+  const modules = {
+    toolbar: [
+      [{ header: "1" }, { header: "2" }, { font: [] }],
+      [{ size: [] }],
+      ["bold", "italic"],
+      [
+        { list: "ordered" },
+        { list: "bullet" },
+        { indent: "-1" },
+        { indent: "+1" },
+      ],
+    ],
+  };
+
   return (
     <Layout>
       <div className="theme-form-header">
@@ -156,26 +187,16 @@ const EditAbout = () => {
             <div className="col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="theme-form">
                 <label>Description</label>
-                <textarea
-                  type="text"
+                <ReactQuill
+                  theme="snow"
+                  modules={modules}
+                  formats={formats}
                   name="description"
                   value={formData.description}
-                  onChange={handleChange}
-                  rows={4}
+                  onChange={handleDescriptionChange}
                 />
               </div>
             </div>
-            {/* <div className="col-lg-6 col-md-6 col-sm-12 col-12">
-              <div className="theme-form">
-                <label>About Description</label>
-                <input
-                  type="text"
-                  name="about_description"
-                  value={formData.about_description}
-                  onChange={handleChange}
-                />
-              </div>
-            </div> */}
             <div className="col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="theme-form">
                 <label>Media (1920 X 1080)</label>

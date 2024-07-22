@@ -95,6 +95,8 @@ const updateTeam = async (req, res) => {
       });
     }
 
+    const oldSequence = team.sequence;
+
     team.name = name;
     team.designation = designation;
     team.linkedin_url = linkedin_url;
@@ -102,6 +104,17 @@ const updateTeam = async (req, res) => {
     team.sequence = sequence;
 
     await team.save();
+
+    // Adjust the sequence numbers of other team members if necessary
+    if (oldSequence !== sequence) {
+      await teamModel.updateMany(
+        {
+          _id: { $ne: req.params._id },
+          sequence: sequence,
+        },
+        { $inc: { sequence: oldSequence >= sequence ? 1 : -1 } }
+      );
+    }
 
     const updatedFields = {
       name,
@@ -191,29 +204,78 @@ const getTeams = async (req, res) => {
   }
 };
 
+// const deleteTeam = async (req, res) => {
+//   try {
+//     const teamExists = await teamModel.findById(req.params._id);
+
+//     if (!teamExists) {
+//       return res.status(400).json({
+//         message: "No teams are created. Kindly create one.",
+//       });
+//     }
+
+//     const deletedSequence = teamExists.sequence;
+
+//     const deleteteam = await teamModel.findByIdAndDelete({
+//       _id: req.params._id,
+//     });
+
+//     // Update sequence for subsequent entries of the same project name
+//     await teamModel.updateMany(
+//       { sequence: { $gt: deletedSequence } },
+//       { $inc: { sequence: -1 } }
+//     );
+
+//     return res.status(200).json({
+//       message: "team deleted successfully.",
+//       deleteteam,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: `Error in deleting team due to ${error.message}`,
+//     });
+//   }
+// };
+
 const deleteTeam = async (req, res) => {
   try {
-    const teamExists = await teamModel.findById({
-      _id: req.params._id,
-    });
+    const teamExists = await teamModel.findById(req.params._id);
 
-    if (teamExists.length === 0) {
+    if (!teamExists) {
       return res.status(400).json({
-        message: "No teams are created. Kindly create one.",
+        message: "Team member not found.",
       });
     }
 
-    const deleteteam = await teamModel.findOneAndDelete({
-      _id: req.params._id,
-    });
+    const deletedSequence = teamExists.sequence;
+    console.log(`Deleting team member with sequence: ${deletedSequence}`);
+
+    const deleteteam = await teamModel.findByIdAndDelete(req.params._id);
+
+    if (!deleteteam) {
+      return res.status(500).json({
+        message: "Error in deleting the team member.",
+      });
+    }
+
+    // Update the sequence of the remaining team members
+    const updateResult = await teamModel.updateMany(
+      { sequence: { $gt: deletedSequence } },
+      { $inc: { sequence: -1 } }
+    );
+
+    console.log(
+      `Updated ${updateResult.modifiedCount} team members' sequences.`
+    );
 
     return res.status(200).json({
-      message: "team deleted successfully.",
+      message: "Team member deleted successfully.",
       deleteteam,
     });
   } catch (error) {
+    console.error(`Error in deleting team member: ${error.message}`);
     return res.status(500).json({
-      message: `Error in deleting team due to ${error.message}`,
+      message: `Error in deleting team member due to ${error.message}`,
     });
   }
 };

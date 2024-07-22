@@ -97,6 +97,13 @@ const EditProject = () => {
     }
   };
 
+  const handleDescriptionChange = (value) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      description: value,
+    }));
+  };
+
   const fetchGalleryNames = async (service_name) => {
     try {
       const apiUrl = process.env.REACT_APP_API_URL;
@@ -313,23 +320,18 @@ const EditProject = () => {
     "size",
     "bold",
     "italic",
-    "underline",
-    "strike",
-    "blockquote",
     "list",
     "bullet",
     "indent",
-    "link",
   ];
 
   const modules = {
     toolbar: [
       [{ header: "1" }, { header: "2" }, { font: [] }],
       [{ size: [] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
+      ["bold", "italic"],
       [{ list: "ordered" }, { list: "bullet" }],
       [{ indent: "-1" }, { indent: "+1" }],
-      ["link"],
     ],
   };
 
@@ -383,12 +385,12 @@ const EditProject = () => {
                   modules={modules}
                   formats={formats}
                   name="description"
-                  // value={formData.description}
-                  // onChange={handleChange}
                   value={formData.description}
-                  onChange={(value) =>
-                    setFormData({ ...formData, description: value })
-                  }
+                  onChange={handleDescriptionChange}
+                  // value={formData.description}
+                  // onChange={(value) =>
+                  //   setFormData({ ...formData, description: value })
+                  // }
                 />
               </div>
             </div>

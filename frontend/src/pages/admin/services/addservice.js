@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import Layout from "../../../components/adminLayout";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const AddService = () => {
   const [service_name, setServiceName] = useState("");
@@ -82,6 +84,31 @@ const AddService = () => {
     }
   };
 
+  const formats = [
+    "header",
+    "font",
+    "size",
+    "bold",
+    "italic",
+    "list",
+    "bullet",
+    "indent",
+  ];
+
+  const modules = {
+    toolbar: [
+      [{ header: "1" }, { header: "2" }, { font: [] }],
+      [{ size: [] }],
+      ["bold", "italic"],
+      [
+        { list: "ordered" },
+        { list: "bullet" },
+        { indent: "-1" },
+        { indent: "+1" },
+      ],
+    ],
+  };
+
   return (
     <Layout>
       <div className="theme-form-header">
@@ -132,12 +159,19 @@ const AddService = () => {
             <div className="col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="theme-form">
                 <label>Description</label>
-                <textarea
+                {/* <textarea
                   type="text"
                   name="description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={4}
+                /> */}
+                <ReactQuill
+                  theme="snow"
+                  modules={modules}
+                  formats={formats}
+                  name="description"
+                  value={description}
                 />
                 {/* <img className="form-profile" src="src/img/user-icon-img.png" /> */}
               </div>

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Layout from "../../../components/adminLayout";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const EditService = () => {
   const { id } = useParams();
@@ -84,6 +86,13 @@ const EditService = () => {
     }
   };
 
+  const handleDescriptionChange = (value) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      description: value,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -126,6 +135,31 @@ const EditService = () => {
         `${error.response?.data?.message}` || "An error occurred"
       );
     }
+  };
+
+  const formats = [
+    "header",
+    "font",
+    "size",
+    "bold",
+    "italic",
+    "list",
+    "bullet",
+    "indent",
+  ];
+
+  const modules = {
+    toolbar: [
+      [{ header: "1" }, { header: "2" }, { font: [] }],
+      [{ size: [] }],
+      ["bold", "italic"],
+      [
+        { list: "ordered" },
+        { list: "bullet" },
+        { indent: "-1" },
+        { indent: "+1" },
+      ],
+    ],
   };
 
   return (
@@ -186,12 +220,20 @@ const EditService = () => {
             <div className="col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="theme-form">
                 <label>Description</label>
-                <textarea
+                {/* <textarea
                   type="text"
                   name="description"
                   value={formData.description || ""}
                   onChange={handleChange}
                   rows={4}
+                /> */}
+                <ReactQuill
+                  theme="snow"
+                  modules={modules}
+                  formats={formats}
+                  name="description"
+                  value={formData.description}
+                  onChange={handleDescriptionChange}
                 />
               </div>
             </div>

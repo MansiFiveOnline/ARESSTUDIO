@@ -92,27 +92,22 @@ const AddProject = () => {
     "size",
     "bold",
     "italic",
-    "underline",
-    "strike",
-    "blockquote",
     "list",
     "bullet",
     "indent",
-    "link",
   ];
 
   const modules = {
     toolbar: [
       [{ header: "1" }, { header: "2" }, { font: [] }],
       [{ size: [] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
+      ["bold", "italic"],
       [
         { list: "ordered" },
         { list: "bullet" },
         { indent: "-1" },
         { indent: "+1" },
       ],
-      ["link"],
     ],
   };
 
@@ -165,6 +160,7 @@ const AddProject = () => {
                   theme="snow"
                   modules={modules}
                   formats={formats}
+                  name="description"
                 />
               </div>
             </div>

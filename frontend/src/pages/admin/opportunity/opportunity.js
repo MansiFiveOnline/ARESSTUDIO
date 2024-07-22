@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Layout from "../../../components/adminLayout";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import Parse from "html-react-parser";
 
 const Opportunities = () => {
   const [opportunities, setOpportunities] = useState([]);
@@ -90,7 +91,7 @@ const Opportunities = () => {
                       <tr key={opportunity._id}>
                         <td>{opportunity.title}</td>
                         <td className="text-center">
-                          {opportunity.description}
+                          {Parse(opportunity.description)}
                         </td>
                         {/* <td className="text-center">
                           {opportunity.responsibility}
