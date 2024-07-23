@@ -13,6 +13,9 @@ export default function About() {
   const [aboutData, setAboutData] = useState(null);
   const [teams, setTeams] = useState([]);
   const { id } = useParams(); // Use the correct about ID
+  const [isSmallScreen, setIsSmallScreen] = useState(
+    window.matchMedia("(max-width: 600px)").matches
+  );
 
   useEffect(() => {
     const fetchAboutData = async () => {
@@ -44,6 +47,12 @@ export default function About() {
 
     fetchAboutData();
     fetchTeams();
+
+    const handleResize = () => {
+      setIsSmallScreen(window.matchMedia("(max-width: 600px)").matches);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [id]);
 
   if (!aboutData || !teams) {
@@ -66,10 +75,13 @@ export default function About() {
       filter: "brightness(0.5)",
       height: "auto",
     },
+    headerSection: {
+      position: isSmallScreen ? "static" : "absolute",
+    },
   };
 
   return (
-    <Layout>
+    <Layout style={styles.headerSection}>
       <Helmet>
         {/* Meta tags specific to the About page */}
         <title>{aboutData[0].metaTitle}</title>
