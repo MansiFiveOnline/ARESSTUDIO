@@ -1164,7 +1164,7 @@ option {
 
 .media_box:hover .card-img-top.cardImg,
 .media_box:hover video {
-  transform: scale(1.23);
+  transform: scale(1.09);
 }
 
 /* .epic_adventures_section li {
@@ -1178,12 +1178,12 @@ option {
 
 .epic_adventures_section ul,
 .epic_adventures_section ol {
-  display: block;
+  display: inline-block;
 }
 
 .epic_adventures_section ul li {
-  padding-left: 40px;
-  list-style-type: disc;
+  padding-left: 20px;
+  list-style-type: circle;
   color: white;
   text-align: left;
 }
@@ -1205,7 +1205,6 @@ option {
 
 .epic_adventures_section p {
   margin: 20px 0;
-  text-align: left;
 }
 
 .resp_duty ol li {
@@ -1216,8 +1215,8 @@ option {
 }
 
 .resp_duty ul li {
-  padding-left: 40px;
-  list-style-type: disc;
+  padding-left: 20px;
+  list-style-type: circle;
   color: white;
   text-align: left;
 }
@@ -1307,7 +1306,8 @@ option {
     border-bottom: 1px solid #fff;
   }
   .getin_touch_title h2 {
-    font-size: 74px;
+    font-size: 35px;
+    padding-left: 15px;
   }
   .lightbox_gallery .btn-close {
     font-size: 18px;

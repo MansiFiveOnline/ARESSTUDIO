@@ -6,6 +6,7 @@ import Gallery from "../../components/Gallery";
 import axios from "axios";
 import "../../style/user.css";
 import { Helmet } from "react-helmet";
+import Parse from "html-react-parser";
 
 const Service = () => {
   // Access service name parameter from URL
@@ -96,7 +97,7 @@ const Service = () => {
                     <br />
                     {serviceData.subtitle}
                   </h2>
-                  <p>{serviceData.description}</p>
+                  <p>{Parse(serviceData.description)}</p>
                 </div>
               </div>
             </div>

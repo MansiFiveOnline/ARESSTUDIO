@@ -77,6 +77,34 @@ const Servicedetail = () => {
                     src={projectData.media.iframe}
                     style={styles.videoSection}
                   />
+                ) : projectData._id === "66979a1c154c5f0ba2a6b808" ? (
+                  <img
+                    src="/images/junkyard-banner.webp"
+                    alt="Media"
+                    loading="lazy"
+                    style={styles.imgSection}
+                  />
+                ) : projectData._id === "66979a8b154c5f0ba2a6b818" ? (
+                  <img
+                    src="/images/time-breaching-banner.webp"
+                    alt="Media"
+                    loading="lazy"
+                    style={styles.imgSection}
+                  />
+                ) : projectData._id === "668518f757c0e49acaeed3f7" ? (
+                  <img
+                    src="/images/deceit2-banner.webp"
+                    alt="Media"
+                    loading="lazy"
+                    style={styles.imgSection}
+                  />
+                ) : projectData._id === "6697a15e154c5f0ba2a6b85a" ? (
+                  <img
+                    src="/images/the-signal-banner.webp"
+                    alt="Media"
+                    loading="lazy"
+                    style={styles.imgSection}
+                  />
                 ) : (
                   <img
                     src={`${process.env.REACT_APP_API_URL}/${projectData.media.filepath}`}

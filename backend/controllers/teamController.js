@@ -59,6 +59,82 @@ const createTeam = async (req, res) => {
   }
 };
 
+// const updateTeam = async (req, res) => {
+//   try {
+//     const { name, designation, linkedin_url, sequence } = req.body;
+//     let image;
+
+//     if (req.file) {
+//       const isWebPImage = (file) => {
+//         const extname = path.extname(file.originalname).toLowerCase();
+//         return extname === ".webp";
+//       };
+
+//       if (!isWebPImage(req.file)) {
+//         return res.status(400).json({
+//           message: "Unsupported file type. Please upload a WebP image.",
+//         });
+//       }
+
+//       image = {
+//         filename: req.file.originalname,
+//         filepath: req.file.path,
+//       };
+//     } else if (req.body.existingImage) {
+//       image = {
+//         filename: path.basename(req.body.existingImage),
+//         filepath: req.body.existingImage,
+//       };
+//     }
+
+//     const team = await teamModel.findById(req.params._id);
+
+//     if (!team) {
+//       return res.status(400).json({
+//         message: "No team found to update.",
+//       });
+//     }
+
+//     const oldSequence = team.sequence;
+
+//     team.name = name;
+//     team.designation = designation;
+//     team.linkedin_url = linkedin_url;
+//     team.image = image ? [image] : team.image;
+//     team.sequence = sequence;
+
+//     await team.save();
+
+//     // Adjust the sequence numbers of other team members if necessary
+//     if (oldSequence !== sequence) {
+//       await teamModel.updateMany(
+//         {
+//           _id: { $ne: req.params._id },
+//           sequence: sequence,
+//         },
+//         { $inc: { sequence: oldSequence >= sequence ? 1 : -1 } }
+//       );
+//     }
+
+//     const updatedFields = {
+//       name,
+//       designation,
+//       linkedin_url,
+//       image: team.image,
+//       sequence,
+//     };
+
+//     return res.status(200).json({
+//       message: "Team updated successfully.",
+//       updatedFields,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: `Error in updating team due to ${error.message}`,
+//     });
+//   }
+// };
+
 const updateTeam = async (req, res) => {
   try {
     const { name, designation, linkedin_url, sequence } = req.body;
@@ -107,13 +183,23 @@ const updateTeam = async (req, res) => {
 
     // Adjust the sequence numbers of other team members if necessary
     if (oldSequence !== sequence) {
-      await teamModel.updateMany(
-        {
-          _id: { $ne: req.params._id },
-          sequence: sequence,
-        },
-        { $inc: { sequence: oldSequence >= sequence ? 1 : -1 } }
-      );
+      if (oldSequence > sequence) {
+        await teamModel.updateMany(
+          {
+            _id: { $ne: req.params._id },
+            sequence: { $gte: sequence, $lt: oldSequence },
+          },
+          { $inc: { sequence: 1 } }
+        );
+      } else {
+        await teamModel.updateMany(
+          {
+            _id: { $ne: req.params._id },
+            sequence: { $gt: oldSequence, $lte: sequence },
+          },
+          { $inc: { sequence: -1 } }
+        );
+      }
     }
 
     const updatedFields = {
@@ -248,6 +334,7 @@ const deleteTeam = async (req, res) => {
     }
 
     const deletedSequence = teamExists.sequence;
+
     console.log(`Deleting team member with sequence: ${deletedSequence}`);
 
     const deleteteam = await teamModel.findByIdAndDelete(req.params._id);

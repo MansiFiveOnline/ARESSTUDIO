@@ -42,10 +42,18 @@ const Team = () => {
           Authorization: `Bearer ${access_token}`,
         },
       });
-      setTeams(teams.filter((team) => team._id !== id));
+
+      // Fetch the updated teams list after deletion
+      const response = await axios({
+        method: "GET",
+        baseURL: `${apiUrl}/api/`,
+        url: "team",
+      });
+      // setTeams(teams.filter((team) => team._id !== id));
+      setTeams(response.data.teams);
       setTimeout(() => {
         navigate("/admin/team");
-      }, 2000);
+      }, 1000);
     } catch (error) {
       console.error("Error deleting team:", error);
     }

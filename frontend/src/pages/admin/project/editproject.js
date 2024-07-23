@@ -57,6 +57,8 @@ const EditProject = () => {
           },
         });
 
+        setIsPublic(projectData.isPublic);
+
         fetchGalleryNames(projectData.service_name);
         console.log("project detail", projectData);
       } catch (error) {
