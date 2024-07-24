@@ -131,7 +131,7 @@ const Servicedetail = () => {
               <div className="row justify-content-center">
                 <div className="col-lg-12 text-center">
                   {projectData.subtitle !== "" && (
-                    <h2 className="pb-5">{projectData.subtitle}</h2>
+                    <h1 className="pb-5">{projectData.subtitle}</h1>
                   )}
 
                   {projectData.description !== "" && (

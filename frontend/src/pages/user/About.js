@@ -110,9 +110,7 @@ export default function About() {
             )}
           </div>
         </div>
-        <div className="about_title">
-          <h1>{aboutData[0].title}</h1>
-        </div>
+        <div className="about_title">{/* <h1>{aboutData[0].title}</h1> */}</div>
         <div className="arrow_down">
           <a href="#about">
             <div className="sr-arrow sr-bounce"></div>
@@ -125,9 +123,9 @@ export default function About() {
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-12 text-center">
-              <h2 className="pb-5" style={styles.title}>
-                {aboutData[0].subtitle}
-              </h2>
+              <h1 className="pb-5" style={styles.title}>
+                {aboutData[0].title}
+              </h1>
               <p>{Parse(aboutData[0].description)}</p>
             </div>
           </div>

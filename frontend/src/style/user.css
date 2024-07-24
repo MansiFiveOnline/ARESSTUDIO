@@ -244,7 +244,7 @@ body {
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
-.video_title h2 {
+.video_title h1 {
   font-size: 48px;
   font-weight: 400;
   line-height: 57.55px;
@@ -254,7 +254,7 @@ body {
   margin-right: -15px;
   transition: 0.5s;
 }
-.video_box:hover .video_title h2 {
+.video_box:hover .video_title h1 {
   letter-spacing: 0.82em;
   transition: 0.5s;
   margin-right: -30px;
@@ -359,7 +359,8 @@ body {
 }
 
 /*  */
-.epic_adventures_section h2 {
+.epic_adventures_section h1,
+.epic_adventures_section.service-page h2 {
   font-size: 36px;
   font-family: "GlacialIndifference-Regular";
   font-weight: 400;
@@ -368,7 +369,8 @@ body {
   text-transform: uppercase;
   color: #fff;
 }
-.epic_adventures_section h2 strong {
+.epic_adventures_section h1 strong,
+.epic_adventures_section.service-page h2 strong {
   font-family: "GlacialIndifference-Bold";
   font-weight: 800;
 }

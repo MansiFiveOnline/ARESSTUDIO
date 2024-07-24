@@ -88,7 +88,10 @@ const Service = () => {
             </div>
           </div>
 
-          <div className="epic_adventures_section pt-5 mt-5" id="gaming">
+          <div
+            className="epic_adventures_section pt-5 mt-5 service-page"
+            id="gaming"
+          >
             <div className="container">
               <div className="row justify-content-center">
                 <div className="col-lg-12 text-center">

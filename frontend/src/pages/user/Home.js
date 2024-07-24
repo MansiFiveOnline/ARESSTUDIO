@@ -144,7 +144,7 @@ const Home = () => {
                     </div>
                     <div className="video_title">
                       <div className="text-center">
-                        <h2>GAMES</h2>
+                        <h1>GAMES</h1>
                         <Link to="/service/games" className="btn-link">
                           Read More
                         </Link>
@@ -177,7 +177,7 @@ const Home = () => {
                     </div>
                     <div className="video_title">
                       <div className="text-center">
-                        <h2>VFX</h2>
+                        <h1>VFX</h1>
                         <Link to="/service/vfx" className="btn-link">
                           Read More
                         </Link>
