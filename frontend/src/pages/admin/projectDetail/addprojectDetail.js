@@ -115,7 +115,7 @@ const AddProjectDetail = () => {
 
             <div className="col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="theme-form">
-                <label>Media (1920 X 1080)</label>
+                <label>Media (1920 X 1000)</label>
                 <input
                   type="text"
                   name="media"

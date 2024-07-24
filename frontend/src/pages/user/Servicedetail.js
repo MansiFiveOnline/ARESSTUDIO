@@ -86,7 +86,7 @@ const Servicedetail = () => {
                   />
                 ) : projectData._id === "66979a8b154c5f0ba2a6b818" ? (
                   <img
-                    src="/images/time-breaching-banner.webp"
+                    src="/images/time-breachers-banner.webp"
                     alt="Media"
                     loading="lazy"
                     style={styles.imgSection}
