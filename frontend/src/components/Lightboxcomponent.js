@@ -99,6 +99,12 @@ const Lightboxcomponent = () => {
     carousel.to(index); // Move to the active slide
   };
 
+  const styles = {
+    videoBorder: {
+      border: isSmallScreen ? "0.5px solid white" : "none",
+    },
+  };
+
   return (
     <div className="lightbox_gallery">
       <div className="container text-center py-5">
@@ -116,22 +122,23 @@ const Lightboxcomponent = () => {
                 >
                   <div className="gal-box">
                     {item.iframe ? (
-                      isSmallScreen ? (
-                        <video
-                          className="card-img-top w-100"
-                          src={item.iframe}
-                          type="video/mp4"
-                          controls
-                        />
-                      ) : (
-                        <VideoPlayer
-                          src={item.iframe}
-                          type="video/mp4"
-                          className="card-img-top w-100"
-                          controls
-                        />
-                      )
+                      // isSmallScreen ? (
+                      //   <video
+                      //     className="card-img-top w-100"
+                      //     src={item.iframe}
+                      //     type="video/mp4"
+                      //     controls
+                      //   />
+                      // ) : (
+                      <VideoPlayer
+                        src={item.iframe}
+                        type="video/mp4"
+                        className="card-img-top w-100"
+                        controls
+                        style={styles.videoBorder}
+                      />
                     ) : (
+                      // )
                       <img
                         src={`${apiUrl}/${item.filepath}`}
                         alt={`${item.filename}`}
