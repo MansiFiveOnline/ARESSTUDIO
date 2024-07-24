@@ -100,9 +100,9 @@ const Lightboxcomponent = () => {
   };
 
   const styles = {
-    videoBorder: {
-      border: isSmallScreen ? "0.5px solid white" : "none",
-    },
+    // videoBorder: {
+    //   border: "0.5px solid white",
+    // },
   };
 
   return (
