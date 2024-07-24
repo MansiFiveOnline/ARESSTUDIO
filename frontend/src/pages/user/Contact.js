@@ -60,7 +60,7 @@ export default function Contact() {
           <div className="video-list">
             {/* <VideoPlayer src="images/video2.mp4" /> */}
             <img
-              src="images/service-detail.jpg"
+              src="images/service-detail.webp"
               alt="banner img"
               loading="lazy"
             />
