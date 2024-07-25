@@ -80,9 +80,9 @@ export default function Career() {
     fetchOpportunities();
   }, []);
 
-  if (!opportunities && !careerData) {
-    return <div></div>;
-  }
+  // if (!opportunities && !careerData) {
+  //   return <div></div>;
+  // }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
