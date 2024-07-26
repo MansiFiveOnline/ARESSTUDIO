@@ -340,6 +340,7 @@ import AdminRoute from "./routes/AdminRoutes";
 import Home from "./pages/user/Home";
 import About from "./pages/user/About";
 import Service from "./pages/user/Service";
+import Services from "./pages/user/Services";
 import Pagenotfound from "./pages/user/Pagenotfound";
 import Contact from "./pages/user/Contact";
 import Career from "./pages/user/Career";
@@ -379,7 +380,7 @@ function App() {
           <Route path="/service/:service_name" element={<Service />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/career" element={<Career />} />
-          <Route path="/service" element={<Home />} />
+          <Route path="/service" element={<Services />} />
           <Route
             path="/service-detail/:project_name"
             element={<Servicedetail />}

@@ -1505,10 +1505,9 @@ const Lightboxcomponent = () => {
                     {item.iframe ? (
                       <VideoPlayer
                         src={item.iframe}
-                        type="video/mp4"
                         className="card-img-top w-100"
                         controls
-                        startTime={20}
+                        startTime={10}
                       />
                     ) : (
                       <img
@@ -1564,11 +1563,12 @@ const Lightboxcomponent = () => {
                           {item.iframe ? (
                             <div className="embed-responsive embed-responsive-16by9 bg-dark">
                               {index === activeIndex && (
-                                <iframe
+                                <video
                                   src={item.iframe}
                                   title={`Media ${index}`}
                                   allowFullScreen
                                   className="embed-responsive-item"
+                                  controls
                                 />
                               )}
                             </div>

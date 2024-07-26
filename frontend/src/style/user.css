@@ -998,7 +998,7 @@ option {
 
 .embed-responsive {
   width: 100%;
-  max-height: 100%;
+  /* max-height: 100%; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1008,6 +1008,8 @@ option {
   width: 100%;
   height: auto;
   max-height: 100%;
+  padding: 0 80px;
+  margin-top: 70px;
 }
 /* Change background color of buttons on hover */
 .horizontal_tabs_section .tab button:hover {
@@ -1406,7 +1408,11 @@ option {
     padding: 0px 10px;
   }
 
-  .embed-responsive.embed-responsive-16by9 iframe video {
+  .embed-responsive.embed-responsive-16by9 video {
     margin-top: 20px;
+  }
+
+  .ratio-16x9 {
+    --bs-aspect-ratio: 92.25%;
   }
 }
