@@ -33,7 +33,7 @@
     "mixitup": "^3.3.1",
     "primereact": "^10.6.3",
     "react": "^18.2.0",
-    "react-bootstrap": "^2.10.2",
+    "react-bootstrap": "^2.10.4",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
     "react-quill": "^2.0.0",
