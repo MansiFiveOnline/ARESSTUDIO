@@ -1967,6 +1967,9 @@ const Lightboxcomponent = () => {
                           className={`carousel-item text-center ${
                             index === activeIndex ? "active" : ""
                           }`}
+                          style={{
+                            display: index === activeIndex ? "block" : "none",
+                          }}
                         >
                           {item.iframe ? (
                             <div className="embed-responsive embed-responsive-16by9 bg-dark">
