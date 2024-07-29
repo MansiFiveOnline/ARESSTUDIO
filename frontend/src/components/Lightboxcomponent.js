@@ -1894,6 +1894,18 @@ const Lightboxcomponent = () => {
     });
   };
 
+  useEffect(() => {
+    if (modalVisible) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+
+    return () => {
+      document.body.classList.remove("no-scroll");
+    };
+  }, [modalVisible]);
+
   return (
     <div className="lightbox_gallery">
       <div className="container text-center py-5">
