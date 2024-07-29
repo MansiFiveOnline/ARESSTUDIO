@@ -886,7 +886,7 @@ option {
 /* ABOUT SECTION CLOSE */
 
 /* SERVICE DETAIL PAGE START */
-.lightbox_gallery .gal-box {
+/* .lightbox_gallery .gal-box {
   overflow: hidden;
   margin-bottom: 30px;
 }
@@ -931,7 +931,100 @@ option {
 
 .bg-dark {
   background-color: rgb(0 0 0) !important;
+} */
+
+.lightbox_gallery .gal-box {
+  overflow: hidden;
+  margin-bottom: 30px;
 }
+
+.lightbox_gallery a .img-fluid {
+  width: 100%;
+  height: auto; /* Ensure images maintain their aspect ratio */
+  transition: 0.3s;
+}
+
+.lightbox_gallery a .img-fluid:hover {
+  transform: scale(1.1);
+}
+
+.lightbox_gallery .modal-content {
+  background-color: transparent;
+  border: 0;
+}
+
+.lightbox_gallery .modal-header {
+  border: 0;
+  padding: 0;
+}
+
+.lightbox_gallery .btn-close {
+  background-image: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27 fill=%27%23fff%27%3e%3cpath d=%27M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z%27/%3e%3c/svg%3e");
+  font-size: 24px;
+  opacity: 1;
+  position: absolute;
+  right: -75px;
+  top: 0;
+  outline: none;
+  border: 0;
+  box-shadow: none;
+  padding-top: 30px !important;
+}
+
+.lightbox_gallery .modal-body {
+  padding: 0;
+}
+
+#exampleLightbox.modal.fade.show {
+  overflow-y: hidden;
+}
+
+.lightbox_gallery .bg-dark {
+  opacity: 1;
+  background-color: rgb(0 0 0) !important;
+}
+
+.bg-dark {
+  background-color: rgb(0 0 0) !important;
+}
+
+/* Adjust carousel item */
+.carousel-inner {
+  position: relative;
+}
+
+.carousel-item {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-item img,
+.carousel-item video {
+  width: 100%;
+  height: auto; /* Ensure proper aspect ratio */
+  max-height: 100%;
+  object-fit: contain; /* Ensure content fits within the container */
+  padding: 0 50px;
+}
+
+.embed-responsive-16by9 {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  background-color: #000;
+}
+
+.embed-responsive-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Ensure video fits within container */
+}
+
 /* SERVICE DETAIL PAGE CLOSE */
 
 /* CAREER PAGE START */
@@ -984,33 +1077,25 @@ option {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
   background: rgba(0, 0, 0, 0.5); /* Adjust the opacity here */
   z-index: 1040; /* Make sure it is below the modal but above other content */
+  display: block;
 }
 
 .carousel-item {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
 }
 
-.embed-responsive {
-  width: 100%;
-  /* max-height: 100%; */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.lightbox_gallery .modal-dialog {
+  width: auto;
 }
-
-.embed-responsive-item {
+.lightbox_gallery .modal-content {
   width: 100%;
   height: auto;
-  max-height: 100%;
-  padding: 0 80px;
-  margin-top: 70px;
 }
+
 /* Change background color of buttons on hover */
 .horizontal_tabs_section .tab button:hover {
   background-color: #0e0e0e;
@@ -1287,6 +1372,18 @@ option {
   height: 100%;
 } */
 
+.embed-responsive.embed-responsive-16by9 video,
+.embed-responsive.embed-responsive-16by9 img {
+  padding: 0 70px;
+  padding-bottom: 20px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  margin: 30px 0;
+}
+
 /* ============MEDIA QUERY START=========== */
 @media screen and (max-width: 767px) {
   .ares_logo img {
@@ -1414,5 +1511,11 @@ option {
 
   .ratio-16x9 {
     --bs-aspect-ratio: 92.25%;
+  }
+}
+
+@media (min-width: 576px) {
+  #exampleLightbox.modal {
+    --bs-modal-margin: 0 !important;
   }
 }
