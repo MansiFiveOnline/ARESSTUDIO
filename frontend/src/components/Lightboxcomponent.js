@@ -1846,6 +1846,7 @@ import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import VideoPlayer from "./Videoplayer";
 import "../style/user.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const Lightboxcomponent = () => {
   const { project_name } = useParams();
@@ -1959,7 +1960,11 @@ const Lightboxcomponent = () => {
                   ></button>
                 </div>
                 <div className="modal-body">
-                  <div id="lightboxExampleCarousel" className="carousel slide">
+                  <div
+                    id="lightboxExampleCarousel"
+                    className="carousel slide"
+                    data-bs-ride="carousel"
+                  >
                     <div className="carousel-inner ratio ratio-16x9 bg-dark">
                       {media.map((item, index) => (
                         <div
@@ -1967,9 +1972,6 @@ const Lightboxcomponent = () => {
                           className={`carousel-item text-center ${
                             index === activeIndex ? "active" : ""
                           }`}
-                          style={{
-                            display: index === activeIndex ? "block" : "none",
-                          }}
                         >
                           {item.iframe ? (
                             <div className="embed-responsive embed-responsive-16by9 bg-dark">
