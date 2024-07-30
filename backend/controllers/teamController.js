@@ -468,7 +468,7 @@ const sequenceTeam = async (req, res) => {
   } catch (error) {
     console.error("Error:", error.message);
     return res.status(500).json({
-      message: `Error in sequencing team due to ${error.message}`,
+      message: `Error in sequencing teams due to ${error.message}`,
     });
   }
 };
