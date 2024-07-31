@@ -225,6 +225,8 @@ const VideoPlayer = forwardRef(({ src, style, startTime }, ref) => {
         style={style}
         muted
         onEnded={handleVideoEnd}
+        preload="none"
+        loading="lazy"
       />
     </div>
   );
