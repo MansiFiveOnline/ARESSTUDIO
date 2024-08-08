@@ -371,17 +371,17 @@ function App() {
     localStorage.setItem("cookieConsent", "true");
   };
 
-  useEffect(() => {
-    const handleContextMenu = (event) => {
-      event.preventDefault();
-    };
+  // useEffect(() => {
+  //   const handleContextMenu = (event) => {
+  //     event.preventDefault();
+  //   };
 
-    document.addEventListener("contextmenu", handleContextMenu);
+  //   document.addEventListener("contextmenu", handleContextMenu);
 
-    return () => {
-      document.removeEventListener("contextmenu", handleContextMenu);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener("contextmenu", handleContextMenu);
+  //   };
+  // }, []);
 
   return (
     <>
