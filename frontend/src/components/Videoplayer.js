@@ -94,7 +94,6 @@ import React, {
   useImperativeHandle,
 } from "react";
 import "../style/user.css";
-import myPosterImage from "../../public/images/games-img.png";
 
 const isIPhoneSafari = () => {
   return (
@@ -177,7 +176,7 @@ const VideoPlayer = forwardRef(({ src, style, startTime }, ref) => {
         onEnded={handleVideoEnd}
         playsInline
         preload="auto"
-        poster={isSafariOnIPhone ? { myPosterImage } : undefined} // Conditionally apply the poster
+        poster={isSafariOnIPhone ? "./images/games-img.png" : undefined} // Conditionally apply the poster
       />
     </div>
   );
