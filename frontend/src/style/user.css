@@ -835,7 +835,7 @@ option {
 }
 .about_team .section:hover .content {
   opacity: 1;
-  transition: 0.5s;
+  /* transition: 0.5s; */
 }
 .about_team .section .overlay {
   width: 100%;
