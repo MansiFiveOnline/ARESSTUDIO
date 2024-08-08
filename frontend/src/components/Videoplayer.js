@@ -226,6 +226,7 @@ const VideoPlayer = forwardRef(({ src, style, startTime }, ref) => {
         muted
         onEnded={handleVideoEnd}
         playsInline
+        preload="auto"
       />
     </div>
   );

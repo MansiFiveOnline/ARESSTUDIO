@@ -2201,6 +2201,7 @@ const Lightboxcomponent = () => {
                                   className="embed-responsive-item"
                                   controls
                                   playsInline
+                                  preload="auto"
                                 />
                               )}
                             </div>
