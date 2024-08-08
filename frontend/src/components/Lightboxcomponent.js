@@ -2200,6 +2200,7 @@ const Lightboxcomponent = () => {
                                   allowFullScreen
                                   className="embed-responsive-item"
                                   controls
+                                  playsInline
                                 />
                               )}
                             </div>

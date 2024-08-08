@@ -225,6 +225,7 @@ const VideoPlayer = forwardRef(({ src, style, startTime }, ref) => {
         style={style}
         muted
         onEnded={handleVideoEnd}
+        playsInline
       />
     </div>
   );
