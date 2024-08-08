@@ -94,6 +94,7 @@ import React, {
   useImperativeHandle,
 } from "react";
 import "../style/user.css";
+import myPosterImage from "../../public/images/games-img.png";
 
 const isIPhoneSafari = () => {
   return (
@@ -103,7 +104,7 @@ const isIPhoneSafari = () => {
   );
 };
 
-const VideoPlayer = forwardRef(({ src, style, startTime, poster }, ref) => {
+const VideoPlayer = forwardRef(({ src, style, startTime }, ref) => {
   const [isHovered, setIsHovered] = useState(false);
   const videoRef = useRef(null);
   const isPausedOnLeave = useRef(false);
@@ -176,7 +177,7 @@ const VideoPlayer = forwardRef(({ src, style, startTime, poster }, ref) => {
         onEnded={handleVideoEnd}
         playsInline
         preload="auto"
-        poster={isSafariOnIPhone ? poster : undefined} // Conditionally apply the poster
+        poster={isSafariOnIPhone ? { myPosterImage } : undefined} // Conditionally apply the poster
       />
     </div>
   );
