@@ -20,6 +20,7 @@ const Lightboxcomponent = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const isSafariOnIPhone = isIPhoneSafari(); // Check if the user is on iPhone Safari
   const apiUrl = process.env.REACT_APP_API_URL;
+  const [posterImg, setPosterImg] = useState(null);
 
   useEffect(() => {
     const fetchProjectMedia = async () => {
@@ -28,10 +29,15 @@ const Lightboxcomponent = () => {
         const response = await axios.get(
           `${apiUrl}/api/project_detail/project_media/?project_name=${encodedProjectName}`
         );
+
+        const { media: projectMedia, posterImg: projectPosterImg } =
+          response.data.projectDetail;
+
         const sortedMedia = response.data.media.sort(
           (a, b) => a.sequence - b.sequence
         );
         setMedia(sortedMedia);
+        setPosterImg(projectPosterImg);
       } catch (error) {
         console.error("Error fetching project media:", error);
       }
@@ -96,6 +102,11 @@ const Lightboxcomponent = () => {
                         // startTime={10}
                         playsInline
                         preload="auto"
+                        poster={
+                          isSafariOnIPhone
+                            ? `${apiUrl}/${posterImg?.filepath}`
+                            : undefined
+                        }
                       />
                     ) : (
                       <img

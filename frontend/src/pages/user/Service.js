@@ -81,6 +81,11 @@ const Service = () => {
                     src={serviceData.media.iframe}
                     playsInline
                     preload="auto"
+                    poster={
+                      isSafariOnIPhone
+                        ? `${process.env.REACT_APP_API_URL}/${serviceData.posterImg.filepath}`
+                        : undefined
+                    }
                   />
                 ) : (
                   <img

@@ -87,6 +87,11 @@ const Servicedetail = () => {
                     style={styles.videoSection}
                     playsInline
                     preload="auto"
+                    poster={
+                      isSafariOnIPhone
+                        ? `${process.env.REACT_APP_API_URL}/${projectData.posterImg.filepath}`
+                        : undefined
+                    }
                   />
                 ) : projectData._id === "66979a1c154c5f0ba2a6b808" ? (
                   <img
