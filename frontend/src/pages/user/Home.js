@@ -165,7 +165,11 @@ const Home = () => {
                     <div className="app">
                       <div className="video-list">
                         {vfxData && vfxData.media && vfxData.media.iframe ? (
-                          <VideoPlayer src={vfxData.media.iframe} />
+                          <VideoPlayer
+                            src={vfxData.media.iframe}
+                            playsInline
+                            preload="auto"
+                          />
                         ) : vfxData &&
                           vfxData.media &&
                           vfxData.media.filepath ? (
