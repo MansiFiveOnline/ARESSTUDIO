@@ -75,15 +75,7 @@ const Services = () => {
                         {gamesData &&
                         gamesData.media &&
                         gamesData.media.iframe ? (
-                          <VideoPlayer
-                            src={gamesData.media.iframe}
-                            preload="auto"
-                            poster={
-                              isSafariOnIPhone
-                                ? "./images/games-img.png"
-                                : undefined
-                            } // Conditionally apply the poster
-                          />
+                          <VideoPlayer src={gamesData.media.iframe} />
                         ) : gamesData &&
                           gamesData.media &&
                           gamesData.media.filepath ? (

@@ -77,13 +77,7 @@ const Service = () => {
                 {/* <VideoPlayer src="images/video2.mp4" /> */}
                 {/* <img src={serviceData.media} alt="Media" /> */}
                 {serviceData.media && serviceData.media.iframe ? (
-                  <VideoPlayer
-                    src={serviceData.media.iframe}
-                    preload="auto"
-                    poster={
-                      isSafariOnIPhone ? "./images/games-img.png" : undefined
-                    } // Conditionally apply the poster
-                  />
+                  <VideoPlayer src={serviceData.media.iframe} />
                 ) : (
                   <img
                     src={`${process.env.REACT_APP_API_URL}/${serviceData.media.filepath}`}

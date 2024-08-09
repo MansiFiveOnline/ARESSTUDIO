@@ -85,10 +85,6 @@ const Servicedetail = () => {
                   <VideoPlayer
                     src={projectData.media.iframe}
                     style={styles.videoSection}
-                    preload="auto"
-                    poster={
-                      isSafariOnIPhone ? "./images/games-img.png" : undefined
-                    } // Conditionally apply the poster
                   />
                 ) : projectData._id === "66979a1c154c5f0ba2a6b808" ? (
                   <img
