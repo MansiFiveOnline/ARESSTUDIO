@@ -128,7 +128,11 @@ const Home = () => {
                         {gamesData &&
                         gamesData.media &&
                         gamesData.media.iframe ? (
-                          <VideoPlayer src={gamesData.media.iframe} />
+                          <VideoPlayer
+                            src={gamesData.media.iframe}
+                            playsInline
+                            preload="auto"
+                          />
                         ) : gamesData &&
                           gamesData.media &&
                           gamesData.media.filepath ? (

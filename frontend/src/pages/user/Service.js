@@ -77,7 +77,11 @@ const Service = () => {
                 {/* <VideoPlayer src="images/video2.mp4" /> */}
                 {/* <img src={serviceData.media} alt="Media" /> */}
                 {serviceData.media && serviceData.media.iframe ? (
-                  <VideoPlayer src={serviceData.media.iframe} />
+                  <VideoPlayer
+                    src={serviceData.media.iframe}
+                    playsInline
+                    preload="auto"
+                  />
                 ) : (
                   <img
                     src={`${process.env.REACT_APP_API_URL}/${serviceData.media.filepath}`}

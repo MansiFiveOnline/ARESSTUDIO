@@ -226,11 +226,7 @@ const Gallery = ({ service_name }) => {
                         className="card-img-top cardImg"
                         controls
                         ref={currentVideoRef} // Set the current video ref
-                        poster={
-                          isSafariOnIPhone
-                            ? "./images/games-img.png"
-                            : undefined
-                        } // Conditionally apply the poster
+                        playsInline
                         preload="auto"
                       />
                     ) : (

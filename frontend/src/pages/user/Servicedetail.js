@@ -85,6 +85,8 @@ const Servicedetail = () => {
                   <VideoPlayer
                     src={projectData.media.iframe}
                     style={styles.videoSection}
+                    playsInline
+                    preload="auto"
                   />
                 ) : projectData._id === "66979a1c154c5f0ba2a6b808" ? (
                   <img
