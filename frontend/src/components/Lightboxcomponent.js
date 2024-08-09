@@ -2144,11 +2144,6 @@ const Lightboxcomponent = () => {
                         controls
                         startTime={10}
                         preload="auto"
-                        poster={
-                          isSafariOnIPhone
-                            ? "./images/games-img.png"
-                            : undefined
-                        } // Conditionally apply the poster
                       />
                     ) : (
                       <img
