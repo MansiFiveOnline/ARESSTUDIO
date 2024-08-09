@@ -176,7 +176,7 @@ const VideoPlayer = forwardRef(({ src, style, startTime }, ref) => {
         onEnded={handleVideoEnd}
         playsInline
         preload="auto"
-        poster={isSafariOnIPhone ? "./images/games-img.png" : undefined} // Conditionally apply the poster
+        poster={isSafariOnIPhone ? "/images/games-img.png" : undefined} // Conditionally apply the poster
       />
     </div>
   );
