@@ -245,6 +245,17 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
 });
 
+app.get("/test-db", async (req, res) => {
+  try {
+    const test = await mongoose.connection.db.collection("test").findOne({});
+    res.status(200).json({ message: "Database is connected", test });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: `Database connection test failed: ${error.message}` });
+  }
+});
+
 // Replace with your server URL
 const serverUrl = "https://ares-studio-calb.onrender.com/ping";
 
