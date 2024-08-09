@@ -6,9 +6,18 @@ import axios from "axios";
 import "../../style/user.css";
 import { Helmet } from "react-helmet";
 
+const isIPhoneSafari = () => {
+  return (
+    /iP(ad|hone|od)/.test(navigator.platform) &&
+    /Safari/i.test(navigator.userAgent) &&
+    !/CriOS/i.test(navigator.userAgent)
+  );
+};
+
 const Services = () => {
   const [gamesData, setGamesData] = useState(null);
   const [vfxData, setVfxData] = useState(null);
+  const isSafariOnIPhone = isIPhoneSafari(); // Check if the user is on iPhone Safari
 
   console.log("api", `${process.env.REACT_APP_API_URL}`);
 
@@ -66,7 +75,15 @@ const Services = () => {
                         {gamesData &&
                         gamesData.media &&
                         gamesData.media.iframe ? (
-                          <VideoPlayer src={gamesData.media.iframe} />
+                          <VideoPlayer
+                            src={gamesData.media.iframe}
+                            preload="auto"
+                            poster={
+                              isSafariOnIPhone
+                                ? "./images/games-img.png"
+                                : undefined
+                            } // Conditionally apply the poster
+                          />
                         ) : gamesData &&
                           gamesData.media &&
                           gamesData.media.filepath ? (

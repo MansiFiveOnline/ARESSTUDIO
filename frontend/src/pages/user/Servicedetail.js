@@ -8,6 +8,14 @@ import VideoPlayer from "../../components/Videoplayer";
 import { Helmet } from "react-helmet";
 import Parse from "html-react-parser";
 
+const isIPhoneSafari = () => {
+  return (
+    /iP(ad|hone|od)/.test(navigator.platform) &&
+    /Safari/i.test(navigator.userAgent) &&
+    !/CriOS/i.test(navigator.userAgent)
+  );
+};
+
 const Servicedetail = () => {
   const { project_name } = useParams();
   const [projectData, setProjectData] = useState(null);
@@ -15,6 +23,7 @@ const Servicedetail = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(
     window.matchMedia("(max-width: 600px)").matches
   );
+  const isSafariOnIPhone = isIPhoneSafari(); // Check if the user is on iPhone Safari
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -76,6 +85,10 @@ const Servicedetail = () => {
                   <VideoPlayer
                     src={projectData.media.iframe}
                     style={styles.videoSection}
+                    preload="auto"
+                    poster={
+                      isSafariOnIPhone ? "./images/games-img.png" : undefined
+                    } // Conditionally apply the poster
                   />
                 ) : projectData._id === "66979a1c154c5f0ba2a6b808" ? (
                   <img

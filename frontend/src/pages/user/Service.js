@@ -8,6 +8,14 @@ import "../../style/user.css";
 import { Helmet } from "react-helmet";
 import Parse from "html-react-parser";
 
+const isIPhoneSafari = () => {
+  return (
+    /iP(ad|hone|od)/.test(navigator.platform) &&
+    /Safari/i.test(navigator.userAgent) &&
+    !/CriOS/i.test(navigator.userAgent)
+  );
+};
+
 const Service = () => {
   // Access service name parameter from URL
   const { service_name } = useParams();
@@ -19,6 +27,7 @@ const Service = () => {
   });
   // const serviceName = service_name.toUpperCase();
   const serviceName = service_name ? service_name.toUpperCase() : "";
+  const isSafariOnIPhone = isIPhoneSafari(); // Check if the user is on iPhone Safari
 
   useEffect(() => {
     const fetchServiceData = async () => {
@@ -68,7 +77,13 @@ const Service = () => {
                 {/* <VideoPlayer src="images/video2.mp4" /> */}
                 {/* <img src={serviceData.media} alt="Media" /> */}
                 {serviceData.media && serviceData.media.iframe ? (
-                  <VideoPlayer src={serviceData.media.iframe} />
+                  <VideoPlayer
+                    src={serviceData.media.iframe}
+                    preload="auto"
+                    poster={
+                      isSafariOnIPhone ? "./images/games-img.png" : undefined
+                    } // Conditionally apply the poster
+                  />
                 ) : (
                   <img
                     src={`${process.env.REACT_APP_API_URL}/${serviceData.media.filepath}`}
