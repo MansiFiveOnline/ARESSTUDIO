@@ -11,6 +11,7 @@ const AddService = () => {
   const [subtitle, setSubtitle] = useState("");
   const [description, setDescription] = useState("");
   const [media, setMedia] = useState({ iframe: "", file: null });
+  const [posterImg, setPosterImg] = useState(null);
   const navigate = useNavigate();
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
@@ -54,6 +55,10 @@ const AddService = () => {
         formData.append("media", media.iframe);
       } else if (media.file) {
         formData.append("media", media.file);
+      }
+
+      if (posterImg) {
+        formData.append("posterImg", posterImg);
       }
 
       const access_token = localStorage.getItem("access_token");
@@ -218,6 +223,18 @@ const AddService = () => {
                   </div>
                 </div>
               )}
+            </div>
+
+            <div className="col-lg-6 col-md-6 col-sm-12 col-12">
+              <div className="theme-form">
+                <label>Poster Image (for iPhone)</label>
+                <input
+                  type="file"
+                  name="posterImg"
+                  accept=".webp"
+                  onChange={(e) => setPosterImg(e.target.files[0])}
+                />
+              </div>
             </div>
 
             <div className="col-lg-6 col-md-6 col-sm-12 col-12">
