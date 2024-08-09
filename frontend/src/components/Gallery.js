@@ -8,6 +8,14 @@ import "../style/user.css";
 import PasswordForm from "./passwordForm";
 import EmailForm from "./emailForm";
 
+const isIPhoneSafari = () => {
+  return (
+    /iP(ad|hone|od)/.test(navigator.platform) &&
+    /Safari/i.test(navigator.userAgent) &&
+    !/CriOS/i.test(navigator.userAgent)
+  );
+};
+
 const Gallery = ({ service_name }) => {
   const [selectedTab, setSelectedTab] = useState("all");
   const [modalVisible, setModalVisible] = useState(false);
@@ -19,6 +27,7 @@ const Gallery = ({ service_name }) => {
   const [submittedMedia, setSubmittedMedia] = useState(null); // Track submitted media
   const navigate = useNavigate(); // Access navigate function from React Router
   const currentVideoRef = useRef(null); // Ref to store the currently playing video
+  const isSafariOnIPhone = isIPhoneSafari(); // Check if the user is on iPhone Safari
 
   const apiUrl = process.env.REACT_APP_API_URL;
   useEffect(() => {
@@ -217,6 +226,12 @@ const Gallery = ({ service_name }) => {
                         className="card-img-top cardImg"
                         controls
                         ref={currentVideoRef} // Set the current video ref
+                        poster={
+                          isSafariOnIPhone
+                            ? "./images/games-img.png"
+                            : undefined
+                        } // Conditionally apply the poster
+                        preload="auto"
                       />
                     ) : (
                       <img

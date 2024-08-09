@@ -2054,12 +2054,20 @@ import VideoPlayer from "./Videoplayer";
 import "../style/user.css"; // Ensure your styles are here
 import "bootstrap/dist/css/bootstrap.min.css";
 
+const isIPhoneSafari = () => {
+  return (
+    /iP(ad|hone|od)/.test(navigator.platform) &&
+    /Safari/i.test(navigator.userAgent) &&
+    !/CriOS/i.test(navigator.userAgent)
+  );
+};
+
 const Lightboxcomponent = () => {
   const { project_name } = useParams();
   const [media, setMedia] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
-
+  const isSafariOnIPhone = isIPhoneSafari(); // Check if the user is on iPhone Safari
   const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
@@ -2135,6 +2143,12 @@ const Lightboxcomponent = () => {
                         className="card-img-top w-100"
                         controls
                         startTime={10}
+                        preload="auto"
+                        poster={
+                          isSafariOnIPhone
+                            ? "./images/games-img.png"
+                            : undefined
+                        } // Conditionally apply the poster
                       />
                     ) : (
                       <img
@@ -2201,7 +2215,6 @@ const Lightboxcomponent = () => {
                                   className="embed-responsive-item"
                                   controls
                                   playsInline
-                                  preload="auto"
                                 />
                               )}
                             </div>
