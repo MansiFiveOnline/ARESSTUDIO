@@ -16,14 +16,20 @@ const upload = multer({ storage: storage });
 
 route.post(
   "/",
-  upload.single("media"),
+  upload.fields([
+    { name: "media", maxCount: 1 },
+    { name: "posterImg", maxCount: 1 },
+  ]),
   adminMiddleware,
   projectController.createProject
 );
 
 route.patch(
   "/:_id",
-  upload.single("media"),
+  upload.fields([
+    { name: "media", maxCount: 1 },
+    { name: "posterImg", maxCount: 1 },
+  ]),
   adminMiddleware,
   projectController.updateProject
 );

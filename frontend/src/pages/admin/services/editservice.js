@@ -434,24 +434,39 @@ const EditService = () => {
 
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append("service_name", formData.service_name);
-      formDataToSend.append("url", formData.url);
-      formDataToSend.append("title", formData.title);
-      formDataToSend.append("subtitle", formData.subtitle);
-      formDataToSend.append("description", formData.description);
-      formDataToSend.append("metaTitle", formData.metaTitle);
-      formDataToSend.append("metaDescription", formData.metaDescription);
 
+      if (formData.service_name) {
+        formDataToSend.append("service_name", formData.service_name);
+      }
+      if (formData.url) {
+        formDataToSend.append("url", formData.url);
+      }
+      if (formData.title) {
+        formDataToSend.append("title", formData.title);
+      }
+      if (formData.subtitle) {
+        formDataToSend.append("subtitle", formData.subtitle);
+      }
+      if (formData.description) {
+        formDataToSend.append("description", formData.description);
+      }
+      if (formData.metaTitle) {
+        formDataToSend.append("metaTitle", formData.metaTitle);
+      }
+      if (formData.metaDescription) {
+        formDataToSend.append("metaDescription", formData.metaDescription);
+      }
+
+      // Handle media input
       if (formData.media.file) {
         formDataToSend.append("media", formData.media.file);
-      } else {
+      } else if (formData.media.iframe) {
         formDataToSend.append("media", formData.media.iframe.trim());
       }
 
+      // Handle poster image input
       if (formData.posterImg.file) {
         formDataToSend.append("posterImg", formData.posterImg.file);
-      } else {
-        formDataToSend.append("posterImg", formData.posterImg.filepath);
       }
 
       const access_token = localStorage.getItem("access_token");

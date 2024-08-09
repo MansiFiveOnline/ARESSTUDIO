@@ -18,6 +18,7 @@ const AddProject = () => {
   const [validationError, setValidationError] = useState(""); // State for validation error message
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
+  const [posterImg, setPosterImg] = useState(null);
 
   const fetchGalleryNames = async () => {
     try {
@@ -64,6 +65,10 @@ const AddProject = () => {
         formData.append("media", media.iframe);
       } else if (media.file) {
         formData.append("media", media.file);
+      }
+
+      if (posterImg) {
+        formData.append("posterImg", posterImg);
       }
 
       const access_token = localStorage.getItem("access_token");
@@ -250,6 +255,18 @@ const AddProject = () => {
                   </div>
                 </div>
               )}
+            </div>
+
+            <div className="col-lg-6 col-md-6 col-sm-12 col-12">
+              <div className="theme-form">
+                <label>Poster Image (for iPhone)</label>
+                <input
+                  type="file"
+                  name="posterImg"
+                  accept=".webp"
+                  onChange={(e) => setPosterImg(e.target.files[0])}
+                />
+              </div>
             </div>
 
             {errorMessage && (

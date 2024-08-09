@@ -544,15 +544,17 @@ const updateService = async (req, res) => {
       return res.status(404).json({ message: "Service not found." });
     }
 
-    let mediaData = {
-      filename: existingService.media.filename,
-      filepath: existingService.media.filepath,
-      iframe: existingService.media.iframe,
-    };
-
-    let posterImgData = {
-      filename: existingService.posterImg.filename,
-      filepath: existingService.posterImg.filepath,
+    // Initialize updatedFields with existing service data
+    const updatedFields = {
+      service_name: service_name || existingService.service_name,
+      title: title || existingService.title,
+      subtitle: subtitle || existingService.subtitle,
+      description: description || existingService.description,
+      metaTitle: metaTitle || existingService.metaTitle,
+      metaDescription: metaDescription || existingService.metaDescription,
+      media: existingService.media,
+      posterImg: existingService.posterImg,
+      type: existingService.type,
     };
 
     // Check if media file is provided
@@ -563,23 +565,22 @@ const updateService = async (req, res) => {
         return extname === ".webp";
       };
 
-      // Validate file type
       if (!isWebPImage(mediaFile)) {
         return res.status(400).json({
           message: "Unsupported file type. Please upload a WebP image.",
         });
       }
 
-      // Set media data for image
-      mediaData = {
+      // Update media data
+      updatedFields.media = {
         filename: mediaFile.originalname,
         filepath: mediaFile.path,
         iframe: null,
       };
+      updatedFields.type = "image";
     } else if (media !== undefined && media !== null) {
       const trimmedMedia = media.trim();
 
-      // Check if media is a URL
       const isURL = (str) => {
         try {
           new URL(str);
@@ -589,18 +590,18 @@ const updateService = async (req, res) => {
         }
       };
 
-      if (trimmedMedia && !isURL(trimmedMedia)) {
+      if (trimmedMedia && isURL(trimmedMedia)) {
+        updatedFields.media = {
+          filename: null,
+          filepath: null,
+          iframe: trimmedMedia,
+        };
+        updatedFields.type = "video";
+      } else {
         return res.status(400).json({
           message: "Invalid media URL.",
         });
       }
-
-      // Set media data for video
-      mediaData = {
-        filename: null,
-        filepath: null,
-        iframe: trimmedMedia,
-      };
     }
 
     // Check if poster image file is provided
@@ -611,7 +612,6 @@ const updateService = async (req, res) => {
         return extname === ".webp";
       };
 
-      // Validate file type
       if (!isWebPImage(posterImgFile)) {
         return res.status(400).json({
           message:
@@ -620,14 +620,13 @@ const updateService = async (req, res) => {
       }
 
       // Update poster image data
-      posterImgData = {
+      updatedFields.posterImg = {
         filename: posterImgFile.originalname,
         filepath: posterImgFile.path,
       };
     } else if (newPosterImg) {
       const trimmedPosterImg = newPosterImg.trim();
 
-      // Check if poster image is a URL
       const isURL = (str) => {
         try {
           new URL(str);
@@ -637,45 +636,22 @@ const updateService = async (req, res) => {
         }
       };
 
-      if (trimmedPosterImg && !isURL(trimmedPosterImg)) {
+      if (trimmedPosterImg && isURL(trimmedPosterImg)) {
+        updatedFields.posterImg = {
+          filename: null,
+          filepath: trimmedPosterImg,
+        };
+      } else {
         return res.status(400).json({
           message: "Invalid poster image URL.",
         });
-      }
-
-      // Set poster image data for URL
-      posterImgData = {
-        filename: null,
-        filepath: null,
-        iframe: trimmedPosterImg,
-      };
-    }
-
-    // Create object with updated fields
-    const updatedFields = {
-      service_name,
-      title,
-      subtitle,
-      description,
-      metaTitle,
-      metaDescription,
-      media: mediaData,
-      posterImg: posterImgData,
-      type: mediaData.filename ? "image" : "video",
-    };
-
-    // Only include fields that are explicitly provided, even if they are empty strings
-    const nonNullUpdatedFields = {};
-    for (const key in updatedFields) {
-      if (updatedFields[key] !== undefined) {
-        nonNullUpdatedFields[key] = updatedFields[key];
       }
     }
 
     // Update service in the database by ID
     const updatedService = await serviceModel.findByIdAndUpdate(
       req.params._id,
-      { $set: nonNullUpdatedFields },
+      { $set: updatedFields },
       { new: true }
     );
 

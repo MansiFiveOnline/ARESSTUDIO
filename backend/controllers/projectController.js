@@ -93,6 +93,105 @@ const projectDetailsModel = require("../models/projectDetailsModel");
 //   }
 // };
 
+// const createProject = async (req, res) => {
+//   try {
+//     const {
+//       project_name,
+//       subtitle,
+//       description,
+//       service_name,
+//       gallery_name,
+//       metaTitle,
+//       metaDescription,
+//       isPublic = true,
+//     } = req.body;
+//     let mediaData = {};
+
+//     const file = req.file;
+//     const media = req.body.media;
+
+//     let fileType = "";
+//     // Function to check if the input is a URL
+//     const isURL = (str) => {
+//       try {
+//         new URL(str);
+//         return true;
+//       } catch (error) {
+//         return false;
+//       }
+//     };
+
+//     // Check if media is a URL (iframe)
+//     if (isURL(media)) {
+//       fileType = "video"; // Set fileType to "video" for iframe URLs
+//       mediaData = {
+//         filename: null,
+//         filepath: null,
+//         iframe: media.trim(),
+//       };
+//     } else if (file) {
+//       // A file is provided
+//       // Check if the file is a WebP image
+//       const isWebPImage = (file) => {
+//         const extname = path.extname(file.originalname).toLowerCase();
+//         return extname === ".webp";
+//       };
+
+//       if (!isWebPImage(file)) {
+//         return res.status(400).json({
+//           message: "Unsupported file type. Please upload a WebP image.",
+//         });
+//       }
+
+//       fileType = "image";
+//       mediaData = {
+//         filename: req.file.originalname,
+//         filepath: req.file.path,
+//         iframe: null,
+//       };
+//       // } else {
+//       //   // Neither iframe nor file is provided
+//       //   return res.status(400).json({
+//       //     message:
+//       //       "Either an iFrame URL or an image file is required for the media field.",
+//       //   });
+//     }
+
+//     // Find the project_id based on project_name
+//     const galleryName = await galleryNameModel.findOne({ gallery_name });
+//     if (!galleryName) {
+//       return res.status(404).json({
+//         message: `Gallery name with name '${gallery_name}' not found.`,
+//       });
+//     }
+
+//     const newProject = new projectModel({
+//       project_name,
+//       subtitle,
+//       description,
+//       service_name,
+//       gallery_name,
+//       type: fileType,
+//       media: mediaData,
+//       metaTitle,
+//       metaDescription,
+//       isPublic,
+//       gallery_name_id: galleryName._id,
+//     });
+
+//     await newProject.save();
+
+//     return res.status(200).json({
+//       message: "Added Project content successfully.",
+//       newProject,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: `Error in adding project due to ${error.message}`,
+//     });
+//   }
+// };
+
 const createProject = async (req, res) => {
   try {
     const {
@@ -105,12 +204,14 @@ const createProject = async (req, res) => {
       metaDescription,
       isPublic = true,
     } = req.body;
-    let mediaData = {};
 
+    const posterImgFile = req.files.posterImg ? req.files.posterImg[0] : null;
     const file = req.file;
     const media = req.body.media;
 
+    let mediaData = {};
     let fileType = "";
+
     // Function to check if the input is a URL
     const isURL = (str) => {
       try {
@@ -149,15 +250,21 @@ const createProject = async (req, res) => {
         filepath: req.file.path,
         iframe: null,
       };
-      // } else {
-      //   // Neither iframe nor file is provided
-      //   return res.status(400).json({
-      //     message:
-      //       "Either an iFrame URL or an image file is required for the media field.",
-      //   });
     }
 
-    // Find the project_id based on project_name
+    // Validate that posterImg is provided
+    if (!posterImgFile) {
+      return res.status(400).json({
+        message: "Poster image is required.",
+      });
+    }
+
+    const posterImgData = {
+      filename: posterImgFile.originalname,
+      filepath: posterImgFile.path,
+    };
+
+    // Find the galleryName by gallery_name
     const galleryName = await galleryNameModel.findOne({ gallery_name });
     if (!galleryName) {
       return res.status(404).json({
@@ -176,6 +283,7 @@ const createProject = async (req, res) => {
       metaTitle,
       metaDescription,
       isPublic,
+      posterImg: posterImgData,
       gallery_name_id: galleryName._id,
     });
 
@@ -528,6 +636,8 @@ const updateProject = async (req, res) => {
       service_name,
       gallery_name,
       isPublic,
+      media,
+      posterImg: newPosterImg,
     } = req.body;
 
     // Fetch the existing project to retain current media values if not updated
@@ -546,6 +656,8 @@ const updateProject = async (req, res) => {
       filepath: existingProject.media.filepath,
       iframe: existingProject.media.iframe,
     };
+
+    let posterImgData = existingProject.posterImg;
 
     // Check if media file is provided
     if (req.file) {
@@ -567,8 +679,8 @@ const updateProject = async (req, res) => {
         filepath: req.file.path,
         iframe: null,
       };
-    } else if (req.body.media) {
-      const trimmedMedia = req.body.media.trim();
+    } else if (media) {
+      const trimmedMedia = media.trim();
 
       // Check if media is a URL
       const isURL = (str) => {
@@ -594,6 +706,50 @@ const updateProject = async (req, res) => {
       };
     }
 
+    // Check if poster image file is provided
+    if (req.files && req.files.posterImg) {
+      const posterImgFile = req.files.posterImg[0];
+      const isWebPImage = (file) => {
+        const extname = path.extname(file.originalname).toLowerCase();
+        return extname === ".webp";
+      };
+
+      if (!isWebPImage(posterImgFile)) {
+        return res.status(400).json({
+          message:
+            "Unsupported file type. Please upload a WebP image for poster.",
+        });
+      }
+
+      // Update poster image data
+      posterImgData = {
+        filename: posterImgFile.originalname,
+        filepath: posterImgFile.path,
+      };
+    } else if (newPosterImg) {
+      const trimmedPosterImg = newPosterImg.trim();
+
+      const isURL = (str) => {
+        try {
+          new URL(str);
+          return true;
+        } catch (error) {
+          return false;
+        }
+      };
+
+      if (trimmedPosterImg && isURL(trimmedPosterImg)) {
+        posterImgData = {
+          filename: null,
+          filepath: trimmedPosterImg,
+        };
+      } else {
+        return res.status(400).json({
+          message: "Invalid poster image URL.",
+        });
+      }
+    }
+
     // Create object with updated fields
     const updatedFields = {
       project_name,
@@ -603,6 +759,7 @@ const updateProject = async (req, res) => {
       gallery_name,
       isPublic,
       media: mediaData,
+      posterImg: posterImgData,
       gallery_name_id: galleryName._id,
       type: mediaData.filename ? "image" : "video",
     };
@@ -622,12 +779,6 @@ const updateProject = async (req, res) => {
       { new: true }
     );
 
-    // // Update project name in the Project Details model by project_id
-    // const updatedProjectDetails = await projectDetailsModel.findOneAndUpdate(
-    //   { project_id: updatedProject._id },
-    //   { $set: { project_name } },
-    //   { new: true }
-    // );
     // Update project name in the Project Details model by project_id
     const updateProjectDetails = await projectDetailsModel.updateMany(
       { project_id: updatedProject._id },

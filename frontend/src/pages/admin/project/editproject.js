@@ -25,6 +25,10 @@ const EditProject = () => {
       iframe: "",
       filepath: "",
     },
+    posterImg: {
+      file: null,
+      filepath: "",
+    },
     project_name: "",
     subtitle: "",
     description: "",
@@ -53,7 +57,11 @@ const EditProject = () => {
           media: {
             file: null,
             iframe: projectData.media.iframe || "",
-            filepath: projectData.media.filepath || "",
+            filepath: `${apiUrl}/${projectData.media.filepath}` || "",
+          },
+          posterImg: {
+            file: null,
+            filepath: `${apiUrl}/${projectData.posterImg.filepath}` || "",
           },
         });
 
@@ -71,31 +79,47 @@ const EditProject = () => {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+
+    // Update media field independently
     if (name === "media") {
       if (files && files.length > 0) {
-        setFormData({
-          ...formData,
+        setFormData((prevFormData) => ({
+          ...prevFormData,
           media: {
             file: files[0],
-            filename: files[0].name,
-            filepath: URL.createObjectURL(files[0]),
             iframe: "",
+            filepath: URL.createObjectURL(files[0]),
           },
-        });
+        }));
       } else {
-        setFormData({
-          ...formData,
+        setFormData((prevFormData) => ({
+          ...prevFormData,
           media: {
-            ...formData.media,
-            iframe: value,
+            ...prevFormData.media,
+            file: null,
+            iframe: value.trim(),
           },
-        });
+        }));
       }
-    } else {
-      setFormData({
-        ...formData,
+    }
+    // Update posterImg field independently
+    else if (name === "posterImg") {
+      if (files && files.length > 0) {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          posterImg: {
+            file: files[0],
+            filepath: URL.createObjectURL(files[0]),
+          },
+        }));
+      }
+    }
+    // Update other fields
+    else {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
         [name]: value.trim() === "" ? "" : value,
-      });
+      }));
     }
   };
 
@@ -277,17 +301,26 @@ const EditProject = () => {
     e.preventDefault();
 
     const formDataToSend = new FormData();
-    formDataToSend.append("project_name", formData.project_name.trim());
-    formDataToSend.append("subtitle", formData.subtitle.trim());
-    formDataToSend.append("description", formData.description.trim());
-    formDataToSend.append("service_name", selectedService);
-    formDataToSend.append("gallery_name", selectedGallery);
-    formDataToSend.append("isPublic", isPublic);
+    formDataToSend.append("service_name", formData.service_name?.trim() || "");
+    formDataToSend.append("gallery_name", formData.gallery_name?.trim() || "");
+    formDataToSend.append("url", formData.url?.trim() || "");
+    formDataToSend.append("title", formData.title?.trim() || "");
+    formDataToSend.append("subtitle", formData.subtitle?.trim() || "");
+    formDataToSend.append("description", formData.description?.trim() || "");
+    formDataToSend.append("metaTitle", formData.metaTitle?.trim() || "");
+    formDataToSend.append(
+      "metaDescription",
+      formData.metaDescription?.trim() || ""
+    );
 
     if (formData.media.file) {
       formDataToSend.append("media", formData.media.file);
     } else {
-      formDataToSend.append("media", formData.media.iframe.trim());
+      formDataToSend.append("media", formData.media.iframe?.trim() || "");
+    }
+
+    if (formData.posterImg.file) {
+      formDataToSend.append("posterImg", formData.posterImg.file);
     }
 
     try {
@@ -305,14 +338,12 @@ const EditProject = () => {
         }
       );
 
-      console.log("Updated project", response.data.updatedProject);
+      console.log("Updated service", response.data.updatedService);
 
-      navigate("/admin/project");
+      navigate("/admin/services");
     } catch (error) {
-      console.error("Error updating project:", error);
-      setErrorMessage(
-        `${error.response?.data?.message}` || "An error occurred"
-      );
+      console.error("Error updating service:", error);
+      setErrorMessage(error.response?.data?.message || "An error occurred");
     }
   };
 
@@ -477,6 +508,26 @@ const EditProject = () => {
                     className="form-profile"
                     src={`${process.env.REACT_APP_API_URL}/${formData.media.filepath}`}
                     alt={`${formData.media.filename}`}
+                    loading="lazy"
+                  />
+                )}
+              </div>
+            </div>
+
+            <div className="col-lg-6 col-md-6 col-sm-12 col-12">
+              <div className="theme-form">
+                <label>Poster Image (for iPhone)</label>
+                <input
+                  type="file"
+                  name="posterImg"
+                  accept=".webp"
+                  onChange={handleChange}
+                />
+                {formData.posterImg?.filepath && (
+                  <img
+                    className="form-profile"
+                    src={formData.posterImg.filepath}
+                    alt={formData.posterImg.filename || "Poster Image"}
                     loading="lazy"
                   />
                 )}
