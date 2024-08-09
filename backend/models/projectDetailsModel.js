@@ -25,6 +25,17 @@ const projectDetailsSchema = new mongoose.Schema({
   sequence: {
     type: Number,
   },
+  posterImg: {
+    filename: {
+      type: String,
+    },
+    filepath: {
+      type: String,
+      required: function () {
+        return this.type === "image";
+      },
+    },
+  },
 });
 
 const projectDetailsModel = mongoose.model(

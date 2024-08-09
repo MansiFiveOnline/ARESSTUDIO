@@ -19,6 +19,10 @@ const EditProjectDetail = () => {
       iframe: "",
       filepath: "",
     },
+    posterImg: {
+      file: null,
+      filepath: "",
+    },
     sequence: "", // Add sequence field
   });
 
@@ -37,7 +41,11 @@ const EditProjectDetail = () => {
           media: {
             file: null,
             iframe: projectDetailData.media.iframe || "",
-            filepath: projectDetailData.media.filepath || "",
+            filepath: `${apiUrl}/${projectDetailData.media.filepath}` || "",
+          },
+          posterImg: {
+            file: null,
+            filepath: `${apiUrl}/${projectDetailData.posterImg.filepath}` || "",
           },
           sequence: projectDetailData.sequence || "", // Set initial sequence value
         });
@@ -57,31 +65,47 @@ const EditProjectDetail = () => {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+
+    // Update media field independently
     if (name === "media") {
       if (files && files.length > 0) {
-        setFormData({
-          ...formData,
+        setFormData((prevFormData) => ({
+          ...prevFormData,
           media: {
             file: files[0],
-            filename: files[0].name,
-            filepath: URL.createObjectURL(files[0]),
             iframe: "",
+            filepath: URL.createObjectURL(files[0]),
           },
-        });
+        }));
       } else {
-        setFormData({
-          ...formData,
+        setFormData((prevFormData) => ({
+          ...prevFormData,
           media: {
-            ...formData.media,
-            iframe: value,
+            ...prevFormData.media,
+            file: null,
+            iframe: value.trim(),
           },
-        });
+        }));
       }
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
+    }
+    // Update posterImg field independently
+    else if (name === "posterImg") {
+      if (files && files.length > 0) {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          posterImg: {
+            file: files[0],
+            filepath: URL.createObjectURL(files[0]),
+          },
+        }));
+      }
+    }
+    // Update other fields
+    else {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: value.trim() === "" ? "" : value,
+      }));
     }
   };
 
@@ -154,15 +178,19 @@ const EditProjectDetail = () => {
 
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append("project_name", selectedProjectName); // Use selectedProjectName which is the _id
+      formDataToSend.append("project_name", selectedProjectName);
 
       if (formData.media.file) {
         formDataToSend.append("media", formData.media.file);
-      } else if (formData.media.iframe.trim()) {
-        formDataToSend.append("media", formData.media.iframe.trim());
+      } else {
+        formDataToSend.append("media", formData.media.iframe?.trim() || "");
       }
 
-      formDataToSend.append("sequence", formData.sequence); // Add sequence to form data
+      if (formData.posterImg.file) {
+        formDataToSend.append("posterImg", formData.posterImg.file);
+      }
+
+      formDataToSend.append("sequence", formData.sequence);
 
       const access_token = localStorage.getItem("access_token");
 
@@ -262,6 +290,26 @@ const EditProjectDetail = () => {
                     className="form-profile"
                     src={`${process.env.REACT_APP_API_URL}/${formData.media.filepath}`}
                     alt={`${formData.media.filename}`}
+                    loading="lazy"
+                  />
+                )}
+              </div>
+            </div>
+
+            <div className="col-lg-6 col-md-6 col-sm-12 col-12">
+              <div className="theme-form">
+                <label>Poster Image (for iPhone)</label>
+                <input
+                  type="file"
+                  name="posterImg"
+                  accept=".webp"
+                  onChange={handleChange}
+                />
+                {formData.posterImg?.filepath && (
+                  <img
+                    className="form-profile"
+                    src={formData.posterImg.filepath}
+                    alt={formData.posterImg.filename || "Poster Image"}
                     loading="lazy"
                   />
                 )}
