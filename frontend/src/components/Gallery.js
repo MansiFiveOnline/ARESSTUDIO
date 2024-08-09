@@ -28,6 +28,7 @@ const Gallery = ({ service_name }) => {
   const navigate = useNavigate(); // Access navigate function from React Router
   const currentVideoRef = useRef(null); // Ref to store the currently playing video
   const isSafariOnIPhone = isIPhoneSafari(); // Check if the user is on iPhone Safari
+  const [posterImg, setPosterImg] = useState(null);
 
   const apiUrl = process.env.REACT_APP_API_URL;
   useEffect(() => {
@@ -36,6 +37,7 @@ const Gallery = ({ service_name }) => {
         const response = await axios.get(
           `${apiUrl}/api/gallery_name/gallerynames?service_name=${service_name}`
         );
+
         const sortedGalleryNames = response.data.galleryNames.sort((a, b) =>
           a.localeCompare(b)
         );
@@ -69,6 +71,12 @@ const Gallery = ({ service_name }) => {
           const mediaArray = Array.isArray(response.data.media)
             ? response.data.media
             : [response.data.media];
+
+          const { media: projectMedia, posterImg: projectPosterImg } =
+            response.data.projectDetail;
+
+          // Set poster image
+          setPosterImg(projectPosterImg);
 
           // Sort media array based on project name
           mediaArray.sort((a, b) => {
@@ -228,6 +236,11 @@ const Gallery = ({ service_name }) => {
                         ref={currentVideoRef} // Set the current video ref
                         playsInline
                         preload="auto"
+                        poster={
+                          isSafariOnIPhone
+                            ? `${apiUrl}/${posterImg?.filepath}`
+                            : undefined
+                        }
                       />
                     ) : (
                       <img
