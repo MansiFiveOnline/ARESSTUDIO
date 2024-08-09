@@ -185,7 +185,7 @@ const Home = () => {
                             preload="auto"
                             poster={
                               isSafariOnIPhone
-                                ? `${process.env.REACT_APP_API_URL}/${gamesData.posterImg.filepath}`
+                                ? `${process.env.REACT_APP_API_URL}/${vfxData.posterImg.filepath}`
                                 : undefined
                             }
                           />
