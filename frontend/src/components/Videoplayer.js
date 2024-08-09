@@ -95,19 +95,10 @@ import React, {
 } from "react";
 import "../style/user.css";
 
-const isIPhoneSafari = () => {
-  return (
-    /iP(ad|hone|od)/.test(navigator.platform) &&
-    /Safari/i.test(navigator.userAgent) &&
-    !/CriOS/i.test(navigator.userAgent)
-  );
-};
-
 const VideoPlayer = forwardRef(({ src, style, startTime }, ref) => {
   const [isHovered, setIsHovered] = useState(false);
   const videoRef = useRef(null);
   const isPausedOnLeave = useRef(false);
-  const isSafariOnIPhone = isIPhoneSafari(); // Check if the user is on iPhone Safari
 
   useImperativeHandle(ref, () => ({
     play: () => videoRef.current.play(),
