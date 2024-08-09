@@ -68,9 +68,18 @@ import axios from "axios";
 import "../../style/user.css";
 import { Helmet } from "react-helmet";
 
+const isIPhoneSafari = () => {
+  return (
+    /iP(ad|hone|od)/.test(navigator.platform) &&
+    /Safari/i.test(navigator.userAgent) &&
+    !/CriOS/i.test(navigator.userAgent)
+  );
+};
+
 const Home = () => {
   const [gamesData, setGamesData] = useState(null);
   const [vfxData, setVfxData] = useState(null);
+  const isSafariOnIPhone = isIPhoneSafari(); // Check if the user is on iPhone Safari
 
   console.log("api", `${process.env.REACT_APP_API_URL}`);
 
@@ -132,6 +141,11 @@ const Home = () => {
                             src={gamesData.media.iframe}
                             playsInline
                             preload="auto"
+                            poster={
+                              isSafariOnIPhone
+                                ? "/images/games-img.png"
+                                : undefined
+                            }
                           />
                         ) : gamesData &&
                           gamesData.media &&
@@ -169,6 +183,11 @@ const Home = () => {
                             src={vfxData.media.iframe}
                             playsInline
                             preload="auto"
+                            poster={
+                              isSafariOnIPhone
+                                ? "/images/vfx-img.png"
+                                : undefined
+                            }
                           />
                         ) : vfxData &&
                           vfxData.media &&
