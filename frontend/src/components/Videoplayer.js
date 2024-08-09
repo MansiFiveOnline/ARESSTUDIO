@@ -95,7 +95,7 @@ import React, {
 } from "react";
 import "../style/user.css";
 
-const VideoPlayer = forwardRef(({ src, style, startTime }, ref) => {
+const VideoPlayer = forwardRef(({ src, style, startTime, poster }, ref) => {
   const [isHovered, setIsHovered] = useState(false);
   const videoRef = useRef(null);
   const isPausedOnLeave = useRef(false);
@@ -167,6 +167,7 @@ const VideoPlayer = forwardRef(({ src, style, startTime }, ref) => {
         onEnded={handleVideoEnd}
         playsInline
         preload="auto"
+        poster={poster}
         // Conditionally apply the poster
       />
     </div>
