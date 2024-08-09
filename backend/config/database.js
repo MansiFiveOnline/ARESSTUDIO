@@ -10,6 +10,7 @@ const connectDb = async (req, res) => {
     .connect(process.env.MONGO_DB_URL, {
       useUnifiedTopology: true,
       useNewUrlParser: true,
+      serverSelectionTimeoutMS: 30000,
     })
     .then(() => {
       console.log("Database connected successfully");
