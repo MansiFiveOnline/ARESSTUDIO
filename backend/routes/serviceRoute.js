@@ -26,7 +26,10 @@ route.post(
 
 route.patch(
   "/:_id",
-  upload.single("media"),
+  upload.fields([
+    { name: "media", maxCount: 1 },
+    { name: "posterImg", maxCount: 1 },
+  ]),
   adminMiddleware,
   serviceController.updateService
 );
