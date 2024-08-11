@@ -25,17 +25,29 @@ const Lightboxcomponent = () => {
   useEffect(() => {
     const fetchProjectMedia = async () => {
       try {
+        // Encode project name for URL
         const encodedProjectName = encodeURIComponent(project_name);
+
+        // Fetch project details from API
         const response = await axios.get(
           `${apiUrl}/api/project_detail/project_media/?project_name=${encodedProjectName}`
         );
 
-        const { media: projectMedia, posterImg: projectPosterImg } =
-          response.data.projectDetail;
+        // Safeguard to ensure projectDetail is defined
+        const projectDetail = response.data || {};
+        const { media: projectMedia = [], posterImg: projectPosterImg = null } =
+          projectDetail;
 
-        const sortedMedia = response.data.media.sort(
-          (a, b) => a.sequence - b.sequence
-        );
+        // Sort media by sequence
+        const sortedMedia = Array.isArray(projectMedia)
+          ? projectMedia.sort((a, b) => a.sequence - b.sequence)
+          : [];
+
+        // Debugging: Check if sortedMedia and posterImg are correctly retrieved
+        console.log("Sorted Media:", sortedMedia);
+        console.log("Poster Image:", projectPosterImg);
+
+        // Update state with sorted media and poster image
         setMedia(sortedMedia);
         setPosterImg(projectPosterImg);
       } catch (error) {
@@ -104,7 +116,10 @@ const Lightboxcomponent = () => {
                         preload="auto"
                         poster={
                           isSafariOnIPhone
-                            ? `${apiUrl}/${posterImg?.filepath}`
+                            ? `${apiUrl}/${posterImg?.filepath.replace(
+                                "\\",
+                                "/"
+                              )}`
                             : undefined
                         }
                       />
