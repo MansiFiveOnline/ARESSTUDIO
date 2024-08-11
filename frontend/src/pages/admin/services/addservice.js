@@ -27,6 +27,22 @@ const AddService = () => {
       return;
     }
 
+    if (media.iframe && media.file) {
+      setValidationError(
+        "Please provide either an iFrame URL or an image, not both."
+      );
+      return;
+    }
+
+    if (media.iframe && !posterImg) {
+      setValidationError(
+        "Poster image is required when an iFrame URL is provided."
+      );
+      return;
+    }
+
+    setValidationError("");
+
     try {
       const formData = new FormData();
       formData.append("service_name", service_name);
@@ -36,21 +52,6 @@ const AddService = () => {
       formData.append("metaTitle", metaTitle);
       formData.append("metaDescription", metaDescription);
 
-      // Check if both media fields are provided
-      if (media.iframe && media.file) {
-        throw new Error(
-          "Please provide either an iFrame URL or an image, not both."
-        );
-      }
-
-      // Check if the media field is empty
-      if (!media.iframe && !media.file) {
-        throw new Error(
-          "Either a file or a valid URL is required for the media field."
-        );
-      }
-
-      // Append media based on the provided type
       if (media.iframe) {
         formData.append("media", media.iframe);
       } else if (media.file) {
@@ -59,6 +60,11 @@ const AddService = () => {
 
       if (posterImg) {
         formData.append("posterImg", posterImg);
+      }
+
+      // Log formData content for debugging
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
       }
 
       const access_token = localStorage.getItem("access_token");
@@ -76,10 +82,6 @@ const AddService = () => {
       });
 
       console.log(response.data.newService);
-      // setTimeout(() => {
-      //   navigate("/admin/services");
-      // }, 2000);
-
       navigate("/admin/services");
     } catch (error) {
       console.error("Error creating service:", error);
