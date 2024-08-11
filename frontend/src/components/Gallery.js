@@ -356,41 +356,42 @@ const Gallery = ({ service_name }) => {
   useEffect(() => {
     const fetchProjectMedia = async () => {
       try {
-        let response;
-        if (selectedTab === "all") {
-          response = await axios.get(
-            `${apiUrl}/api/project/project_media?service_name=${service_name}&gallery_name=all`
-          );
-        } else {
-          response = await axios.get(
-            `${apiUrl}/api/project/project_media?service_name=${service_name}&gallery_name=${selectedTab}`
-          );
-        }
+        const url =
+          selectedTab === "all"
+            ? `${apiUrl}/api/project/project_media?service_name=${service_name}&gallery_name=all`
+            : `${apiUrl}/api/project/project_media?service_name=${service_name}&gallery_name=${selectedTab}`;
 
-        if (response.data && response.data.media) {
+        const response = await axios.get(url);
+
+        if (
+          response.data &&
+          response.data.media &&
+          response.data.media.length > 0
+        ) {
           const mediaArray = Array.isArray(response.data.media)
             ? response.data.media
             : [response.data.media];
 
-          const { media: projectMedia, posterImg: projectPosterImg } =
-            response.data.projectDetail;
-
-          setPosterImg(projectPosterImg);
-
+          // Sorting the media array
           mediaArray.sort((a, b) => {
             const nameA = (a.project_Name || a.projectName).toLowerCase();
             const nameB = (b.project_Name || b.projectName).toLowerCase();
             return nameA.localeCompare(nameB);
           });
 
+          // Set poster image if available
+          if (response.data.projectDetail?.posterImg) {
+            setPosterImg(response.data.projectDetail.posterImg);
+          }
+
+          // Update media state and clear any error message
           setMedia(mediaArray);
-        } else if (response.data.media.length === 0) {
+          setErrorMessage(""); // Clear the error message if media is found
+        } else {
+          setMedia([]); // Clear media if none is found
           setErrorMessage(
             "No media found for the given service and gallery name."
           );
-        } else {
-          setMedia(response.data.media);
-          setErrorMessage("");
         }
       } catch (error) {
         setErrorMessage("Error fetching media.");
