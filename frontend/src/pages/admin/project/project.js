@@ -1,32 +1,26 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../../../components/adminLayout";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Project = () => {
   const [projects, setProjects] = useState([]);
-
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        // const response = await axios.get("/api/user/allUsers");
         const apiUrl = process.env.REACT_APP_API_URL;
         const response = await axios({
           method: "GET",
           baseURL: `${apiUrl}/api/`,
           url: "project",
         });
-        // const sortedProjectNames = response.data.projects.project_name.sort(
-        //   (a, b) => a.localeCompare(b)
-        // );
-        // console.log(sortedProjectNames);
-        // setProjects(sortedProjectNames);
+
         console.log(response.data.projects);
         setProjects(response.data.projects);
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error fetching projects:", error);
       }
     };
 
@@ -46,7 +40,6 @@ const Project = () => {
           Authorization: `Bearer ${access_token}`,
         },
       });
-      setProjects(null); // Update user state to null after deletion
 
       console.log(response.data);
       setProjects(projects.filter((project) => project._id !== id));
@@ -57,6 +50,7 @@ const Project = () => {
       console.error("Error deleting Project:", error);
     }
   };
+
   return (
     <Layout>
       <div className="pages-headers ">
@@ -76,7 +70,6 @@ const Project = () => {
                 <thead>
                   <tr>
                     <th>Project Name</th>
-
                     <th className="text-center">Service</th>
                     <th className="text-center">Gallery Name</th>
                     <th className="text-center">Status</th>
@@ -95,7 +88,7 @@ const Project = () => {
                           {project.gallery_name_id?.gallery_name || "N/A"}
                         </td>
                         <td className="text-center">
-                          {project.isPublic === true ? (
+                          {project.isPublic ? (
                             <span>Public</span>
                           ) : (
                             <span>Private</span>
@@ -103,15 +96,17 @@ const Project = () => {
                         </td>
 
                         <td className="table-profile-img text-center">
-                          {project.type === "image" ? (
+                          {project.media && project.media.filepath ? (
                             <img
-                              src={`${process.env.REACT_APP_API_URL}/${project.media.filepath}`} // Assuming filepath contains the path to the image
-                              alt={`${project.media.filename}`}
+                              src={`${process.env.REACT_APP_API_URL}/${project.media.filepath}`}
+                              alt={project.media.filename || "Media"}
                               loading="lazy"
                               style={{ width: "50px", height: "50px" }}
                             />
-                          ) : (
+                          ) : project.media && project.media.iframe ? (
                             <span>{project.media.iframe}</span>
+                          ) : (
+                            <span>No media available</span>
                           )}
                         </td>
                         <td className="text-center">
@@ -134,7 +129,7 @@ const Project = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="4" className="text-center">
+                      <td colSpan="7" className="text-center">
                         Loading...
                       </td>
                     </tr>

@@ -7,21 +7,19 @@ const AddProjectDetail = () => {
   const [projectNames, setProjectNames] = useState([]);
   const [selectedProjectName, setSelectedProjectName] = useState("");
   const [media, setMedia] = useState({ iframe: "", file: null });
-  const [validationError, setValidationError] = useState(""); // State for validation error message
-  const navigate = useNavigate();
-  const [errorMessage, setErrorMessage] = useState("");
   const [posterImg, setPosterImg] = useState(null);
+  const [validationError, setValidationError] = useState(""); // State for validation error message
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProjectNames = async () => {
       try {
         const apiUrl = process.env.REACT_APP_API_URL;
-
         const response = await axios.get(`${apiUrl}/api/project/projectname`);
         const sortedProjectNames = response.data.projectNames.sort((a, b) =>
           a.localeCompare(b)
         );
-        console.log(sortedProjectNames);
         setProjectNames(sortedProjectNames);
       } catch (error) {
         console.error("Error fetching project names:", error);
@@ -40,27 +38,40 @@ const AddProjectDetail = () => {
       return;
     }
 
+    if (media.iframe && media.file) {
+      setValidationError(
+        "Please provide either an iFrame URL or an image, not both."
+      );
+      return;
+    }
+
+    if (media.iframe && !posterImg) {
+      setValidationError(
+        "Poster image is required when an iFrame URL is provided."
+      );
+      return;
+    }
+
+    setValidationError("");
+
     try {
       const formData = new FormData();
       formData.append("project_name", selectedProjectName);
 
-      if (media.iframe && media.file) {
-        throw new Error(
-          "Please provide either an iFrame URL or an image, not both."
-        );
-      }
-
       if (media.iframe) {
         formData.append("media", media.iframe);
       } else if (media.file) {
-        formData.append("media", media.file);
-      } else {
-        throw new Error("Please provide either an iFrame URL or an image.");
+        formData.append("media", media.file); // Ensure this name matches the expected field name
       }
 
       if (posterImg) {
         formData.append("posterImg", posterImg);
       }
+
+      // Debugging: Log FormData content
+      formData.forEach((value, key) => {
+        console.log(`${key}: ${value}`);
+      });
 
       const access_token = localStorage.getItem("access_token");
       const apiUrl = process.env.REACT_APP_API_URL;
@@ -77,10 +88,6 @@ const AddProjectDetail = () => {
       );
 
       console.log(response.data.newProjectDetail);
-      // setTimeout(() => {
-      //   navigate("/admin/project_detail");
-      // }, 2000);
-
       navigate("/admin/project_detail");
     } catch (error) {
       console.error("Error creating project detail:", error);
@@ -137,7 +144,7 @@ const AddProjectDetail = () => {
                 <span> OR </span>
                 <input
                   type="file"
-                  name="media"
+                  name="mediaFile"
                   accept=".webp"
                   onChange={(e) =>
                     setMedia({

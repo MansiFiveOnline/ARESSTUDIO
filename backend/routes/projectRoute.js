@@ -17,7 +17,7 @@ const upload = multer({ storage: storage });
 route.post(
   "/",
   upload.fields([
-    { name: "media", maxCount: 1 },
+    { name: "mediaFile", maxCount: 1 },
     { name: "posterImg", maxCount: 1 },
   ]),
   adminMiddleware,

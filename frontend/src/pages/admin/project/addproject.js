@@ -50,6 +50,22 @@ const AddProject = () => {
       return;
     }
 
+    if (media.iframe && media.file) {
+      setValidationError(
+        "Please provide either an iFrame URL or an image, not both."
+      );
+      return;
+    }
+
+    if (media.iframe && !posterImg) {
+      setValidationError(
+        "Poster image is required when an iFrame URL is provided."
+      );
+      return;
+    }
+
+    setValidationError("");
+
     try {
       setServiceName(selectedService);
 
@@ -64,7 +80,7 @@ const AddProject = () => {
       if (media.iframe) {
         formData.append("media", media.iframe);
       } else if (media.file) {
-        formData.append("media", media.file);
+        formData.append("mediaFile", media.file);
       }
 
       if (posterImg) {

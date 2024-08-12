@@ -7,13 +7,23 @@ const { isURL } = require("url");
 
 const createProjectDetail = async (req, res) => {
   try {
-    const { project_name } = req.body;
-    let mediaData = {};
-    let fileType = "";
+    const { project_name, media: mediaField } = req.body;
 
-    const posterImgFile = req.files.posterImg ? req.files.posterImg[0] : null;
-    const file = req.file;
-    const media = req.body.media;
+    // Extract files from the request
+    const posterImgFile = req.files?.posterImg ? req.files.posterImg[0] : null;
+    const mediaFile = req.files?.media ? req.files.media[0] : null;
+
+    // Log the values to ensure they're being received correctly
+    console.log("Project Name:", project_name);
+    console.log("Media File:", mediaFile);
+    console.log("Media Field (URL):", mediaField);
+
+    let mediaData = {
+      filename: null,
+      filepath: null,
+      iframe: null,
+    };
+    let fileType = "";
 
     // Function to check if the input is a URL
     const isURL = (str) => {
@@ -25,30 +35,37 @@ const createProjectDetail = async (req, res) => {
       }
     };
 
-    if (isURL(media)) {
+    // Handle media field
+    if (mediaField && isURL(mediaField)) {
       fileType = "video"; // Set fileType to "video" for iframe URLs
       mediaData = {
         filename: null,
         filepath: null,
-        iframe: media.trim(),
+        iframe: mediaField.trim(),
       };
-    } else if (file) {
-      // A file is provided
+
+      // Ensure posterImg is provided when media is an iframe URL
+      if (!posterImgFile) {
+        return res.status(400).json({
+          message: "Poster image is required when an iFrame URL is provided.",
+        });
+      }
+    } else if (mediaFile) {
+      fileType = "image"; // Assuming media is an image
       const isWebPImage = (file) => {
         const extname = path.extname(file.originalname).toLowerCase();
         return extname === ".webp";
       };
 
-      if (!isWebPImage(file)) {
+      if (!isWebPImage(mediaFile)) {
         return res.status(400).json({
           message: "Unsupported file type. Please upload a WebP image.",
         });
       }
 
-      fileType = "image";
       mediaData = {
-        filename: file.originalname,
-        filepath: file.path,
+        filename: mediaFile.originalname,
+        filepath: mediaFile.path,
         iframe: null,
       };
     } else {
@@ -58,17 +75,19 @@ const createProjectDetail = async (req, res) => {
       });
     }
 
-    // Validate that posterImg is provided
-    if (!posterImgFile) {
+    // Custom validation for posterImg
+    if (fileType === "video" && !posterImgFile) {
       return res.status(400).json({
-        message: "Poster image is required.",
+        message: "Poster image is required for video media.",
       });
     }
 
-    const posterImgData = {
-      filename: posterImgFile.originalname,
-      filepath: posterImgFile.path,
-    };
+    const posterImgData = posterImgFile
+      ? {
+          filename: posterImgFile.originalname,
+          filepath: posterImgFile.path,
+        }
+      : null; // Poster image is not required for image media
 
     // Find the project_id based on project_name
     const project = await projectModel.findOne({ project_name });
@@ -78,7 +97,7 @@ const createProjectDetail = async (req, res) => {
       });
     }
 
-    // Get the total number of existing teams
+    // Get the total number of existing project details
     const totalProjectImg = await projectDetailsModel.countDocuments({
       project_name,
     });
@@ -86,7 +105,7 @@ const createProjectDetail = async (req, res) => {
     const newProjectDetail = new projectDetailsModel({
       project_name,
       media: mediaData,
-      type: fileType, // Add the type property here
+      type: fileType,
       project_id: project._id,
       sequence: totalProjectImg + 1,
       posterImg: posterImgData,
@@ -123,18 +142,15 @@ const updateProjectDetail = async (req, res) => {
     // Update project_name for all entries with the same project_id
     await projectDetailsModel.updateMany(
       { project_id: existingProjectDetail.project_id },
-      { $set: { project_name: project_name } }
+      { $set: { project_name } }
     );
 
-    // Initialize mediaData and posterImgData with existing values
+    // Handle media file or iframe URL
     let mediaData = {
       filename: existingProjectDetail.media.filename,
       filepath: existingProjectDetail.media.filepath,
       iframe: existingProjectDetail.media.iframe,
     };
-    let posterImgData = existingProjectDetail.posterImg;
-
-    // Handle media file or iframe URL
     if (req.file) {
       const isWebPImage = (file) =>
         path.extname(file.originalname).toLowerCase() === ".webp";
@@ -149,7 +165,6 @@ const updateProjectDetail = async (req, res) => {
         iframe: null,
       };
     } else if (media && media.trim()) {
-      const trimmedMedia = media.trim();
       const isURL = (str) => {
         try {
           new URL(str);
@@ -158,13 +173,13 @@ const updateProjectDetail = async (req, res) => {
           return false;
         }
       };
-      if (!isURL(trimmedMedia)) {
+      if (!isURL(media.trim()))
         return res.status(400).json({ message: "Invalid media URL." });
-      }
-      mediaData = { filename: null, filepath: null, iframe: trimmedMedia };
+      mediaData = { filename: null, filepath: null, iframe: media.trim() };
     }
 
     // Handle poster image file or URL
+    let posterImgData = existingProjectDetail.posterImg;
     if (req.files && req.files.posterImg) {
       const posterImgFile = req.files.posterImg[0];
       const isWebPImage = (file) =>
@@ -180,7 +195,6 @@ const updateProjectDetail = async (req, res) => {
         filepath: posterImgFile.path,
       };
     } else if (newPosterImg) {
-      const trimmedPosterImg = newPosterImg.trim();
       const isURL = (str) => {
         try {
           new URL(str);
@@ -189,11 +203,8 @@ const updateProjectDetail = async (req, res) => {
           return false;
         }
       };
-      if (isURL(trimmedPosterImg)) {
-        posterImgData = {
-          filename: null,
-          filepath: trimmedPosterImg,
-        };
+      if (isURL(newPosterImg.trim())) {
+        posterImgData = { filename: null, filepath: newPosterImg.trim() };
       } else {
         return res.status(400).json({ message: "Invalid poster image URL." });
       }

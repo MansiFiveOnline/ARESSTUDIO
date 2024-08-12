@@ -12,10 +12,11 @@ const EditProject = () => {
   const [selectedService, setSelectedService] = useState("");
   const [selectedGallery, setSelectedGallery] = useState("");
   const [isPublic, setIsPublic] = useState(true);
-  const [serviceChanged, setServiceChanged] = useState(false); // Track if service name has been changed
+  const [serviceChanged, setServiceChanged] = useState(false);
   const navigate = useNavigate();
   const [validationError, setValidationError] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isPosterImgRequired, setIsPosterImgRequired] = useState(false);
 
   const [formData, setFormData] = useState({
     service_name: "",
@@ -39,7 +40,6 @@ const EditProject = () => {
     const fetchProject = async () => {
       try {
         const apiUrl = process.env.REACT_APP_API_URL;
-
         const response = await axios.get(`${apiUrl}/api/project/${id}`);
         const projectData = response.data.project;
 
@@ -57,18 +57,21 @@ const EditProject = () => {
           media: {
             file: null,
             iframe: projectData.media.iframe || "",
-            filepath: `${apiUrl}/${projectData.media.filepath}` || "",
+            filepath: projectData.media.filepath
+              ? `${apiUrl}/${projectData.media.filepath}`
+              : "",
           },
           posterImg: {
             file: null,
-            filepath: `${apiUrl}/${projectData.posterImg.filepath}` || "",
+            filepath: projectData.posterImg
+              ? `${apiUrl}/${projectData.posterImg.filepath}`
+              : "",
           },
         });
 
         setIsPublic(projectData.isPublic);
-
         fetchGalleryNames(projectData.service_name);
-        console.log("project detail", projectData);
+        setIsPosterImgRequired(projectData.type === "video");
       } catch (error) {
         console.error("Error fetching project:", error);
       }
@@ -80,7 +83,6 @@ const EditProject = () => {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
-    // Update media field independently
     if (name === "media") {
       if (files && files.length > 0) {
         setFormData((prevFormData) => ({
@@ -90,7 +92,12 @@ const EditProject = () => {
             iframe: "",
             filepath: URL.createObjectURL(files[0]),
           },
+          posterImg: {
+            file: null,
+            filepath: "",
+          },
         }));
+        setIsPosterImgRequired(false);
       } else {
         setFormData((prevFormData) => ({
           ...prevFormData,
@@ -98,12 +105,16 @@ const EditProject = () => {
             ...prevFormData.media,
             file: null,
             iframe: value.trim(),
+            filepath: "",
+          },
+          posterImg: {
+            file: null,
+            filepath: "",
           },
         }));
+        setIsPosterImgRequired(true);
       }
-    }
-    // Update posterImg field independently
-    else if (name === "posterImg") {
+    } else if (name === "posterImg") {
       if (files && files.length > 0) {
         setFormData((prevFormData) => ({
           ...prevFormData,
@@ -112,10 +123,16 @@ const EditProject = () => {
             filepath: URL.createObjectURL(files[0]),
           },
         }));
+      } else {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          posterImg: {
+            file: null,
+            filepath: "",
+          },
+        }));
       }
-    }
-    // Update other fields
-    else {
+    } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
         [name]: value.trim() === "" ? "" : value,
@@ -133,15 +150,10 @@ const EditProject = () => {
   const fetchGalleryNames = async (service_name) => {
     try {
       const apiUrl = process.env.REACT_APP_API_URL;
-
       const response = await axios.get(
         `${apiUrl}/api/gallery_name/gallerynames?service_name=${service_name}`
       );
-
-      console.log("gallery name", response);
-
       setGalleryNames(response.data.galleryNames);
-      // setSelectedGallery(""); // Reset selected gallery when service changes
     } catch (error) {
       console.error("Error fetching gallery names:", error);
     }
@@ -155,7 +167,7 @@ const EditProject = () => {
 
   const handleServiceChange = (e) => {
     setSelectedService(e.target.value);
-    setServiceChanged(true); // Mark that the service name has been changed
+    setServiceChanged(true);
     setFormData((prevFormData) => ({
       ...prevFormData,
       service_name: e.target.value,
@@ -170,157 +182,39 @@ const EditProject = () => {
     }));
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     const formDataToSend = new FormData();
-
-  //     // Append all form data
-  //     formDataToSend.append("project_name", formData.project_name);
-  //     formDataToSend.append("subtitle", formData.subtitle);
-  //     formDataToSend.append("description", formData.description);
-  //     formDataToSend.append("service_name", selectedService);
-  //     formDataToSend.append("gallery_name", selectedGallery);
-  //     formDataToSend.append("isPublic", isPublic);
-
-  //     if (formData.media.file) {
-  //       formDataToSend.append("media", formData.media.file);
-  //     } else if (formData.media.iframe.trim()) {
-  //       formDataToSend.append("media", formData.media.iframe.trim());
-  //     }
-
-  //     const access_token = localStorage.getItem("access_token");
-  //     const apiUrl = process.env.REACT_APP_API_URL;
-
-  //     const response = await axios.patch(
-  //       `${apiUrl}/api/project/${id}`,
-  //       formDataToSend,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //           Authorization: `Bearer ${access_token}`,
-  //         },
-  //       }
-  //     );
-
-  //     console.log("Updated project", response.data.updatedProject);
-
-  //     navigate("/admin/project");
-  //   } catch (error) {
-  //     console.error("Error updating project:", error);
-  //   }
-  // };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     const formDataToSend = {
-  //       project_name: formData.project_name,
-  //       subtitle: formData.subtitle.trim() === "" ? "" : formData.subtitle,
-  //       description:
-  //         formData.description.trim() === "" ? "" : formData.description,
-  //       service_name: selectedService,
-  //       gallery_name: selectedGallery,
-  //       isPublic: isPublic,
-  //     };
-
-  //     if (formData.media.file) {
-  //       formDataToSend.media = formData.media.file;
-  //     } else if (formData.media.iframe.trim()) {
-  //       formDataToSend.media = formData.media.iframe.trim();
-  //     }
-
-  //     const access_token = localStorage.getItem("access_token");
-  //     const apiUrl = process.env.REACT_APP_API_URL;
-
-  //     const response = await axios.patch(
-  //       `${apiUrl}/api/project/${id}`,
-  //       formDataToSend,
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${access_token}`,
-  //         },
-  //       }
-  //     );
-
-  //     console.log("Updated project", response.data.updatedProject);
-
-  //     navigate("/admin/project");
-  //   } catch (error) {
-  //     console.error("Error updating project:", error);
-  //   }
-  // };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     const formDataToSend = {
-  //       project_name: formData.project_name.trim(),
-  //       subtitle: formData.subtitle.trim(),
-  //       description: formData.description.trim(),
-  //       service_name: selectedService,
-  //       gallery_name: selectedGallery,
-  //       isPublic: isPublic,
-  //     };
-
-  //     if (formData.media.file) {
-  //       formDataToSend.media = formData.media.file;
-  //     } else if (formData.media.iframe.trim()) {
-  //       formDataToSend.media = formData.media.iframe.trim();
-  //     }
-
-  //     const access_token = localStorage.getItem("access_token");
-  //     const apiUrl = process.env.REACT_APP_API_URL;
-
-  //     const response = await axios.patch(
-  //       `${apiUrl}/api/project/${id}`,
-  //       formDataToSend,
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${access_token}`,
-  //         },
-  //       }
-  //     );
-
-  //     console.log("Updated project", response.data.updatedProject);
-
-  //     // Update project list state here if needed
-
-  //     navigate("/admin/project");
-  //   } catch (error) {
-  //     console.error("Error updating project:", error);
-  //   }
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Clear previous error messages
+    setErrorMessage("");
+
+    // Validate if posterImg is required
+    if (formData.media.iframe && !formData.posterImg.file) {
+      setErrorMessage("Poster Image is required when using an iframe URL.");
+      return; // Prevent form submission
+    }
+
     const formDataToSend = new FormData();
-    formDataToSend.append("service_name", formData.service_name?.trim() || "");
-    formDataToSend.append("gallery_name", formData.gallery_name?.trim() || "");
-    formDataToSend.append("url", formData.url?.trim() || "");
-    formDataToSend.append("title", formData.title?.trim() || "");
-    formDataToSend.append("subtitle", formData.subtitle?.trim() || "");
-    formDataToSend.append("description", formData.description?.trim() || "");
-    formDataToSend.append("metaTitle", formData.metaTitle?.trim() || "");
-    formDataToSend.append(
-      "metaDescription",
-      formData.metaDescription?.trim() || ""
-    );
+
+    formDataToSend.append("project_name", formData.project_name);
+    formDataToSend.append("subtitle", formData.subtitle || "");
+    formDataToSend.append("description", formData.description || "");
+    formDataToSend.append("service_name", formData.service_name);
+    formDataToSend.append("gallery_name", formData.gallery_name);
+    formDataToSend.append("isPublic", formData.isPublic);
 
     if (formData.media.file) {
       formDataToSend.append("media", formData.media.file);
-    } else {
-      formDataToSend.append("media", formData.media.iframe?.trim() || "");
+      formDataToSend.append("type", "image");
+    } else if (formData.media.iframe) {
+      formDataToSend.append("media", formData.media.iframe);
+      formDataToSend.append("type", "video");
     }
 
     if (formData.posterImg.file) {
       formDataToSend.append("posterImg", formData.posterImg.file);
+    } else if (formData.posterImg.filepath) {
+      formDataToSend.append("posterImg", formData.posterImg.filepath);
     }
 
     try {
@@ -338,12 +232,13 @@ const EditProject = () => {
         }
       );
 
-      console.log("Updated service", response.data.updatedService);
-
-      navigate("/admin/services");
+      console.log("Updated project", response.data.updatedProject);
+      navigate("/admin/project");
     } catch (error) {
-      console.error("Error updating service:", error);
-      setErrorMessage(error.response?.data?.message || "An error occurred");
+      console.error("Error updating project:", error);
+      setErrorMessage(
+        `${error.response?.data?.message}` || "An error occurred"
+      );
     }
   };
 
@@ -503,10 +398,10 @@ const EditProject = () => {
                   accept=".webp"
                   onChange={handleChange}
                 />
-                {formData.media.filepath && (
+                {formData.media?.filepath && (
                   <img
                     className="form-profile"
-                    src={`${process.env.REACT_APP_API_URL}/${formData.media.filepath}`}
+                    src={`${formData.media.filepath}`}
                     alt={`${formData.media.filename}`}
                     loading="lazy"
                   />
@@ -514,25 +409,27 @@ const EditProject = () => {
               </div>
             </div>
 
-            <div className="col-lg-6 col-md-6 col-sm-12 col-12">
-              <div className="theme-form">
-                <label>Poster Image (for iPhone)</label>
-                <input
-                  type="file"
-                  name="posterImg"
-                  accept=".webp"
-                  onChange={handleChange}
-                />
-                {formData.posterImg?.filepath && (
-                  <img
-                    className="form-profile"
-                    src={formData.posterImg.filepath}
-                    alt={formData.posterImg.filename || "Poster Image"}
-                    loading="lazy"
+            {isPosterImgRequired && (
+              <div className="col-lg-6 col-md-6 col-sm-12 col-12">
+                <div className="theme-form">
+                  <label>Poster Image (for iPhone)</label>
+                  <input
+                    type="file"
+                    name="posterImg"
+                    accept=".webp"
+                    onChange={handleChange}
                   />
-                )}
+                  {formData.posterImg.filepath && (
+                    <img
+                      className="form-profile"
+                      src={`${formData.posterImg.filepath}`}
+                      alt={formData.posterImg.filename || "Poster Image"}
+                      loading="lazy"
+                    />
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
             {errorMessage && (
               <div className="error-message text-danger mt-2">

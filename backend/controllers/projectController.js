@@ -1,6 +1,5 @@
 const projectModel = require("../models/projectModel");
 const path = require("path");
-const url = require("url");
 const galleryNameModel = require("../models/gallerynameModel");
 const projectDetailsModel = require("../models/projectDetailsModel");
 // const createProject = async (req, res) => {
@@ -205,8 +204,8 @@ const createProject = async (req, res) => {
       isPublic = true,
     } = req.body;
 
-    const posterImgFile = req.files.posterImg ? req.files.posterImg[0] : null;
-    const file = req.file;
+    const posterImgFile = req.files?.posterImg ? req.files.posterImg[0] : null;
+    const file = req.files?.mediaFile ? req.files.mediaFile[0] : null; // Adjusted to handle mediaFile
     const media = req.body.media;
 
     let mediaData = {};
@@ -230,9 +229,15 @@ const createProject = async (req, res) => {
         filepath: null,
         iframe: media.trim(),
       };
+
+      // Ensure posterImg is provided when media is an iframe URL
+      if (!posterImgFile) {
+        return res.status(400).json({
+          message: "Poster image is required when an iFrame URL is provided.",
+        });
+      }
     } else if (file) {
-      // A file is provided
-      // Check if the file is a WebP image
+      // Handle file upload (image)
       const isWebPImage = (file) => {
         const extname = path.extname(file.originalname).toLowerCase();
         return extname === ".webp";
@@ -246,23 +251,25 @@ const createProject = async (req, res) => {
 
       fileType = "image";
       mediaData = {
-        filename: req.file.originalname,
-        filepath: req.file.path,
+        filename: file.originalname,
+        filepath: file.path,
         iframe: null,
       };
     }
 
-    // Validate that posterImg is provided
-    if (!posterImgFile) {
+    // Custom validation for posterImg.filepath
+    if (fileType === "video" && !posterImgFile) {
       return res.status(400).json({
-        message: "Poster image is required.",
+        message: "Poster image is required for video media.",
       });
     }
 
-    const posterImgData = {
-      filename: posterImgFile.originalname,
-      filepath: posterImgFile.path,
-    };
+    const posterImgData = posterImgFile
+      ? {
+          filename: posterImgFile.originalname,
+          filepath: posterImgFile.path,
+        }
+      : null; // Poster image is not required for image media
 
     // Find the galleryName by gallery_name
     const galleryName = await galleryNameModel.findOne({ gallery_name });
@@ -278,7 +285,7 @@ const createProject = async (req, res) => {
       description,
       service_name,
       gallery_name,
-      type: fileType,
+      type: fileType || "image", // Ensure fileType is set correctly, default to "image"
       media: mediaData,
       metaTitle,
       metaDescription,
@@ -636,169 +643,90 @@ const updateProject = async (req, res) => {
       service_name,
       gallery_name,
       isPublic,
-      media,
+      type,
+      media: mediaField,
       posterImg: newPosterImg,
     } = req.body;
 
-    // Fetch the existing project to retain current media values if not updated
+    // Fetch the existing project to retain current values if not updated
     const existingProject = await projectModel.findById(req.params._id);
     if (!existingProject) {
       return res.status(404).json({ message: "Project not found." });
     }
 
-    const galleryName = await galleryNameModel.findOne({ gallery_name });
-    if (!galleryName) {
-      return res.status(404).json({ message: "Gallery Name not found." });
-    }
-
+    // Initialize media and posterImg data
     let mediaData = {
-      filename: existingProject.media.filename,
-      filepath: existingProject.media.filepath,
-      iframe: existingProject.media.iframe,
+      filename: "",
+      filepath: "",
+      iframe: "",
     };
+    let posterImgData = null;
 
-    let posterImgData = existingProject.posterImg;
+    // Retrieve files
+    const mediaFile = req.files?.media ? req.files.media[0] : null;
+    const posterImgFile = req.files?.posterImg ? req.files.posterImg[0] : null;
 
-    // Check if media file is provided
-    if (req.file) {
-      const isWebPImage = (file) => {
-        const extname = path.extname(file.originalname).toLowerCase();
-        return extname === ".webp";
-      };
-
-      // Validate file type
-      if (!isWebPImage(req.file)) {
-        return res.status(400).json({
-          message: "Unsupported file type. Please upload a WebP image.",
-        });
+    // Determine media data
+    if (type === "video") {
+      if (mediaFile) {
+        mediaData = {
+          filename: mediaFile.originalname,
+          filepath: mediaFile.path,
+          iframe: "",
+        };
+      } else if (mediaField && mediaField.startsWith("http")) {
+        mediaData.iframe = mediaField; // Store iframe URL if provided
       }
-
-      // Set media data for image
+    } else if (type === "image" && mediaFile) {
       mediaData = {
-        filename: req.file.originalname,
-        filepath: req.file.path,
-        iframe: null,
-      };
-    } else if (media) {
-      const trimmedMedia = media.trim();
-
-      // Check if media is a URL
-      const isURL = (str) => {
-        try {
-          new URL(str);
-          return true;
-        } catch (error) {
-          return false;
-        }
-      };
-
-      if (trimmedMedia && !isURL(trimmedMedia)) {
-        return res.status(400).json({
-          message: "Invalid media URL.",
-        });
-      }
-
-      // Set media data for video
-      mediaData = {
-        filename: null,
-        filepath: null,
-        iframe: trimmedMedia,
+        filename: mediaFile.originalname,
+        filepath: mediaFile.path,
+        iframe: "", // Clear iframe if not a video
       };
     }
 
-    // Check if poster image file is provided
-    if (req.files && req.files.posterImg) {
-      const posterImgFile = req.files.posterImg[0];
-      const isWebPImage = (file) => {
-        const extname = path.extname(file.originalname).toLowerCase();
-        return extname === ".webp";
-      };
-
-      if (!isWebPImage(posterImgFile)) {
-        return res.status(400).json({
-          message:
-            "Unsupported file type. Please upload a WebP image for poster.",
-        });
-      }
-
-      // Update poster image data
-      posterImgData = {
-        filename: posterImgFile.originalname,
-        filepath: posterImgFile.path,
-      };
-    } else if (newPosterImg) {
-      const trimmedPosterImg = newPosterImg.trim();
-
-      const isURL = (str) => {
-        try {
-          new URL(str);
-          return true;
-        } catch (error) {
-          return false;
-        }
-      };
-
-      if (trimmedPosterImg && isURL(trimmedPosterImg)) {
+    // Determine poster image data
+    if (type === "video") {
+      if (posterImgFile) {
         posterImgData = {
-          filename: null,
-          filepath: trimmedPosterImg,
+          filename: posterImgFile.originalname,
+          filepath: posterImgFile.path,
         };
       } else {
-        return res.status(400).json({
-          message: "Invalid poster image URL.",
-        });
+        posterImgData = null; // Handle as needed
       }
+    } else {
+      posterImgData = null; // Clear if type is not video
     }
 
-    // Create object with updated fields
-    const updatedFields = {
-      project_name,
-      subtitle,
-      description,
-      service_name,
-      gallery_name,
-      isPublic,
+    // Update project fields
+    const updatedProject = {
+      project_name: project_name || existingProject.project_name,
+      subtitle: subtitle || existingProject.subtitle,
+      description: description || existingProject.description,
+      service_name: service_name || existingProject.service_name,
+      gallery_name: gallery_name || existingProject.gallery_name,
+      isPublic: isPublic || existingProject.isPublic,
+      type: type || existingProject.type,
       media: mediaData,
       posterImg: posterImgData,
-      gallery_name_id: galleryName._id,
-      type: mediaData.filename ? "image" : "video",
     };
 
-    // Only include fields that are explicitly provided, even if they are empty strings
-    const nonNullUpdatedFields = {};
-    for (const key in updatedFields) {
-      if (updatedFields[key] !== undefined) {
-        nonNullUpdatedFields[key] = updatedFields[key];
-      }
-    }
-
-    // Update project in the database by ID
-    const updatedProject = await projectModel.findByIdAndUpdate(
+    const result = await projectModel.findByIdAndUpdate(
       req.params._id,
-      { $set: nonNullUpdatedFields },
+      updatedProject,
       { new: true }
     );
 
-    // Update project name in the Project Details model by project_id
-    const updateProjectDetails = await projectDetailsModel.updateMany(
-      { project_id: updatedProject._id },
-      { $set: { project_name } }
-    );
-
-    // Optionally fetch updated project details for response
-    const updatedProjectDetails = await projectDetailsModel.find({
-      project_id: updatedProject._id,
-    });
-
-    return res.status(200).json({
-      message: "Project content updated successfully.",
-      updatedProject,
-      updatedProjectDetails,
+    res.json({
+      message: "Project updated successfully.",
+      updatedProject: result,
     });
   } catch (error) {
-    return res.status(500).json({
-      message: `Error in updating project due to ${error.message}`,
-    });
+    console.error("Error updating project:", error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while updating the project." });
   }
 };
 

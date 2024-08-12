@@ -50,12 +50,11 @@ const projectSchema = new mongoose.Schema({
   posterImg: {
     filename: {
       type: String,
+      default: null,
     },
     filepath: {
       type: String,
-      required: function () {
-        return this.type === "image";
-      },
+      default: null,
     },
   },
 });

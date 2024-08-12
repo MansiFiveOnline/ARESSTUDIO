@@ -121,11 +121,11 @@ const Services = () => {
                             src={vfxData.media.iframe}
                             preload="true"
                             playsInline
-                            poster={
-                              isSafariOnIPhone
-                                ? `${process.env.REACT_APP_API_URL}/${vfxData.posterImg.filepath}`
-                                : undefined
-                            }
+                            // poster={
+                            //   isSafariOnIPhone
+                            //     ? `${process.env.REACT_APP_API_URL}/${vfxData.posterImg.filepath}`
+                            //     : undefined
+                            // }
                           />
                         ) : vfxData &&
                           vfxData.media &&

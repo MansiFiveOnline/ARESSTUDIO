@@ -2,14 +2,17 @@ import React, { useEffect, useState } from "react";
 import Layout from "../../../components/adminLayout";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const EditProjectDetail = () => {
   const { id } = useParams();
   const [projectDetail, setProjectDetail] = useState(null);
   const [projectNames, setProjectNames] = useState([]);
   const [selectedProjectName, setSelectedProjectName] = useState("");
-  const [totalProjectDetails, setTotalProjectDetails] = useState(0); // Add state for total project details
-  const [errorMessage, setErrorMessage] = useState(""); // Add state for error message
+  const [totalProjectDetails, setTotalProjectDetails] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isPosterImgRequired, setIsPosterImgRequired] = useState(false);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -23,8 +26,23 @@ const EditProjectDetail = () => {
       file: null,
       filepath: "",
     },
-    sequence: "", // Add sequence field
+    sequence: "",
+    description: "",
   });
+
+  useEffect(() => {
+    const fetchProjectNames = async () => {
+      try {
+        const apiUrl = process.env.REACT_APP_API_URL;
+        const response = await axios.get(`${apiUrl}/api/projects`); // Replace with your endpoint
+        setProjectNames(response.data.projects);
+      } catch (error) {
+        console.error("Error fetching project names:", error);
+      }
+    };
+
+    fetchProjectNames();
+  }, []);
 
   useEffect(() => {
     const fetchProjectDetail = async () => {
@@ -41,20 +59,26 @@ const EditProjectDetail = () => {
           media: {
             file: null,
             iframe: projectDetailData.media.iframe || "",
-            filepath: `${apiUrl}/${projectDetailData.media.filepath}` || "",
+            filepath: projectDetailData.media.filepath
+              ? `${apiUrl}/${projectDetailData.media.filepath}`
+              : "",
           },
           posterImg: {
             file: null,
-            filepath: `${apiUrl}/${projectDetailData.posterImg.filepath}` || "",
+            filepath: projectDetailData.posterImg.filepath
+              ? `${apiUrl}/${projectDetailData.posterImg.filepath}`
+              : "",
           },
-          sequence: projectDetailData.sequence || "", // Set initial sequence value
+          sequence: projectDetailData.sequence || "",
+          description: projectDetailData.description || "",
         });
 
-        // Fetch total project details count for selected project name
         const totalDetailsResponse = await axios.get(
           `${apiUrl}/api/project_detail/count/${projectDetailData.project_name}`
         );
         setTotalProjectDetails(totalDetailsResponse.data.count);
+
+        setIsPosterImgRequired(projectDetailData.media.iframe ? true : false);
       } catch (error) {
         console.error("Error fetching project detail:", error);
       }
@@ -66,7 +90,6 @@ const EditProjectDetail = () => {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
-    // Update media field independently
     if (name === "media") {
       if (files && files.length > 0) {
         setFormData((prevFormData) => ({
@@ -76,7 +99,12 @@ const EditProjectDetail = () => {
             iframe: "",
             filepath: URL.createObjectURL(files[0]),
           },
+          posterImg: {
+            file: null,
+            filepath: "",
+          },
         }));
+        setIsPosterImgRequired(false);
       } else {
         setFormData((prevFormData) => ({
           ...prevFormData,
@@ -84,12 +112,16 @@ const EditProjectDetail = () => {
             ...prevFormData.media,
             file: null,
             iframe: value.trim(),
+            filepath: "",
+          },
+          posterImg: {
+            file: null,
+            filepath: "",
           },
         }));
+        setIsPosterImgRequired(true);
       }
-    }
-    // Update posterImg field independently
-    else if (name === "posterImg") {
+    } else if (name === "posterImg") {
       if (files && files.length > 0) {
         setFormData((prevFormData) => ({
           ...prevFormData,
@@ -98,73 +130,22 @@ const EditProjectDetail = () => {
             filepath: URL.createObjectURL(files[0]),
           },
         }));
+      } else {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          posterImg: {
+            file: null,
+            filepath: "",
+          },
+        }));
       }
-    }
-    // Update other fields
-    else {
+    } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
         [name]: value.trim() === "" ? "" : value,
       }));
     }
   };
-
-  const fetchProjectNames = async () => {
-    try {
-      const apiUrl = process.env.REACT_APP_API_URL;
-      const response = await axios.get(`${apiUrl}/api/project/projectname`);
-      // setProjectNames(response.data.projectNames);
-      const sortedProjectNames = response.data.projectNames.sort((a, b) =>
-        a.localeCompare(b)
-      );
-      console.log(sortedProjectNames);
-      setProjectNames(sortedProjectNames);
-    } catch (error) {
-      console.error("Error fetching project names:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchProjectNames();
-  }, []);
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     const formDataToSend = new FormData();
-  //     formDataToSend.append("project_name", selectedProjectName);
-
-  //     if (formData.media.file) {
-  //       formDataToSend.append("media", formData.media.file);
-  //     } else if (formData.media.iframe.trim()) {
-  //       formDataToSend.append("media", formData.media.iframe.trim());
-  //     }
-
-  //     formDataToSend.append("sequence", formData.sequence); // Add sequence to form data
-
-  //     const access_token = localStorage.getItem("access_token");
-
-  //     const response = await axios.patch(
-  //       `${process.env.REACT_APP_API_URL}/api/project_detail/${id}`,
-  //       formDataToSend,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //           Authorization: `Bearer ${access_token}`,
-  //         },
-  //       }
-  //     );
-
-  //     console.log(
-  //       "Updated Project Detail: ",
-  //       response.data.updatedProjectDetail
-  //     );
-  //     navigate("/admin/project_detail");
-  //   } catch (error) {
-  //     console.error("Error updating project detail:", error);
-  //   }
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -176,21 +157,28 @@ const EditProjectDetail = () => {
       return;
     }
 
+    if (formData.media.iframe && !formData.posterImg.file) {
+      setErrorMessage("Poster Image is required when using an iframe URL.");
+      return;
+    }
+
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("project_name", selectedProjectName);
+      formDataToSend.append("sequence", formData.sequence);
+      formDataToSend.append("description", formData.description || "");
 
       if (formData.media.file) {
         formDataToSend.append("media", formData.media.file);
-      } else {
-        formDataToSend.append("media", formData.media.iframe?.trim() || "");
+        formDataToSend.append("type", "image");
+      } else if (formData.media.iframe) {
+        formDataToSend.append("media", formData.media.iframe);
+        formDataToSend.append("type", "video");
       }
 
       if (formData.posterImg.file) {
         formDataToSend.append("posterImg", formData.posterImg.file);
       }
-
-      formDataToSend.append("sequence", formData.sequence);
 
       const access_token = localStorage.getItem("access_token");
 
@@ -206,16 +194,35 @@ const EditProjectDetail = () => {
       );
 
       console.log(
-        "Updated Project Detail: ",
+        "Updated Project Detail:",
         response.data.updatedProjectDetail
       );
       navigate("/admin/project_detail");
     } catch (error) {
       console.error("Error updating project detail:", error);
-      setErrorMessage(
-        `${error.response?.data?.message}` || "An error occurred"
-      );
+      setErrorMessage(error.response?.data?.message || "An error occurred");
     }
+  };
+
+  const formats = [
+    "header",
+    "font",
+    "size",
+    "bold",
+    "italic",
+    "list",
+    "bullet",
+    "indent",
+  ];
+
+  const modules = {
+    toolbar: [
+      [{ header: "1" }, { header: "2" }, { font: [] }],
+      [{ size: [] }],
+      ["bold", "italic"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      [{ indent: "-1" }, { indent: "+1" }],
+    ],
   };
 
   return (
@@ -241,7 +248,7 @@ const EditProjectDetail = () => {
                 >
                   {projectNames.map((name) => (
                     <option key={name._id} value={name._id}>
-                      {name}
+                      {name.project_name} {/* Adjust this if necessary */}
                     </option>
                   ))}
                 </select>
@@ -277,19 +284,12 @@ const EditProjectDetail = () => {
                   placeholder="iFrame URL"
                   onChange={handleChange}
                 />
-                <span> OR </span>
-                <input
-                  type="file"
-                  name="media"
-                  accept=".webp"
-                  onChange={handleChange}
-                />
-
+                <input type="file" name="media" onChange={handleChange} />
                 {formData.media.filepath && (
                   <img
                     className="form-profile"
-                    src={`${process.env.REACT_APP_API_URL}/${formData.media.filepath}`}
-                    alt={`${formData.media.filename}`}
+                    src={formData.media.filepath}
+                    alt="Media"
                     loading="lazy"
                   />
                 )}
@@ -298,34 +298,23 @@ const EditProjectDetail = () => {
 
             <div className="col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="theme-form">
-                <label>Poster Image (for iPhone)</label>
-                <input
-                  type="file"
-                  name="posterImg"
-                  accept=".webp"
-                  onChange={handleChange}
-                />
-                {formData.posterImg?.filepath && (
+                <label>Poster Image</label>
+                <input type="file" name="posterImg" onChange={handleChange} />
+                {formData.posterImg.filepath && (
                   <img
                     className="form-profile"
                     src={formData.posterImg.filepath}
-                    alt={formData.posterImg.filename || "Poster Image"}
+                    alt="Poster"
                     loading="lazy"
                   />
                 )}
               </div>
             </div>
 
-            {errorMessage && (
-              <div className="error-message text-danger mt-2">
-                {errorMessage}
+            <div className="col-12">
+              <div className="theme-form">
+                <button type="submit">Update</button>
               </div>
-            )}
-
-            <div className="col-lg-12 col-md-12 col-sm-12 col-12">
-              <button type="submit" className="btn btn-primary">
-                Update Project Detail
-              </button>
             </div>
           </div>
         </form>
