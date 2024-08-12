@@ -155,9 +155,11 @@ const updateProjectDetail = async (req, res) => {
       const isWebPImage = (file) =>
         path.extname(file.originalname).toLowerCase() === ".webp";
       if (!isWebPImage(req.file)) {
-        return res.status(400).json({
-          message: "Unsupported file type. Please upload a WebP image.",
-        });
+        return res
+          .status(400)
+          .json({
+            message: "Unsupported file type. Please upload a WebP image.",
+          });
       }
       mediaData = {
         filename: req.file.originalname,
@@ -186,10 +188,12 @@ const updateProjectDetail = async (req, res) => {
       const isWebPImage = (file) =>
         path.extname(posterImgFile.originalname).toLowerCase() === ".webp";
       if (!isWebPImage(posterImgFile)) {
-        return res.status(400).json({
-          message:
-            "Unsupported file type. Please upload a WebP image for poster.",
-        });
+        return res
+          .status(400)
+          .json({
+            message:
+              "Unsupported file type. Please upload a WebP image for poster.",
+          });
       }
       posterImgData = {
         filename: posterImgFile.originalname,
@@ -218,9 +222,11 @@ const updateProjectDetail = async (req, res) => {
       let updateOperations = [];
       let maxSequence = projectDetails.length;
       if (sequence > maxSequence) {
-        return res.status(400).json({
-          message: `Invalid sequence. The sequence cannot be greater than ${maxSequence}.`,
-        });
+        return res
+          .status(400)
+          .json({
+            message: `Invalid sequence. The sequence cannot be greater than ${maxSequence}.`,
+          });
       }
       projectDetails.forEach((detail) => {
         if (detail._id.toString() !== existingProjectDetail._id.toString()) {
