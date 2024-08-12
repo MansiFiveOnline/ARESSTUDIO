@@ -835,6 +835,7 @@ const getProjectMediaByServiceAndGallery = async (req, res) => {
             ...item,
             isPublic: project.isPublic,
             project_Name: project.project_name,
+            posterImg: project.posterImg,
             // .trim()
             // .toLowerCase()
             // .replace(/\s+/g, "-"), // Trim and lowercase project name
@@ -845,6 +846,7 @@ const getProjectMediaByServiceAndGallery = async (req, res) => {
           ...project.media,
           isPublic: project.isPublic,
           project_Name: project.project_name,
+          posterImg: project.posterImg,
           // .trim()
           // .toLowerCase()
           // .replace(/\s+/g, "-"), // Trim and lowercase project name
