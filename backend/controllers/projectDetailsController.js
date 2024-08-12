@@ -272,17 +272,12 @@ const getProjectMediaByName = async (req, res) => {
   try {
     const project_name = req.query.project_name;
 
-    console.log(`Received project name: ${project_name}`);
-
     const projectName = project_name
       .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(" ")
       .trim();
 
-    console.log(`Searching for project: ${projectName}`);
-
-    // Validate input
     if (!projectName) {
       return res.status(400).json({ message: "Project Name is required." });
     }
@@ -297,23 +292,19 @@ const getProjectMediaByName = async (req, res) => {
       });
     }
 
-    // // Extract and sort media by sequence
-    // const media = projectDetail
-    //   .map((projectDetail) => projectDetail.media)
-    //   .flat()
-    //   .sort((a, b) => a.sequence - b.sequence);
-
-    // Extract and sort media by sequence
+    // Assuming posterImg is within media
     const media = projectDetail
-      .map((detail) => ({
-        ...detail.media,
-        sequence: detail.sequence,
-      }))
+      .map((detail) => detail.media)
+      .flat()
       .sort((a, b) => a.sequence - b.sequence);
+
+    const posterImg =
+      projectDetail.length > 0 ? projectDetail[0].posterImg : null;
 
     return res.status(200).json({
       message: "Project details media fetched successfully.",
       media,
+      posterImg,
     });
   } catch (error) {
     return res.status(500).json({
