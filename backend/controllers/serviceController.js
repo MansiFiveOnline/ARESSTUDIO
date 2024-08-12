@@ -8,21 +8,32 @@ const createService = async (req, res) => {
       title,
       subtitle,
       description,
-      media,
       metaTitle,
       metaDescription,
+      media: mediaField,
     } = req.body;
 
-    const posterImgFile = req.files.posterImg ? req.files.posterImg[0] : null;
+    const posterImgFile = req.files?.posterImg ? req.files.posterImg[0] : null;
+    const mediaFile = req.files?.media ? req.files.media[0] : null;
+
+    // Log the values to ensure they're being received correctly
+    console.log("Service Name:", service_name);
+    console.log("Title:", title);
+    console.log("Media File:", mediaFile);
+    console.log("Media Field (URL):", mediaField);
 
     // Check if required fields are present
-    if (!service_name || !title || !media || !posterImgFile) {
+    if (!service_name || !title || (!mediaField && !mediaFile)) {
       return res.status(400).json({
-        message: "Name, title, poster image and media are required fields.",
+        message: "Name, title, and media are required fields.",
       });
     }
 
-    let mediaData = {};
+    let mediaData = {
+      filename: null,
+      filepath: null,
+      iframe: null,
+    };
     let fileType = "";
 
     // Function to check if the input is a URL
@@ -35,22 +46,22 @@ const createService = async (req, res) => {
       }
     };
 
-    if (isURL(media)) {
+    // Handle media field
+    if (mediaField && isURL(mediaField)) {
       fileType = "video"; // Set fileType to "video" for iframe URLs
       mediaData = {
         filename: null,
         filepath: null,
-        iframe: media.trim(),
+        iframe: mediaField.trim(),
       };
-    } else {
-      // Assuming media is an uploaded file
-      if (!req.files.media || req.files.media.length === 0) {
+
+      // Ensure posterImg is provided when media is an iframe URL
+      if (!posterImgFile) {
         return res.status(400).json({
-          message: "Media file is required.",
+          message: "Poster image is required when an iFrame URL is provided.",
         });
       }
-
-      const mediaFile = req.files.media[0];
+    } else if (mediaFile) {
       fileType = "image"; // Assuming media is an image
       mediaData = {
         filename: mediaFile.originalname,
@@ -59,13 +70,22 @@ const createService = async (req, res) => {
       };
     }
 
-    const posterImgData = {
-      filename: posterImgFile.originalname,
-      filepath: posterImgFile.path,
-    };
+    // Custom validation for posterImg.filepath
+    if (fileType === "video" && !posterImgFile) {
+      return res.status(400).json({
+        message: "Poster image is required for video media.",
+      });
+    }
+
+    const posterImgData = posterImgFile
+      ? {
+          filename: posterImgFile.originalname,
+          filepath: posterImgFile.path,
+        }
+      : null; // Poster image is not required for image media
 
     const urlSlug = service_name.toLowerCase().replace(/\s+/g, "-");
-    const url = `http:/localhost:8000/api/${urlSlug}`;
+    const url = `http://localhost:8000/api/${urlSlug}`;
 
     const newService = new serviceModel({
       service_name,
@@ -529,140 +549,85 @@ const updateService = async (req, res) => {
   try {
     const {
       service_name,
+      url,
       title,
       subtitle,
       description,
       metaTitle,
       metaDescription,
-      media,
-      posterImg: newPosterImg,
+      type,
+      media: mediaField,
     } = req.body;
 
-    // Fetch the existing service to retain current values if not updated
-    const existingService = await serviceModel.findById(req.params._id);
-    if (!existingService) {
-      return res.status(404).json({ message: "Service not found." });
-    }
+    // Retrieve files
+    const mediaFile = req.files?.media ? req.files.media[0] : null;
+    const posterImgFile = req.files?.posterImg ? req.files.posterImg[0] : null;
 
-    // Initialize updatedFields with existing service data
-    const updatedFields = {
-      service_name: service_name || existingService.service_name,
-      title: title || existingService.title,
-      subtitle: subtitle || existingService.subtitle,
-      description: description || existingService.description,
-      metaTitle: metaTitle || existingService.metaTitle,
-      metaDescription: metaDescription || existingService.metaDescription,
-      media: existingService.media,
-      posterImg: existingService.posterImg,
-      type: existingService.type,
+    // Determine type based on media content
+    let media = {
+      filename: "",
+      filepath: "",
+      iframe: "",
     };
 
-    // Check if media file is provided
-    if (req.files && req.files.media) {
-      const mediaFile = req.files.media[0];
-      const isWebPImage = (file) => {
-        const extname = path.extname(file.originalname).toLowerCase();
-        return extname === ".webp";
-      };
-
-      if (!isWebPImage(mediaFile)) {
-        return res.status(400).json({
-          message: "Unsupported file type. Please upload a WebP image.",
-        });
+    if (type === "video") {
+      if (mediaFile) {
+        media = {
+          filename: mediaFile.originalname,
+          filepath: mediaFile.path,
+        };
+      } else if (mediaField && mediaField.startsWith("http")) {
+        media.iframe = mediaField; // Store iframe URL if provided
       }
-
-      // Update media data
-      updatedFields.media = {
+    } else if (type === "image" && mediaFile) {
+      media = {
         filename: mediaFile.originalname,
         filepath: mediaFile.path,
-        iframe: null,
+        iframe: "", // Clear iframe if not a video
       };
-      updatedFields.type = "image";
-    } else if (media !== undefined && media !== null) {
-      const trimmedMedia = media.trim();
-
-      const isURL = (str) => {
-        try {
-          new URL(str);
-          return true;
-        } catch (error) {
-          return false;
-        }
-      };
-
-      if (trimmedMedia && isURL(trimmedMedia)) {
-        updatedFields.media = {
-          filename: null,
-          filepath: null,
-          iframe: trimmedMedia,
-        };
-        updatedFields.type = "video";
-      } else {
-        return res.status(400).json({
-          message: "Invalid media URL.",
-        });
-      }
     }
 
-    // Check if poster image file is provided
-    if (req.files && req.files.posterImg) {
-      const posterImgFile = req.files.posterImg[0];
-      const isWebPImage = (file) => {
-        const extname = path.extname(file.originalname).toLowerCase();
-        return extname === ".webp";
-      };
-
-      if (!isWebPImage(posterImgFile)) {
-        return res.status(400).json({
-          message:
-            "Unsupported file type. Please upload a WebP image for poster.",
-        });
-      }
-
-      // Update poster image data
-      updatedFields.posterImg = {
-        filename: posterImgFile.originalname,
-        filepath: posterImgFile.path,
-      };
-    } else if (newPosterImg) {
-      const trimmedPosterImg = newPosterImg.trim();
-
-      const isURL = (str) => {
-        try {
-          new URL(str);
-          return true;
-        } catch (error) {
-          return false;
-        }
-      };
-
-      if (trimmedPosterImg && isURL(trimmedPosterImg)) {
-        updatedFields.posterImg = {
-          filename: null,
-          filepath: trimmedPosterImg,
-        };
-      } else {
-        return res.status(400).json({
-          message: "Invalid poster image URL.",
-        });
-      }
+    // Find the existing service
+    const service = await serviceModel.findById(req.params._id);
+    if (!service) {
+      return res.status(404).json({ message: "Service not found" });
     }
 
-    // Update service in the database by ID
-    const updatedService = await serviceModel.findByIdAndUpdate(
-      req.params._id,
-      { $set: updatedFields },
-      { new: true }
-    );
+    // Update fields
+    service.service_name = service_name || service.service_name;
+    service.url = url || service.url;
+    service.title = title || service.title;
+    service.subtitle = subtitle || service.subtitle;
+    service.description = description || service.description;
+    service.metaTitle = metaTitle || service.metaTitle;
+    service.metaDescription = metaDescription || service.metaDescription;
+    service.type = type;
 
-    return res.status(200).json({
-      message: "Service content updated successfully.",
-      updatedService,
-    });
+    // Handle media
+    service.media = media;
+
+    // Handle posterImg based on type
+    if (type === "video") {
+      if (posterImgFile) {
+        service.posterImg = {
+          filename: posterImgFile.originalname,
+          filepath: posterImgFile.path,
+        };
+      } else {
+        service.posterImg = null; // Handle as needed
+      }
+    } else {
+      service.posterImg = null; // Clear if type is not video
+    }
+
+    // Save the updated service
+    const updatedService = await service.save();
+    res.status(200).json({ updatedService });
   } catch (error) {
-    return res.status(500).json({
-      message: `Error in updating service due to ${error.message}`,
-    });
+    console.error("Error updating service:", error);
+    res
+      .status(500)
+      .json({ message: `Failed to update service: ${error.message}` });
   }
 };
 
