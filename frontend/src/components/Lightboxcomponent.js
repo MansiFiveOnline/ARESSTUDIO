@@ -116,10 +116,7 @@ const Lightboxcomponent = () => {
                         preload="auto"
                         poster={
                           isSafariOnIPhone
-                            ? `${apiUrl}/${posterImg?.filepath.replace(
-                                "\\",
-                                "/"
-                              )}`
+                            ? `${process.env.REACT_APP_API_URL}/${posterImg.filepath}`
                             : undefined
                         }
                       />
