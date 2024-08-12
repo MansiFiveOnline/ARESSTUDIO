@@ -126,9 +126,14 @@ const createProjectDetail = async (req, res) => {
 
 const updateProjectDetail = async (req, res) => {
   try {
-    const { project_name, media, sequence, posterImg: newPosterImg } = req.body;
+    const {
+      project_name,
+      media,
+      sequence,
+      posterImg: newPosterImg,
+      type,
+    } = req.body;
 
-    // Fetch the existing project and project detail
     const project = await projectModel.findOne({ project_name });
     const existingProjectDetail = await projectDetailsModel.findById(
       req.params._id
@@ -145,12 +150,7 @@ const updateProjectDetail = async (req, res) => {
       { $set: { project_name } }
     );
 
-    // Handle media file or iframe URL
-    let mediaData = {
-      filename: existingProjectDetail.media.filename,
-      filepath: existingProjectDetail.media.filepath,
-      iframe: existingProjectDetail.media.iframe,
-    };
+    let mediaData = existingProjectDetail.media;
     if (req.file) {
       const isWebPImage = (file) =>
         path.extname(file.originalname).toLowerCase() === ".webp";
@@ -164,7 +164,7 @@ const updateProjectDetail = async (req, res) => {
         filepath: req.file.path,
         iframe: null,
       };
-    } else if (media && media.trim()) {
+    } else if (type === "video" && media && media.trim()) {
       const isURL = (str) => {
         try {
           new URL(str);
@@ -176,14 +176,15 @@ const updateProjectDetail = async (req, res) => {
       if (!isURL(media.trim()))
         return res.status(400).json({ message: "Invalid media URL." });
       mediaData = { filename: null, filepath: null, iframe: media.trim() };
+    } else if (type === "none") {
+      mediaData = { filename: null, filepath: null, iframe: null };
     }
 
-    // Handle poster image file or URL
     let posterImgData = existingProjectDetail.posterImg;
     if (req.files && req.files.posterImg) {
       const posterImgFile = req.files.posterImg[0];
       const isWebPImage = (file) =>
-        path.extname(file.originalname).toLowerCase() === ".webp";
+        path.extname(posterImgFile.originalname).toLowerCase() === ".webp";
       if (!isWebPImage(posterImgFile)) {
         return res.status(400).json({
           message:
@@ -210,7 +211,6 @@ const updateProjectDetail = async (req, res) => {
       }
     }
 
-    // Handle sequence update
     if (sequence && sequence !== existingProjectDetail.sequence) {
       const projectDetails = await projectDetailsModel
         .find({ project_id: existingProjectDetail.project_id })
@@ -252,13 +252,12 @@ const updateProjectDetail = async (req, res) => {
       }
     }
 
-    // Update the specific project detail entry
     const updatedFields = {
       project_name,
       project_id: project._id,
       media: mediaData,
       posterImg: posterImgData,
-      type: mediaData.filename ? "image" : "video",
+      type: mediaData.iframe ? "video" : "image",
       sequence: sequence || existingProjectDetail.sequence,
     };
 

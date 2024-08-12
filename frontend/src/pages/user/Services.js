@@ -79,11 +79,11 @@ const Services = () => {
                             src={gamesData.media.iframe}
                             preload="true"
                             playsInline
-                            poster={
-                              isSafariOnIPhone
-                                ? `${process.env.REACT_APP_API_URL}/${gamesData.posterImg.filepath}`
-                                : undefined
-                            }
+                            // poster={
+                            //   isSafariOnIPhone
+                            //     ? `${process.env.REACT_APP_API_URL}/${gamesData.posterImg.filepath}`
+                            //     : undefined
+                            // }
                           />
                         ) : gamesData &&
                           gamesData.media &&

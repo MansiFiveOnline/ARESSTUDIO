@@ -162,26 +162,28 @@ const EditProjectDetail = () => {
       return;
     }
 
+    const formDataToSend = new FormData();
+    formDataToSend.append("project_name", selectedProjectName);
+    formDataToSend.append("sequence", formData.sequence);
+    formDataToSend.append("description", formData.description || "");
+
+    if (formData.media.file) {
+      formDataToSend.append("media", formData.media.file);
+      formDataToSend.append("type", "image");
+    } else if (formData.media.iframe) {
+      formDataToSend.append("media", formData.media.iframe);
+      formDataToSend.append("type", "video");
+    } else {
+      formDataToSend.append("type", "none");
+    }
+
+    if (formData.posterImg.file) {
+      formDataToSend.append("posterImg", formData.posterImg.file);
+    }
+
+    const access_token = localStorage.getItem("access_token");
+
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append("project_name", selectedProjectName);
-      formDataToSend.append("sequence", formData.sequence);
-      formDataToSend.append("description", formData.description || "");
-
-      if (formData.media.file) {
-        formDataToSend.append("media", formData.media.file);
-        formDataToSend.append("type", "image");
-      } else if (formData.media.iframe) {
-        formDataToSend.append("media", formData.media.iframe);
-        formDataToSend.append("type", "video");
-      }
-
-      if (formData.posterImg.file) {
-        formDataToSend.append("posterImg", formData.posterImg.file);
-      }
-
-      const access_token = localStorage.getItem("access_token");
-
       const response = await axios.patch(
         `${process.env.REACT_APP_API_URL}/api/project_detail/${id}`,
         formDataToSend,
