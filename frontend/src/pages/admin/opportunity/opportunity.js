@@ -86,7 +86,7 @@ const Opportunities = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {opportunities &&
+                  {opportunities.length > 0 ? (
                     opportunities.map((opportunity) => (
                       <tr key={opportunity._id}>
                         <td>{opportunity.title}</td>
@@ -120,7 +120,14 @@ const Opportunities = () => {
                           </button>
                         </td>
                       </tr>
-                    ))}
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="7" className="text-center">
+                        No Data Available
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

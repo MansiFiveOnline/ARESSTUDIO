@@ -59,7 +59,7 @@ const Password = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {emails &&
+                  {emails.length > 0 ? (
                     emails.map((email) => (
                       <tr key={email._id}>
                         <td>{email.email}</td>
@@ -121,7 +121,14 @@ const Password = () => {
                           )}
                         </td>
                       </tr>
-                    ))}
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="7" className="text-center">
+                        No Data Available
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

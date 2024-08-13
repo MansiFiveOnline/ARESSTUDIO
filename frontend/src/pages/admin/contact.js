@@ -72,7 +72,7 @@ const AdminContact = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {contacts &&
+                  {contacts.length > 0 ? (
                     contacts.map((contact) => (
                       <tr>
                         <td>{contact.name}</td>
@@ -89,7 +89,14 @@ const AdminContact = () => {
                           </button>
                         </td>
                       </tr>
-                    ))}
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="7" className="text-center">
+                        No Data Available
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

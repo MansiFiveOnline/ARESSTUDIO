@@ -87,7 +87,7 @@ const GalleryName = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {galleryNames &&
+                  {galleryNames.length > 0 ? (
                     galleryNames.map((galleryname) => (
                       <tr key={galleryname.service_name_id}>
                         <td>{galleryname.service_name}</td>
@@ -115,7 +115,14 @@ const GalleryName = () => {
                           </button>
                         </td>
                       </tr>
-                    ))}
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="7" className="text-center">
+                        No Data Available
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

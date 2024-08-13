@@ -87,7 +87,7 @@ const Team = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {teams &&
+                  {teams.length > 0 ? (
                     teams.map((team) => (
                       <tr key={team._id}>
                         <td>{team.name}</td>
@@ -123,7 +123,14 @@ const Team = () => {
                           </button>
                         </td>
                       </tr>
-                    ))}
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="7" className="text-center">
+                        No Data Available
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
