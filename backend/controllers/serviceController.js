@@ -563,30 +563,6 @@ const updateService = async (req, res) => {
     const mediaFile = req.files?.media ? req.files.media[0] : null;
     const posterImgFile = req.files?.posterImg ? req.files.posterImg[0] : null;
 
-    // Determine type based on media content
-    let media = {
-      filename: "",
-      filepath: "",
-      iframe: "",
-    };
-
-    if (type === "video") {
-      if (mediaFile) {
-        media = {
-          filename: mediaFile.originalname,
-          filepath: mediaFile.path,
-        };
-      } else if (mediaField && mediaField.startsWith("http")) {
-        media.iframe = mediaField; // Store iframe URL if provided
-      }
-    } else if (type === "image" && mediaFile) {
-      media = {
-        filename: mediaFile.originalname,
-        filepath: mediaFile.path,
-        iframe: "", // Clear iframe if not a video
-      };
-    }
-
     // Find the existing service
     const service = await serviceModel.findById(req.params._id);
     if (!service) {
@@ -601,23 +577,46 @@ const updateService = async (req, res) => {
     service.description = description || service.description;
     service.metaTitle = metaTitle || service.metaTitle;
     service.metaDescription = metaDescription || service.metaDescription;
-    service.type = type;
+    service.type = type || service.type;
 
-    // Handle media
-    service.media = media;
+    // Handle media based on type
+    if (type === "video") {
+      if (mediaFile) {
+        service.media = {
+          filename: mediaFile.originalname,
+          filepath: mediaFile.path,
+          iframe: "",
+        };
+      } else if (mediaField && mediaField.startsWith("http")) {
+        service.media = {
+          filename: "",
+          filepath: "",
+          iframe: mediaField,
+        };
+      }
+    } else if (type === "image" && mediaFile) {
+      service.media = {
+        filename: mediaFile.originalname,
+        filepath: mediaFile.path,
+        iframe: "",
+      };
+    }
 
-    // Handle posterImg based on type
+    // Handle posterImg only if type is video
     if (type === "video") {
       if (posterImgFile) {
         service.posterImg = {
           filename: posterImgFile.originalname,
           filepath: posterImgFile.path,
         };
-      } else {
-        service.posterImg = null; // Handle as needed
+      } else if (!posterImgFile && !service.posterImg) {
+        service.posterImg = null;
       }
-    } else {
-      service.posterImg = null; // Clear if type is not video
+    } else if (type === "image") {
+      // Do not clear posterImg if it exists and no new posterImgFile is provided
+      if (posterImgFile) {
+        service.posterImg = null;
+      }
     }
 
     // Save the updated service

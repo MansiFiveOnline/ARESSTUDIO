@@ -85,7 +85,7 @@ const Project = () => {
                         <td>{project.project_name}</td>
                         <td className="text-center">{project.service_name}</td>
                         <td className="text-center">
-                          {project.gallery_name_id?.gallery_name || "N/A"}
+                          {project.gallery_name || "N/A"}
                         </td>
                         <td className="text-center">
                           {project.isPublic ? (

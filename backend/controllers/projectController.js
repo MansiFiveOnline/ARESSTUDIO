@@ -645,88 +645,125 @@ const updateProject = async (req, res) => {
       isPublic,
       type,
       media: mediaField,
-      posterImg: newPosterImg,
     } = req.body;
 
-    // Fetch the existing project to retain current values if not updated
-    const existingProject = await projectModel.findById(req.params._id);
-    if (!existingProject) {
-      return res.status(404).json({ message: "Project not found." });
+    if (!project_name) {
+      return res.status(400).json({ message: "Project name is required" });
     }
-
-    // Initialize media and posterImg data
-    let mediaData = {
-      filename: "",
-      filepath: "",
-      iframe: "",
-    };
-    let posterImgData = null;
 
     // Retrieve files
     const mediaFile = req.files?.media ? req.files.media[0] : null;
     const posterImgFile = req.files?.posterImg ? req.files.posterImg[0] : null;
 
-    // Determine media data
+    // Fetch existing project
+    const existingProject = await projectModel.findById(req.params._id);
+    if (!existingProject) {
+      return res.status(404).json({ message: "Project not found." });
+    }
+
+    // Update fields in projectModel
+    existingProject.project_name = project_name || existingProject.project_name;
+    existingProject.subtitle = subtitle || existingProject.subtitle;
+    existingProject.description = description || existingProject.description;
+    existingProject.service_name = service_name || existingProject.service_name;
+    existingProject.gallery_name = gallery_name || existingProject.gallery_name;
+    existingProject.isPublic =
+      isPublic !== undefined ? isPublic : existingProject.isPublic;
+    existingProject.type = type || existingProject.type;
+
+    // Handle media and poster image updates
     if (type === "video") {
+      if (mediaField && mediaField.startsWith("http")) {
+        existingProject.media = {
+          filename: "",
+          filepath: "",
+          iframe: mediaField,
+        };
+      } else if (mediaFile) {
+        existingProject.media = {
+          filename: mediaFile.originalname,
+          filepath: mediaFile.path,
+          iframe: "",
+        };
+      } else {
+        return res.status(400).json({
+          message: "A valid media URL or file is required for video type.",
+        });
+      }
+
+      if (posterImgFile) {
+        existingProject.posterImg = {
+          filename: posterImgFile.originalname,
+          filepath: posterImgFile.path,
+        };
+      } else if (!posterImgFile && !existingProject.posterImg) {
+        return res.status(400).json({
+          message: "Poster Image is required when media is a video.",
+        });
+      }
+    } else if (type === "image") {
       if (mediaFile) {
-        mediaData = {
+        existingProject.media = {
+          filename: mediaFile.originalname,
+          filepath: mediaFile.path,
+          iframe: "",
+        };
+      } else if (!existingProject.media.filepath) {
+        return res.status(400).json({
+          message: "Image media file is required when type is image.",
+        });
+      }
+      existingProject.posterImg = null; // Poster image is not required for image type
+    } else {
+      if (mediaFile) {
+        existingProject.media = {
           filename: mediaFile.originalname,
           filepath: mediaFile.path,
           iframe: "",
         };
       } else if (mediaField && mediaField.startsWith("http")) {
-        mediaData.iframe = mediaField; // Store iframe URL if provided
-      }
-    } else if (type === "image" && mediaFile) {
-      mediaData = {
-        filename: mediaFile.originalname,
-        filepath: mediaFile.path,
-        iframe: "", // Clear iframe if not a video
-      };
-    }
-
-    // Determine poster image data
-    if (type === "video") {
-      if (posterImgFile) {
-        posterImgData = {
-          filename: posterImgFile.originalname,
-          filepath: posterImgFile.path,
+        existingProject.media = {
+          filename: "",
+          filepath: "",
+          iframe: mediaField,
         };
       } else {
-        posterImgData = null; // Handle as needed
+        existingProject.media = existingProject.media; // Retain existing media data if none provided
       }
-    } else {
-      posterImgData = null; // Clear if type is not video
+      existingProject.posterImg = null; // Poster image is not required for types other than video
     }
 
-    // Update project fields
-    const updatedProject = {
-      project_name: project_name || existingProject.project_name,
-      subtitle: subtitle || existingProject.subtitle,
-      description: description || existingProject.description,
-      service_name: service_name || existingProject.service_name,
-      gallery_name: gallery_name || existingProject.gallery_name,
-      isPublic: isPublic || existingProject.isPublic,
-      type: type || existingProject.type,
-      media: mediaData,
-      posterImg: posterImgData,
-    };
-
-    const result = await projectModel.findByIdAndUpdate(
+    // Save the updated project
+    const updatedProject = await projectModel.findByIdAndUpdate(
       req.params._id,
-      updatedProject,
+      { $set: existingProject },
       { new: true }
     );
 
+    // Update project details model
+    const updateResult = await projectDetailsModel.updateMany(
+      { project_id: updatedProject._id },
+      { $set: { project_name } }
+    );
+
+    if (updateResult.matchedCount === 0) {
+      return res.status(404).json({ message: "Project Detail not found." });
+    }
+
+    const updatedProjectDetails = await projectDetailsModel.find({
+      project_id: updatedProject._id,
+    });
+
     res.json({
       message: "Project updated successfully.",
-      updatedProject: result,
+      updatedProject,
+      updatedProjectDetails,
     });
   } catch (error) {
     console.error("Error updating project:", error);
     res
       .status(500)
-      .json({ message: "An error occurred while updating the project." });
+      .json({ message: `Failed to update project: ${error.message}` });
   }
 };
 

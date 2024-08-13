@@ -162,6 +162,8 @@ const deleteGalleryName = async (req, res) => {
       _id: req.params._id,
     });
 
+    await projectModel.deleteMany({ gallery_name_id: deletedGalleryName._id });
+
     return res.status(200).json({
       message: "gallery Name deleted successfully.",
       deletedGalleryName,

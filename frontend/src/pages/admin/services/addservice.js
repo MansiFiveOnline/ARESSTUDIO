@@ -41,6 +41,14 @@ const AddService = () => {
       return;
     }
 
+    // New validation to ensure both media and posterImg are not provided when media type is image
+    if (media.file && posterImg) {
+      setValidationError(
+        "Please provide either a media image or a poster image, not both."
+      );
+      return;
+    }
+
     setValidationError("");
 
     try {

@@ -14,9 +14,7 @@ const EditProject = () => {
   const [isPublic, setIsPublic] = useState(true);
   const [serviceChanged, setServiceChanged] = useState(false);
   const navigate = useNavigate();
-  const [validationError, setValidationError] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [isPosterImgRequired, setIsPosterImgRequired] = useState(false);
 
   const [formData, setFormData] = useState({
     service_name: "",
@@ -42,7 +40,6 @@ const EditProject = () => {
         const apiUrl = process.env.REACT_APP_API_URL;
         const response = await axios.get(`${apiUrl}/api/project/${id}`);
         const projectData = response.data.project;
-
         setProject(projectData);
         setSelectedService(projectData.service_name);
         setSelectedGallery(projectData.gallery_name);
@@ -50,7 +47,7 @@ const EditProject = () => {
         setFormData({
           service_name: projectData.service_name,
           gallery_name: projectData.gallery_name,
-          project_name: projectData.project_name,
+          project_name: projectData.project_name || "",
           subtitle: projectData.subtitle || "",
           description: projectData.description || "",
           isPublic: projectData.isPublic,
@@ -63,7 +60,7 @@ const EditProject = () => {
           },
           posterImg: {
             file: null,
-            filepath: projectData.posterImg
+            filepath: projectData.posterImg?.filepath
               ? `${apiUrl}/${projectData.posterImg.filepath}`
               : "",
           },
@@ -71,14 +68,20 @@ const EditProject = () => {
 
         setIsPublic(projectData.isPublic);
         fetchGalleryNames(projectData.service_name);
-        setIsPosterImgRequired(projectData.type === "video");
       } catch (error) {
         console.error("Error fetching project:", error);
+        setErrorMessage("Failed to fetch project data.");
       }
     };
 
     fetchProject();
   }, [id]);
+
+  useEffect(() => {
+    if (serviceChanged) {
+      fetchGalleryNames(selectedService);
+    }
+  }, [selectedService, serviceChanged]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -97,13 +100,11 @@ const EditProject = () => {
             filepath: "",
           },
         }));
-        setIsPosterImgRequired(false);
       } else {
         setFormData((prevFormData) => ({
           ...prevFormData,
           media: {
             ...prevFormData.media,
-            file: null,
             iframe: value.trim(),
             filepath: "",
           },
@@ -112,7 +113,6 @@ const EditProject = () => {
             filepath: "",
           },
         }));
-        setIsPosterImgRequired(true);
       }
     } else if (name === "posterImg") {
       if (files && files.length > 0) {
@@ -159,12 +159,6 @@ const EditProject = () => {
     }
   };
 
-  useEffect(() => {
-    if (serviceChanged) {
-      fetchGalleryNames(selectedService);
-    }
-  }, [selectedService, serviceChanged]);
-
   const handleServiceChange = (e) => {
     setSelectedService(e.target.value);
     setServiceChanged(true);
@@ -184,18 +178,19 @@ const EditProject = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Clear previous error messages
     setErrorMessage("");
 
-    // Validate if posterImg is required
-    if (formData.media.iframe && !formData.posterImg.file) {
-      setErrorMessage("Poster Image is required when using an iframe URL.");
-      return; // Prevent form submission
-    }
+    // Validate form data
+    const isMediaIframe = formData.media.iframe.trim() !== "";
+    const isPosterImgRequired = isMediaIframe && !formData.posterImg.file;
 
+    // if (isPosterImgRequired) {
+    //   setErrorMessage("Poster Image is required when using an iframe URL.");
+    //   return;
+    // }
+
+    // Prepare FormData
     const formDataToSend = new FormData();
-
     formDataToSend.append("project_name", formData.project_name);
     formDataToSend.append("subtitle", formData.subtitle || "");
     formDataToSend.append("description", formData.description || "");
@@ -203,6 +198,7 @@ const EditProject = () => {
     formDataToSend.append("gallery_name", formData.gallery_name);
     formDataToSend.append("isPublic", formData.isPublic);
 
+    // Handle media type and file
     if (formData.media.file) {
       formDataToSend.append("media", formData.media.file);
       formDataToSend.append("type", "image");
@@ -211,6 +207,7 @@ const EditProject = () => {
       formDataToSend.append("type", "video");
     }
 
+    // Handle poster image
     if (formData.posterImg.file) {
       formDataToSend.append("posterImg", formData.posterImg.file);
     } else if (formData.posterImg.filepath) {
@@ -232,13 +229,11 @@ const EditProject = () => {
         }
       );
 
-      console.log("Updated project", response.data.updatedProject);
+      console.log("Updated project:", response.data.updatedProject);
       navigate("/admin/project");
     } catch (error) {
       console.error("Error updating project:", error);
-      setErrorMessage(
-        `${error.response?.data?.message}` || "An error occurred"
-      );
+      setErrorMessage(error.response?.data?.message || "An error occurred");
     }
   };
 
@@ -279,10 +274,6 @@ const EditProject = () => {
                   name="project_name"
                   value={formData.project_name}
                   onChange={handleChange}
-                  // value={formData.project_name}
-                  // onChange={(value) =>
-                  //   setFormData({ ...formData, project_name: value })
-                  // }
                 />
               </div>
             </div>
@@ -300,28 +291,15 @@ const EditProject = () => {
             <div className="col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="theme-form">
                 <label>Description</label>
-                {/* <textarea
-                  type="text"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  rows={4}
-                
-                /> */}
                 <ReactQuill
-                  theme="snow"
-                  modules={modules}
-                  formats={formats}
-                  name="description"
                   value={formData.description}
                   onChange={handleDescriptionChange}
-                  // value={formData.description}
-                  // onChange={(value) =>
-                  //   setFormData({ ...formData, description: value })
-                  // }
+                  formats={formats}
+                  modules={modules}
                 />
               </div>
             </div>
+
             <div className="col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="theme-form">
                 <label>Service</label>
@@ -332,30 +310,6 @@ const EditProject = () => {
                 </select>
               </div>
             </div>
-
-            {/* <div className="col-lg-6 col-md-6 col-sm-12 col-12">
-              <div className="theme-form">
-                <label>Gallery Name</label>
-                <select
-                  value={selectedGallery}
-                  onChange={(e) => {
-                    setSelectedGallery(e.target.value);
-                    setFormData((prevFormData) => ({
-                      ...prevFormData,
-                      gallery_name: e.target.value,
-                    }));
-                  }}
-                >
-                  {serviceChanged && <option value="">Select Gallery</option>}
-                  {galleryNames.map((gallery) => (
-                    <option key={gallery._id} value={gallery._id}>
-                      {gallery}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div> */}
-
             <div className="col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="theme-form">
                 <label>Gallery Name</label>
@@ -368,22 +322,22 @@ const EditProject = () => {
                   ))}
                 </select>
               </div>
-            </div>
 
-            <div className="py-3">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={isPublic} // Controlled by isPublic state
-                  onChange={(e) => setIsPublic(e.target.checked)} // Update isPublic state directly
-                />
-                Public
-              </label>
+              <div className="py-3">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={isPublic} // Controlled by isPublic state
+                    onChange={(e) => setIsPublic(e.target.checked)} // Update isPublic state directly
+                  />
+                  Public
+                </label>
+              </div>
             </div>
 
             <div className="col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="theme-form">
-                <label>Media (1920 X 1080)</label>
+                <label>Media</label>
                 <input
                   type="text"
                   name="media"
@@ -391,14 +345,9 @@ const EditProject = () => {
                   placeholder="iFrame URL"
                   onChange={handleChange}
                 />
-                <span> OR </span>
-                <input
-                  type="file"
-                  name="media"
-                  accept=".webp"
-                  onChange={handleChange}
-                />
-                {formData.media?.filepath && (
+                <span>OR</span>
+                <input type="file" name="media" onChange={handleChange} />
+                {formData.media.filepath && (
                   <img
                     className="form-profile"
                     src={`${formData.media.filepath}`}
@@ -408,34 +357,28 @@ const EditProject = () => {
                 )}
               </div>
             </div>
-
-            {isPosterImgRequired && (
+            {formData.media.iframe && (
               <div className="col-lg-6 col-md-6 col-sm-12 col-12">
                 <div className="theme-form">
-                  <label>Poster Image (for iPhone)</label>
-                  <input
-                    type="file"
-                    name="posterImg"
-                    accept=".webp"
-                    onChange={handleChange}
-                  />
-                  {formData.posterImg.filepath && (
-                    <img
-                      className="form-profile"
-                      src={`${formData.posterImg.filepath}`}
-                      alt={formData.posterImg.filename || "Poster Image"}
-                      loading="lazy"
-                    />
-                  )}
+                  <label>Poster Image</label>
+                  <input type="file" name="posterImg" onChange={handleChange} />
                 </div>
+                {formData.posterImg.filepath && (
+                  <img
+                    className="form-profile mb-4"
+                    src={`${formData.posterImg.filepath}`}
+                    alt={`${formData.posterImg.filename}`}
+                    loading="lazy"
+                  />
+                )}
               </div>
             )}
 
-            {errorMessage && (
-              <div className="error-message text-danger mt-2">
-                {errorMessage}
-              </div>
-            )}
+            <div className="col-lg-12 col-md-12 col-sm-12 col-12">
+              {errorMessage && (
+                <div className="error-message">{errorMessage}</div>
+              )}
+            </div>
 
             <div className="col-12">
               <div className="theme-form">

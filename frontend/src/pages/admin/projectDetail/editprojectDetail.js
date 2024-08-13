@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Layout from "../../../components/adminLayout";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 const EditProjectDetail = () => {
@@ -34,8 +33,11 @@ const EditProjectDetail = () => {
     const fetchProjectNames = async () => {
       try {
         const apiUrl = process.env.REACT_APP_API_URL;
-        const response = await axios.get(`${apiUrl}/api/projects`); // Replace with your endpoint
-        setProjectNames(response.data.projects);
+        const response = await axios.get(`${apiUrl}/api/project/projectname`);
+        const sortedProjectNames = response.data.projectNames.sort((a, b) =>
+          a.localeCompare(b)
+        );
+        setProjectNames(sortedProjectNames);
       } catch (error) {
         console.error("Error fetching project names:", error);
       }
@@ -65,7 +67,7 @@ const EditProjectDetail = () => {
           },
           posterImg: {
             file: null,
-            filepath: projectDetailData.posterImg.filepath
+            filepath: projectDetailData.posterImg
               ? `${apiUrl}/${projectDetailData.posterImg.filepath}`
               : "",
           },
@@ -77,8 +79,6 @@ const EditProjectDetail = () => {
           `${apiUrl}/api/project_detail/count/${projectDetailData.project_name}`
         );
         setTotalProjectDetails(totalDetailsResponse.data.count);
-
-        setIsPosterImgRequired(projectDetailData.media.iframe ? true : false);
       } catch (error) {
         console.error("Error fetching project detail:", error);
       }
@@ -110,7 +110,6 @@ const EditProjectDetail = () => {
           ...prevFormData,
           media: {
             ...prevFormData.media,
-            file: null,
             iframe: value.trim(),
             filepath: "",
           },
@@ -154,11 +153,6 @@ const EditProjectDetail = () => {
       setErrorMessage(
         `Total entries are ${totalProjectDetails}. Sequence number cannot be greater than ${totalProjectDetails}`
       );
-      return;
-    }
-
-    if (formData.media.iframe && !formData.posterImg.file) {
-      setErrorMessage("Poster Image is required when using an iframe URL.");
       return;
     }
 
@@ -206,27 +200,6 @@ const EditProjectDetail = () => {
     }
   };
 
-  const formats = [
-    "header",
-    "font",
-    "size",
-    "bold",
-    "italic",
-    "list",
-    "bullet",
-    "indent",
-  ];
-
-  const modules = {
-    toolbar: [
-      [{ header: "1" }, { header: "2" }, { font: [] }],
-      [{ size: [] }],
-      ["bold", "italic"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      [{ indent: "-1" }, { indent: "+1" }],
-    ],
-  };
-
   return (
     <Layout>
       <div className="theme-form-header">
@@ -241,16 +214,17 @@ const EditProjectDetail = () => {
                 <select
                   value={selectedProjectName}
                   onChange={(e) => {
-                    setSelectedProjectName(e.target.value);
+                    const newProjectName = e.target.value;
+                    setSelectedProjectName(newProjectName);
                     setFormData((prevFormData) => ({
                       ...prevFormData,
-                      project_name: e.target.value,
+                      project_name: newProjectName,
                     }));
                   }}
                 >
                   {projectNames.map((name) => (
-                    <option key={name._id} value={name._id}>
-                      {name.project_name} {/* Adjust this if necessary */}
+                    <option key={name} value={name}>
+                      {name}
                     </option>
                   ))}
                 </select>
@@ -286,6 +260,7 @@ const EditProjectDetail = () => {
                   placeholder="iFrame URL"
                   onChange={handleChange}
                 />
+                <span> OR </span>
                 <input type="file" name="media" onChange={handleChange} />
                 {formData.media.filepath && (
                   <img
@@ -298,25 +273,27 @@ const EditProjectDetail = () => {
               </div>
             </div>
 
-            <div className="col-lg-6 col-md-6 col-sm-12 col-12">
-              <div className="theme-form">
-                <label>Poster Image</label>
-                <input type="file" name="posterImg" onChange={handleChange} />
-                {formData.posterImg.filepath && (
-                  <img
-                    className="form-profile"
-                    src={formData.posterImg.filepath}
-                    alt="Poster"
-                    loading="lazy"
-                  />
-                )}
+            {formData.media.iframe && (
+              <div className="col-lg-6 col-md-6 col-sm-12 col-12">
+                <div className="theme-form">
+                  <label>Poster Image</label>
+                  <input type="file" name="posterImg" onChange={handleChange} />
+                  {formData.posterImg.filepath && (
+                    <img
+                      className="form-profile"
+                      src={formData.posterImg.filepath}
+                      alt="Poster"
+                      loading="lazy"
+                    />
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="col-12">
-              <div className="theme-form">
-                <button type="submit">Update</button>
-              </div>
+              <button type="submit" className="btn btn-primary">
+                Update Project Detail
+              </button>
             </div>
           </div>
         </form>

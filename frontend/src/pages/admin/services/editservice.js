@@ -64,7 +64,7 @@ const EditService = () => {
 
         // Determine if posterImg should be required and disabled
         // const isIframe = serviceData.media.iframe.trim() !== "";
-        setIsPosterImgRequired(serviceData.type === "video");
+        // setIsPosterImgRequired(serviceData.type === "video");
         setIsPosterImgDisabled(serviceData.media.iframe.trim() === "");
       } catch (error) {
         console.error("Error fetching service:", error);
@@ -315,7 +315,7 @@ const EditService = () => {
               </div>
             </div>
 
-            {isPosterImgRequired && (
+            {formData.media.iframe && (
               <div className="col-lg-6 col-md-6 col-sm-12 col-12">
                 <div className="theme-form">
                   <label>Poster Image (for iPhone)</label>

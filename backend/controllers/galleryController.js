@@ -1,6 +1,7 @@
 const galleryModel = require("../models/galleryModel");
 const path = require("path");
 const galleryNameModel = require("../models/gallerynameModel");
+const projectModel = require("../models/projectModel");
 
 const createGallery = async (req, res) => {
   try {
@@ -270,6 +271,8 @@ const deleteGallery = async (req, res) => {
     const deletedGallery = await galleryModel.findOneAndDelete({
       _id: req.params._id,
     });
+
+    await projectModel.deleteMany({ gallery_name_id: deletedGallery._id });
 
     return res.status(200).json({
       message: "Gallery deleted successfully.",
